@@ -1,0 +1,29 @@
+{
+  "name": "lexeme",
+  "version": "0.0.1",
+  "description": "A new take on language learning.",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "express": "^4.13.4",
+    "mysql": "^2.10.2",
+    "object-to-xml": "^1.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Gustaf Liljegren",
+  "license": "CC-BY-NC-ND-4.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gustafl/Lexeme.git"
+  },
+  "keywords": [
+    "language"
+  ],
+  "bugs": {
+    "url": "https://github.com/gustafl/Lexeme/issues"
+  },
+  "homepage": "https://github.com/gustafl/Lexeme#readme"
+}
