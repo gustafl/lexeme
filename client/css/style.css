@@ -13,14 +13,6 @@ h4 {
 .lead {
   font-size: 24pt; }
 
-body {
-  font-family: "Open Sans", sans-serif;
-  font-size: 18pt;
-  line-height: 2em;
-  background-color: #141414;
-  color: #efeede;
-  padding: 4%; }
-
 @media screen and (max-width: 767px) {
   article {
     font-size: 18pt; } }
@@ -32,7 +24,7 @@ body {
     font-size: 22pt; } }
 @media screen and (min-width: 1200px) {
   article {
-    font-size: 28pt; } }
+    font-size: 24pt; } }
 
 @media screen and (max-width: 767px) {
   aside {
@@ -40,12 +32,15 @@ body {
 @media screen and (min-width: 768px) and (max-width: 991px) {
   aside {
     display: none; } }
-@media screen and (min-width: 1200px) {
-  aside {
-    font-size: 28pt; } }
 
 * {
   box-sizing: border-box; }
+
+body {
+  background-color: #141414;
+  color: #efeede;
+  font-family: "Open Sans", sans-serif;
+  padding: 4%; }
 
 #container {
   position: relative; }
@@ -62,27 +57,26 @@ aside {
   right: 0px;
   top: 0px;
   width: 38%;
-  padding: 20px;
+  padding: 18px;
   padding-bottom: 25px;
-  background-color: #989aac;
   text-align: center;
-  border: 2px solid #7c7e95;
-  border-radius: 20px;
-  font-family: "Open Sans", sans-serif; }
+  background-color: #202020;
+  border: 2px solid #202020;
+  border-radius: 20px; }
 
 fieldset {
-  border: none;
-  background-color: #b4b6c3;
-  border: 2px solid #7c7e95;
+  position: relative;
+  background-color: #2A2A2A;
+  border: 2px solid #202020;
   margin: 0px;
   margin-bottom: 20px;
   border-radius: 12px;
-  padding: 20px; }
+  padding: 18px; }
 
 input[type="text"] {
   text-align: center;
   border: none;
-  background-color: #b4b6c3;
+  background-color: transparent;
   width: 75%; }
 
 #word {
@@ -94,32 +88,73 @@ input[type="text"] {
   font-size: 24pt; }
 
 input {
-  color: #363742; }
-
-button {
-  border: none;
-  font-size: 24pt;
-  background-color: #8a8ca1;
-  border: 2px solid #7c7e95;
-  padding: 12px 20px;
-  border-radius: 12px;
-  margin-left: 10px;
-  color: #363742; }
-
-button:hover {
-  background-color: #7c7e95;
-  border: 2px solid #63657b; }
-
-.button-row {
-  text-align: right; }
+  color: #efeede; }
 
 input:focus, textarea:focus {
   outline: none;
-  border-bottom: 2px dashed #989aac;
-  color: #08080a; }
+  border-bottom: 2px dashed #efeede;
+  color: #efeede; }
 
 ::selection {
   background-color: #FF2f3a;
   color: #efeede; }
+
+#lexicalCategory {
+  white-space: nowrap;
+  padding: 0px; }
+  #lexicalCategory div {
+    height: 60px; }
+    #lexicalCategory div button {
+      position: relative;
+      width: 33.33333%;
+      height: 100%;
+      margin: 0px;
+      font-family: "Roboto Mono", monospace;
+      font-size: 18pt;
+      font-variant: small-caps;
+      background-color: #2A2A2A;
+      border: 2px solid #202020;
+      padding-bottom: 5px;
+      color: #efeede; }
+    #lexicalCategory div #noun {
+      border-top-left-radius: 12px;
+      background-color: #26263f; }
+    #lexicalCategory div #verb {
+      background-color: #263f26; }
+    #lexicalCategory div #adjective {
+      border-top-right-radius: 12px;
+      background-color: #3f2626; }
+    #lexicalCategory div #pronoun {
+      background-color: #263f3f; }
+    #lexicalCategory div #adverb {
+      background-color: #3f3f26; }
+    #lexicalCategory div #determiner {
+      background-color: #3f263f; }
+    #lexicalCategory div #preposition {
+      border-bottom-left-radius: 12px;
+      background-color: #2A2A2A; }
+    #lexicalCategory div #conjugation {
+      background-color: #2A2A2A; }
+    #lexicalCategory div #interjection {
+      border-bottom-right-radius: 12px;
+      background-color: #2A2A2A; }
+
+.button-row {
+  text-align: right; }
+  .button-row button {
+    border: none;
+    font-family: "Roboto Mono", monospace;
+    font-size: 18pt;
+    font-variant: small-caps;
+    background-color: #2A2A2A;
+    border: 2px solid #2A2A2A;
+    padding: 12px 20px;
+    border-radius: 12px;
+    margin-left: 10px;
+    color: #efeede;
+    height: 60px; }
+  .button-row button:hover {
+    background-color: #2A2A2A;
+    border: 2px solid #2A2A2A; }
 
 /*# sourceMappingURL=style.css.map */

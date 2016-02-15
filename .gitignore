@@ -1,4 +1,8 @@
-node_modules/
-*.sublime-*
+# Folders
 .*/
+node_modules/
+temp/
+
+# Files
 bs-config.js
+*.sublime-*

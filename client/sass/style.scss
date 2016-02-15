@@ -2,26 +2,6 @@
 @import 'fonts';
 @import 'mixins';
 
-body {
-	@include modern-dark;
-	padding: 4%;
-}
-
-#container {
-	@media screen and (max-width: 767px) {
-
-	}
-	@media screen and (min-width: 768px) and (max-width: 991px) {
-
-	}
-	@media screen and (min-width: 992px) and (max-width: 1199px) {
-
-	}
-	@media screen and (min-width: 1200px) {
-
-	}
-}
-
 article {
 	@media screen and (max-width: 767px) {
 		font-size: $default-font-size + 0pt;
@@ -33,7 +13,7 @@ article {
 		font-size: $default-font-size + 4pt;
 	}
 	@media screen and (min-width: 1200px) {
-		font-size: $default-font-size + 10pt;
+		font-size: $default-font-size + 6pt;
 	}
 }
 
@@ -48,12 +28,19 @@ aside {
 
 	}
 	@media screen and (min-width: 1200px) {
-		font-size: $default-font-size + 10pt;
+
 	}
 }
 
 * {
 	box-sizing: border-box;
+}
+
+body {
+	background-color: $color-almost-black;
+	color: $color-almost-white;
+	font-family: $font-modern;
+	padding: 4%;
 }
 
 #container {
@@ -73,29 +60,28 @@ aside {
 	right: 0px;
 	top: 0px;
 	width: 38%;
-	padding: 20px;
+	padding: 18px;
 	padding-bottom: 25px;
-	background-color: $color-essential-gray-blue;
 	text-align: center;
-	border: 2px solid darken($color-essential-gray-blue, 10%);
+	background-color: $color-dark-gray-1;
+	border: 2px solid $color-dark-gray-1;
 	border-radius: 20px;
-	font-family: $font-modern;
 }
 
 fieldset {
-	border: none;
-	background-color: lighten($color-essential-gray-blue, 10%);
-	border: 2px solid darken($color-essential-gray-blue, 10%);
+	position: relative;
+	background-color: $color-dark-gray-2;
+	border: 2px solid $color-dark-gray-1;
 	margin: 0px;
 	margin-bottom: 20px;
 	border-radius: 12px;
-	padding: 20px;
+	padding: 18px;
 }
 
 input[type="text"] {
 	text-align: center;
 	border: none;
-	background-color: lighten($color-essential-gray-blue, 10%);
+	background-color: rgba(0, 0, 0, 0);
 	width: 75%;
 }
 
@@ -110,33 +96,13 @@ input[type="text"] {
 }
 
 input {
-	color: darken($color-essential-gray-blue, 40%);
-}
-
-button {
-	border: none;
-	font-size: 24pt;
-	background-color: darken($color-essential-gray-blue, 5%);
-	border: 2px solid darken($color-essential-gray-blue, 10%);
-	padding: 12px 20px;
-	border-radius: 12px;
-	margin-left: 10px;
-	color: darken($color-essential-gray-blue, 40%);
-}
-
-button:hover {
-	background-color: darken($color-essential-gray-blue, 10%);
-	border: 2px solid darken($color-essential-gray-blue, 20%);
-}
-
-.button-row {
-	text-align: right;
+	color: $color-almost-white;
 }
 
 input:focus, textarea:focus {
     outline: none;
-    border-bottom: 2px dashed $color-essential-gray-blue;
-    color: darken($color-essential-gray-blue, 60%);
+    border-bottom: 2px dashed $color-almost-white;
+    color: $color-almost-white;
 }
 
 ::selection {
@@ -144,3 +110,77 @@ input:focus, textarea:focus {
 	color: $color-almost-white;
 }
 
+@mixin button-text {
+	font-family: $font-monospace;
+	font-size: 18pt;
+	font-variant: small-caps;
+}
+
+#lexicalCategory {
+	white-space: nowrap;
+	padding: 0px;
+	div {
+		height: 60px;
+		button {
+			position: relative;
+			width: (100% / 3);
+			height: 100%;
+			margin: 0px;
+			@include button-text;
+			background-color: $color-dark-gray-2;
+			border: 2px solid $color-dark-gray-1;
+			padding-bottom: 5px;
+			color: $color-almost-white;
+		}
+		#noun {
+			border-top-left-radius: 12px;
+			background-color: mix($color-dark-gray-2, blue, 90%);
+		}
+		#verb {
+			background-color: mix($color-dark-gray-2, lime, 90%);
+		}
+		#adjective {
+			border-top-right-radius: 12px;
+			background-color: mix($color-dark-gray-2, red, 90%);
+		}
+		#pronoun {
+			background-color: mix($color-dark-gray-2, aqua, 90%);
+		}
+		#adverb {
+			background-color: mix($color-dark-gray-2, yellow, 90%);
+		}
+		#determiner {
+			background-color: mix($color-dark-gray-2, fuchsia, 90%);
+		}
+		#preposition {
+			border-bottom-left-radius: 12px;
+			background-color: $color-dark-gray-2;
+		}
+		#conjugation {
+			background-color: $color-dark-gray-2;
+		}
+		#interjection {
+			border-bottom-right-radius: 12px;
+			background-color: $color-dark-gray-2;
+		}
+	}
+}
+
+.button-row {
+	text-align: right;
+	button {
+		border: none;
+		@include button-text;
+		background-color: $color-dark-gray-2;
+		border: 2px solid $color-dark-gray-2;
+		padding: 12px 20px;
+		border-radius: 12px;
+		margin-left: 10px;
+		color: $color-almost-white;
+		height: 60px;
+	}
+	button:hover {
+		background-color: $color-dark-gray-2;
+		border: 2px solid $color-dark-gray-2;
+	}
+}

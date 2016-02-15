@@ -5,9 +5,7 @@
     <title>Vingt mille lieues sous les mers</title>
     <meta name="description" content="TODO" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href='https://fonts.googleapis.com/css?family=IM+Fell+French+Canon:400,400italic|IM+Fell+French+Canon+SC' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=IM+Fell+English:400,400italic|IM+Fell+English+SC&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Roboto+Mono' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="./css/style.css" media="screen" />
   </head>
@@ -55,20 +53,30 @@
         <form>
           <fieldset>
             <input type="text" id="word" name="lexeme" value="lexeme" autocomplete="off" /><br/>
-            <input type="text" id="ipa" name="ipa" value="fɔnetik" autocomplete="off" /><br/>
-            <div id="lexicalCategory"></div>
+            <input type="text" id="ipa" name="ipa" value="fɔɳetik" autocomplete="off" /><br/>
+          </fieldset>
+          <fieldset id="lexicalCategory">
+            <div>
+              <button id="noun" name="">noun</button><button id="verb" name="">verb</button><button id="adjective" name="">adjective</button>
+            </div>
+            <div>
+              <button id="pronoun" name="">pronoun</button><button id="adverb" name="">adverb</button><button id="determiner" name="">determiner</button>
+            </div>
+            <div>
+              <button id="preposition" name="">preposition</button><button id="conjugation" name="">conjugation</button><button id="interjection" name="">interjection</button>
+            </div>
           </fieldset>
           <fieldset id="basics"></fieldset>
           <fieldset id="details"></fieldset>
           <div class="button-row">
-            <button id="button1" name="">Save</button>
-            <button id="button2" name="">Cancel</button>
+            <button id="button1" name="">SAVE</button>
+            <button id="button2" name="">CANCEL</button>
           </div>
         </form>
       </aside>
     </div>
     <footer></footer>
-    <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+    <script src="//code.jquery.com/jquery-2.2.0.min.js"></script>
     <script src="./js/scripts.js"></script>
   </body>
 </html>
