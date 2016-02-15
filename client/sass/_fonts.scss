@@ -1,0 +1,14 @@
+$font-old: 'IM Fell English', serif;
+$font-old-sc: 'IM Fell English SC', serif;
+$font-modern: 'Open Sans', sans-serif;
+$font-monospace: 'Roboto Mono', monospace;
+
+// Defaults
+$default-font-size: 18pt;
+
+// Header sizes
+h1 { font-size: $default-font-size + 22pt; }
+h2 { font-size: $default-font-size + 12pt; }
+h3 { font-size: $default-font-size + 10pt; }
+h4 { font-size: $default-font-size + 6pt; }
+.lead { font-size: $default-font-size + 6pt; }

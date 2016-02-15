@@ -1,0 +1,125 @@
+h1 {
+  font-size: 40pt; }
+
+h2 {
+  font-size: 30pt; }
+
+h3 {
+  font-size: 28pt; }
+
+h4 {
+  font-size: 24pt; }
+
+.lead {
+  font-size: 24pt; }
+
+body {
+  font-family: "Open Sans", sans-serif;
+  font-size: 18pt;
+  line-height: 2em;
+  background-color: #141414;
+  color: #efeede;
+  padding: 4%; }
+
+@media screen and (max-width: 767px) {
+  article {
+    font-size: 18pt; } }
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  article {
+    font-size: 20pt; } }
+@media screen and (min-width: 992px) and (max-width: 1199px) {
+  article {
+    font-size: 22pt; } }
+@media screen and (min-width: 1200px) {
+  article {
+    font-size: 28pt; } }
+
+@media screen and (max-width: 767px) {
+  aside {
+    display: none; } }
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  aside {
+    display: none; } }
+@media screen and (min-width: 1200px) {
+  aside {
+    font-size: 28pt; } }
+
+* {
+  box-sizing: border-box; }
+
+#container {
+  position: relative; }
+
+article {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 60%;
+  padding-bottom: 150px; }
+
+aside {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  width: 38%;
+  padding: 20px;
+  padding-bottom: 25px;
+  background-color: #989aac;
+  text-align: center;
+  border: 2px solid #7c7e95;
+  border-radius: 20px;
+  font-family: "Open Sans", sans-serif; }
+
+fieldset {
+  border: none;
+  background-color: #b4b6c3;
+  border: 2px solid #7c7e95;
+  margin: 0px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  padding: 20px; }
+
+input[type="text"] {
+  text-align: center;
+  border: none;
+  background-color: #b4b6c3;
+  width: 75%; }
+
+#word {
+  font-size: 40pt;
+  margin-bottom: 10px; }
+
+#ipa {
+  font-family: "Roboto Mono", monospace;
+  font-size: 24pt; }
+
+input {
+  color: #363742; }
+
+button {
+  border: none;
+  font-size: 24pt;
+  background-color: #8a8ca1;
+  border: 2px solid #7c7e95;
+  padding: 12px 20px;
+  border-radius: 12px;
+  margin-left: 10px;
+  color: #363742; }
+
+button:hover {
+  background-color: #7c7e95;
+  border: 2px solid #63657b; }
+
+.button-row {
+  text-align: right; }
+
+input:focus, textarea:focus {
+  outline: none;
+  border-bottom: 2px dashed #989aac;
+  color: #08080a; }
+
+::selection {
+  background-color: #FF2f3a;
+  color: #efeede; }
+
+/*# sourceMappingURL=style.css.map */

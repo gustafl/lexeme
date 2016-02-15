@@ -1,0 +1,26 @@
+// Mixins
+@mixin modern {
+	font-family: $font-modern;
+	font-size: $default-font-size;
+	line-height: 2em;
+}
+
+@mixin dark {
+	background-color: $color-almost-black;
+	color: $color-almost-white;
+}
+
+@mixin bright {
+	background-color: $color-almost-white;
+	color: $color-almost-black;
+}
+
+@mixin modern-dark {
+    @include modern;
+    @include dark;
+}
+
+@mixin modern-bright {
+    @include modern;
+    @include bright;
+}

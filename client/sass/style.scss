@@ -1,0 +1,146 @@
+@import 'colors';
+@import 'fonts';
+@import 'mixins';
+
+body {
+	@include modern-dark;
+	padding: 4%;
+}
+
+#container {
+	@media screen and (max-width: 767px) {
+
+	}
+	@media screen and (min-width: 768px) and (max-width: 991px) {
+
+	}
+	@media screen and (min-width: 992px) and (max-width: 1199px) {
+
+	}
+	@media screen and (min-width: 1200px) {
+
+	}
+}
+
+article {
+	@media screen and (max-width: 767px) {
+		font-size: $default-font-size + 0pt;
+	}
+	@media screen and (min-width: 768px) and (max-width: 991px) {
+		font-size: $default-font-size + 2pt;
+	}
+	@media screen and (min-width: 992px) and (max-width: 1199px) {
+		font-size: $default-font-size + 4pt;
+	}
+	@media screen and (min-width: 1200px) {
+		font-size: $default-font-size + 10pt;
+	}
+}
+
+aside {
+	@media screen and (max-width: 767px) {
+		display: none;
+	}
+	@media screen and (min-width: 768px) and (max-width: 991px) {
+		display: none;
+	}
+	@media screen and (min-width: 992px) and (max-width: 1199px) {
+
+	}
+	@media screen and (min-width: 1200px) {
+		font-size: $default-font-size + 10pt;
+	}
+}
+
+* {
+	box-sizing: border-box;
+}
+
+#container {
+	position: relative;
+}
+
+article {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 60%;
+	padding-bottom: 150px;
+}
+
+aside {
+	position: absolute;
+	right: 0px;
+	top: 0px;
+	width: 38%;
+	padding: 20px;
+	padding-bottom: 25px;
+	background-color: $color-essential-gray-blue;
+	text-align: center;
+	border: 2px solid darken($color-essential-gray-blue, 10%);
+	border-radius: 20px;
+	font-family: $font-modern;
+}
+
+fieldset {
+	border: none;
+	background-color: lighten($color-essential-gray-blue, 10%);
+	border: 2px solid darken($color-essential-gray-blue, 10%);
+	margin: 0px;
+	margin-bottom: 20px;
+	border-radius: 12px;
+	padding: 20px;
+}
+
+input[type="text"] {
+	text-align: center;
+	border: none;
+	background-color: lighten($color-essential-gray-blue, 10%);
+	width: 75%;
+}
+
+#word {
+	font-size: 40pt;
+	margin-bottom: 10px;
+}
+
+#ipa {
+	font-family: $font-monospace;
+	font-size: 24pt;
+}
+
+input {
+	color: darken($color-essential-gray-blue, 40%);
+}
+
+button {
+	border: none;
+	font-size: 24pt;
+	background-color: darken($color-essential-gray-blue, 5%);
+	border: 2px solid darken($color-essential-gray-blue, 10%);
+	padding: 12px 20px;
+	border-radius: 12px;
+	margin-left: 10px;
+	color: darken($color-essential-gray-blue, 40%);
+}
+
+button:hover {
+	background-color: darken($color-essential-gray-blue, 10%);
+	border: 2px solid darken($color-essential-gray-blue, 20%);
+}
+
+.button-row {
+	text-align: right;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-bottom: 2px dashed $color-essential-gray-blue;
+    color: darken($color-essential-gray-blue, 60%);
+}
+
+::selection {
+	background-color: $color-essential-red;
+	color: $color-almost-white;
+}
+
