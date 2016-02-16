@@ -19,6 +19,31 @@ $(document).ready(function () {
         $('#ipa').val(text);
     });
 
+    // If a button in the lexical category fieldset is clicked
+    $('#lexicalCategory button').click(function (event) {
+        // Prevent submit
+        event.preventDefault();
+        var $fieldset = $('#lexicalCategory');
+        // If no lexical category is selected
+        if ($fieldset.data('selected') === 'no') {
+            // Show all buttons
+            $fieldset.append('<div><button id="noun">noun</button><button id="verb">verb</button><button id="adjective">adjective</button></div>');
+            $fieldset.append('<div><button id="pronoun">pronoun</button><button id="adverb">adverb</button><button id="determiner">determiner</button></div>');
+            $fieldset.append('<div><button id="preposition">preposition</button><button id="conjugation">conjugation</button><button id="interjection">interjection</button></div>');
+        } else {
+            // Show one button
+
+        }
+
+        /*
+        var bgColor = $(this).css('background-color');
+        $('#lexicalCategory').slideUp(function (event) {
+            $('#lexicalCategory').empty();
+            var $div = $('#lexicalCategory').append('<div><button id="noun">noun</button></div>');
+            $('#lexicalCategory').slideDown();
+        });*/
+    });
+
     $('article').click(function (event) {
         // Get the current position of the caret.
         var selection = window.getSelection();

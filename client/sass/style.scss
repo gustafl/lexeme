@@ -3,184 +3,338 @@
 @import 'mixins';
 
 article {
-	@media screen and (max-width: 767px) {
-		font-size: $default-font-size + 0pt;
-	}
-	@media screen and (min-width: 768px) and (max-width: 991px) {
-		font-size: $default-font-size + 2pt;
-	}
-	@media screen and (min-width: 992px) and (max-width: 1199px) {
-		font-size: $default-font-size + 4pt;
-	}
-	@media screen and (min-width: 1200px) {
-		font-size: $default-font-size + 6pt;
-	}
+    @media screen and (max-width: 767px) {
+        font-size: $default-font-size + 0pt;
+    }
+    @media screen and (min-width: 768px) and (max-width: 991px) {
+        font-size: $default-font-size + 2pt;
+    }
+    @media screen and (min-width: 992px) and (max-width: 1199px) {
+        font-size: $default-font-size + 4pt;
+    }
+    @media screen and (min-width: 1200px) {
+        font-size: $default-font-size + 6pt;
+    }
 }
 
 aside {
-	@media screen and (max-width: 767px) {
-		display: none;
-	}
-	@media screen and (min-width: 768px) and (max-width: 991px) {
-		display: none;
-	}
-	@media screen and (min-width: 992px) and (max-width: 1199px) {
+    @media screen and (max-width: 767px) {
+        display: none;
+    }
+    @media screen and (min-width: 768px) and (max-width: 991px) {
+        display: none;
+    }
+    @media screen and (min-width: 992px) and (max-width: 1199px) {
 
-	}
-	@media screen and (min-width: 1200px) {
+    }
+    @media screen and (min-width: 1200px) {
 
-	}
+    }
 }
 
 * {
-	box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 body {
-	background-color: $color-almost-black;
-	color: $color-almost-white;
-	font-family: $font-modern;
-	padding: 4%;
+    background-color: $color-almost-black;
+    color: $color-almost-white;
+    font-family: $font-modern;
+    padding: 4%;
 }
 
 #container {
-	position: relative;
+    position: relative;
 }
 
 article {
-	position: absolute;
-	left: 0px;
-	top: 0px;
-	width: 60%;
-	padding-bottom: 150px;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 60%;
+    padding-bottom: 150px;
 }
 
 aside {
-	position: absolute;
-	right: 0px;
-	top: 0px;
-	width: 38%;
-	padding: 18px;
-	padding-bottom: 25px;
-	text-align: center;
-	background-color: $color-dark-gray-1;
-	border: 2px solid $color-dark-gray-1;
-	border-radius: 20px;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    width: 38%;
+    padding: 18px;
+    padding-bottom: 25px;
+    text-align: center;
+    background-color: $color-dark-gray-1;
+    border: 2px solid $color-dark-gray-1;
+    border-radius: 20px;
 }
 
 fieldset {
-	position: relative;
-	background-color: $color-dark-gray-2;
-	border: 2px solid $color-dark-gray-1;
-	margin: 0px;
-	margin-bottom: 20px;
-	border-radius: 12px;
-	padding: 18px;
+    position: relative;
+    background-color: $color-dark-gray-2;
+    border: 2px solid $color-dark-gray-1;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    padding: 18px;
 }
 
 input[type="text"] {
-	text-align: center;
-	border: none;
-	background-color: rgba(0, 0, 0, 0);
-	width: 75%;
+    text-align: center;
+    border: none;
+    background-color: rgba(0, 0, 0, 0);
+    width: 75%;
 }
 
 #word {
-	font-size: 40pt;
-	margin-bottom: 10px;
+    font-size: 40pt;
+    margin-bottom: 10px;
 }
 
 #ipa {
-	font-family: $font-monospace;
-	font-size: 24pt;
+    font-family: $font-monospace;
+    font-size: 24pt;
 }
 
 input {
-	color: $color-almost-white;
+    color: $color-almost-white;
 }
 
 input:focus, textarea:focus {
-    outline: none;
     border-bottom: 2px dashed $color-almost-white;
     color: $color-almost-white;
 }
 
 ::selection {
-	background-color: $color-essential-red;
-	color: $color-almost-white;
+    background-color: $color-essential-red;
+    color: $color-almost-white;
 }
 
 @mixin button-text {
-	font-family: $font-monospace;
-	font-size: 18pt;
-	font-variant: small-caps;
+    font-family: $font-monospace;
+    font-size: 20pt;
+    font-variant: small-caps;
+}
+
+*:focus {
+    outline: none;
+}
+
+article span {
+    padding: 0px 6px;
+    border-radius: 8px;
+    cursor: pointer;
 }
 
 #lexicalCategory {
-	white-space: nowrap;
-	padding: 0px;
-	div {
-		height: 60px;
-		button {
-			position: relative;
-			width: (100% / 3);
-			height: 100%;
-			margin: 0px;
-			@include button-text;
-			background-color: $color-dark-gray-2;
-			border: 2px solid $color-dark-gray-1;
-			padding-bottom: 5px;
-			color: $color-almost-white;
-		}
-		#noun {
-			border-top-left-radius: 12px;
-			background-color: mix($color-dark-gray-2, blue, 90%);
-		}
-		#verb {
-			background-color: mix($color-dark-gray-2, lime, 90%);
-		}
-		#adjective {
-			border-top-right-radius: 12px;
-			background-color: mix($color-dark-gray-2, red, 90%);
-		}
-		#pronoun {
-			background-color: mix($color-dark-gray-2, aqua, 90%);
-		}
-		#adverb {
-			background-color: mix($color-dark-gray-2, yellow, 90%);
-		}
-		#determiner {
-			background-color: mix($color-dark-gray-2, fuchsia, 90%);
-		}
-		#preposition {
-			border-bottom-left-radius: 12px;
-			background-color: $color-dark-gray-2;
-		}
-		#conjugation {
-			background-color: $color-dark-gray-2;
-		}
-		#interjection {
-			border-bottom-right-radius: 12px;
-			background-color: $color-dark-gray-2;
-		}
-	}
+    padding: 0px;
+    background-color: $color-dark-gray-1;
+    div {
+        height: 60px;
+        white-space: nowrap;
+        button {
+            cursor: pointer;
+            position: relative;
+            width: (100% / 3);
+            height: 100%;
+            margin: 0px;
+            @include button-text;
+            border: 2px solid $color-dark-gray-1;
+            padding-bottom: 5px;
+            color: $color-almost-white;
+        }
+        .noun {
+            border-top-left-radius: 12px;
+        }
+        .adjective {
+            border-top-right-radius: 12px;
+        }
+        .preposition {
+            border-bottom-left-radius: 12px;
+        }
+        .interjection {
+            border-bottom-right-radius: 12px;
+        }
+    }
+}
+
+#gender {
+    padding: 0px;
+    background-color: $color-dark-gray-1;
+    div {
+        height: 60px;
+        white-space: nowrap;
+        button {
+            cursor: pointer;
+            position: relative;
+            width: (100% / 2);
+            height: 100%;
+            margin: 0px;
+            @include button-text;
+            border: 2px solid $color-dark-gray-1;
+            padding-bottom: 5px;
+            color: $color-almost-white;
+        }
+        .masculine {
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+        }
+        .feminine {
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+    }
+}
+
+#number {
+    padding: 0px;
+    background-color: $color-dark-gray-1;
+    div {
+        height: 60px;
+        white-space: nowrap;
+        button {
+            cursor: pointer;
+            position: relative;
+            width: (100% / 2);
+            height: 100%;
+            margin: 0px;
+            @include button-text;
+            border: 2px solid $color-dark-gray-1;
+            padding-bottom: 5px;
+            color: $color-almost-white;
+        }
+        .singular {
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+        }
+        .plural {
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+    }
+}
+
+#commonProper {
+    padding: 0px;
+    background-color: $color-dark-gray-1;
+    div {
+        height: 60px;
+        white-space: nowrap;
+        button {
+            cursor: pointer;
+            position: relative;
+            width: (100% / 2);
+            height: 100%;
+            margin: 0px;
+            @include button-text;
+            border: 2px solid $color-dark-gray-1;
+            padding-bottom: 5px;
+            color: $color-almost-white;
+        }
+        .common {
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+        }
+        .proper {
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+    }
+}
+
+#concreteAbstract {
+    padding: 0px;
+    background-color: $color-dark-gray-1;
+    div {
+        height: 60px;
+        white-space: nowrap;
+        button {
+            cursor: pointer;
+            position: relative;
+            width: (100% / 2);
+            height: 100%;
+            margin: 0px;
+            @include button-text;
+            border: 2px solid $color-dark-gray-1;
+            padding-bottom: 5px;
+            color: $color-almost-white;
+        }
+        .concrete {
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+        }
+        .abstract {
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+    }
+}
+
+#countableUncountable {
+    padding: 0px;
+    background-color: $color-dark-gray-1;
+    div {
+        height: 60px;
+        white-space: nowrap;
+        button {
+            cursor: pointer;
+            position: relative;
+            width: (100% / 2);
+            height: 100%;
+            margin: 0px;
+            @include button-text;
+            border: 2px solid $color-dark-gray-1;
+            padding-bottom: 5px;
+            color: $color-almost-white;
+        }
+        .countable {
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+        }
+        .uncountable {
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+    }
+}
+
+@mixin test($columns) {
+    padding: 0px;
+    background-color: $color-dark-gray-1;
+    div {
+        height: 60px;
+        white-space: nowrap;
+        button {
+            cursor: pointer;
+            position: relative;
+            width: (100% / $columns);
+            height: 100%;
+            margin: 0px;
+            @include button-text;
+            border: 2px solid $color-dark-gray-1;
+            padding-bottom: 5px;
+            color: $color-almost-white;
+        }
+    }
+}
+
+#addTranslation {
+    @include test(1);
 }
 
 .button-row {
-	text-align: right;
-	button {
-		border: none;
-		@include button-text;
-		background-color: $color-dark-gray-2;
-		border: 2px solid $color-dark-gray-2;
-		padding: 12px 20px;
-		border-radius: 12px;
-		margin-left: 10px;
-		color: $color-almost-white;
-		height: 60px;
-	}
-	button:hover {
-		background-color: $color-dark-gray-2;
-		border: 2px solid $color-dark-gray-2;
-	}
+    text-align: right;
+    button {
+        cursor: pointer;
+        position: relative;
+        width: (100% / 2);
+        height: 100%;
+        margin: 0px;
+        @include button-text;
+        border: 2px solid $color-dark-gray-1;
+        padding-bottom: 5px;
+        color: $color-almost-white;
+    }
+    button:hover {
+        background-color: $color-dark-gray-2;
+        border: 2px solid $color-dark-gray-2;
+    }
 }

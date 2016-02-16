@@ -1,0 +1,54 @@
+/* Defaults */
+.default { background-color: #3f3f3f; }
+.default:hover { background-color: #555555; }
+
+/* Lexical categories */
+.noun { background-color: #26263f; }
+.noun:hover { background-color: #222255; }
+.verb { background-color: #263f26; }
+.verb:hover { background-color: #225522; }
+.adjective { background-color: #3f2626; }
+.adjective:hover { background-color: #552222; }
+.pronoun { background-color: #263f3f; }
+.pronoun:hover { background-color: #225555; }
+.adverb { background-color: #3f3f26; }
+.adverb:hover { background-color: #555522; }
+.determiner { background-color: #3f263f; }
+.determiner:hover { background-color: #552255; }
+.preposition { background-color: #3f3f3f; }
+.preposition:hover { background-color: #555555; }
+.conjugation { background-color: #3f3f3f; }
+.conjugation:hover { background-color: #555555; }
+.interjection { background-color: #3f3f3f; }
+.interjection:hover { background-color: #555555; }
+
+/* Gender */
+.masculine { background-color: #273641; }
+.masculine:hover { background-color: #224056; }
+.feminine { background-color: #402636; }
+.feminine:hover { background-color: #562242; }
+
+/* Number */
+.singular { background-color: #3f3f3f; }
+.singular:hover { background-color: #555555; }
+.plural { background-color: #3f3f3f; }
+.plural:hover { background-color: #555555; }
+
+/* Common/proper */
+.common { background-color: #3f3f3f; }
+.common:hover { background-color: #555555; }
+.proper { background-color: #3f3f3f; }
+.proper:hover { background-color: #555555; }
+
+/* Concrete/abstract */
+.concrete { background-color: #3f3f3f; }
+.concrete:hover { background-color: #555555; }
+.abstract { background-color: #3f3f3f; }
+.abstract:hover { background-color: #555555; }
+
+/* Countable/uncountable */
+.countable { background-color: #3f3f3f; }
+.countable:hover { background-color: #555555; }
+.uncountable { background-color: #3f3f3f; }
+.uncountable:hover { background-color: #555555; }
+
