@@ -59,6 +59,25 @@ function fieldsetClickHandler(id, columns) {
 
 $(document).ready(function () {
 
+    function initialize() {
+        // Add brackets to IPA
+        var text = $('#ipa').val();
+        text = '[' + text + ']';
+        $('#ipa').val(text);
+
+        // Border defaults
+        $('#lexicalCategory button').css('border-width', '2px');
+        $('#gender button').css('border-width', '2px');
+        $('#number button').css('border-width', '2px');
+        $('#countableUncountable button').css('border-width', '2px');
+        $('#concreteAbstract button').css('border-width', '2px');
+        $('#commonProper button').css('border-width', '2px');
+        $('#collectiveMass button').css('border-width', '2px');
+        $('#addTranslation button').css('border-width', '2px');
+    }
+
+    initialize();
+
     $('#ipa').focus(function () {
         var text = $('#ipa').val();
         text = text.replace(/[\[\]]/g, '');
@@ -71,21 +90,15 @@ $(document).ready(function () {
         $('#ipa').val(text);
     });
 
-    // Border defaults
-    $('#lexicalCategory button').css('border-width', '2px');
-    $('#gender button').css('border-width', '2px');
-    $('#number button').css('border-width', '2px');
-    $('#countableUncountable button').css('border-width', '2px');
-    $('#concreteAbstract button').css('border-width', '2px');
-    $('#commonProper button').css('border-width', '2px');
-
     // Fieldset click-handlers
     fieldsetClickHandler('#lexicalCategory', 3);
-    fieldsetClickHandler('#gender', 3);
+    fieldsetClickHandler('#gender', 2);
     fieldsetClickHandler('#number', 2);
     fieldsetClickHandler('#countableUncountable', 2);
     fieldsetClickHandler('#concreteAbstract', 2);
     fieldsetClickHandler('#commonProper', 2);
+    fieldsetClickHandler('#collectiveMass', 2);
+    fieldsetClickHandler('#addTranslation', 1);
 
     $('article').click(function (event) {
         // Get the current position of the caret.

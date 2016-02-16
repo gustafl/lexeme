@@ -117,12 +117,6 @@ input:focus, textarea:focus {
     color: $color-almost-white;
 }
 
-@mixin button-text {
-    font-family: $font-monospace;
-    font-size: 20pt;
-    font-variant: small-caps;
-}
-
 *:focus {
     outline: none;
 }
@@ -133,6 +127,12 @@ article span {
     cursor: pointer;
 }
 
+@mixin button-text {
+    font-family: $font-monospace;
+    font-size: 20pt;
+    font-variant: small-caps;
+}
+
 @mixin button-border {
     border-width: 0px;
     border-style: solid;
@@ -140,7 +140,7 @@ article span {
     border-collapse: collapse;
 }
 
-@mixin myFieldset($columns) {
+@mixin fieldsetHandler($columns) {
     padding: 0px;
     background-color: $color-dark-gray-1;
     div {
@@ -162,32 +162,11 @@ article span {
     }
 }
 
-#lexicalCategory { @include myFieldset(3); }
-#gender { @include myFieldset(3); }
-#number { @include myFieldset(2); }
-#countableUncountable { @include myFieldset(2); }
-#concreteAbstract { @include myFieldset(2); }
-#commonProper { @include myFieldset(2); }
-
-#addTranslation {
-
-}
-
-.button-row {
-    text-align: right;
-    button {
-        cursor: pointer;
-        position: relative;
-        width: (100% / 2);
-        height: 100%;
-        margin: 0px;
-        @include button-text;
-        border: 2px solid $color-dark-gray-1;
-        padding-bottom: 5px;
-        color: $color-almost-white;
-    }
-    button:hover {
-        background-color: $color-dark-gray-2;
-        border: 2px solid $color-dark-gray-2;
-    }
-}
+#lexicalCategory { @include fieldsetHandler(3); }
+#gender { @include fieldsetHandler(2); }
+#number { @include fieldsetHandler(2); }
+#countableUncountable { @include fieldsetHandler(2); }
+#concreteAbstract { @include fieldsetHandler(2); }
+#commonProper { @include fieldsetHandler(2); }
+#collectiveMass { @include fieldsetHandler(2); }
+#addTranslation { @include fieldsetHandler(1); }

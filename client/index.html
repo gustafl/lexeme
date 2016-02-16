@@ -56,30 +56,34 @@
             <input type="text" id="word" name="lexeme" value="lexeme" autocomplete="off" /><br/>
             <input type="text" id="ipa" name="ipa" value="fɔɳetik" autocomplete="off" />
           </fieldset>
-          <fieldset id="lexicalCategory" data-selected="no">
-            <div><button type="button" class="noun">noun</button><button type="button" class="verb">verb</button><button type="button" class="adjective">adjective</button></div>
-            <div><button type="button" class="pronoun">pronoun</button><button type="button" class="adverb">adverb</button><button type="button" class="determiner">determiner</button></div>
-            <div><button type="button" class="preposition">preposition</button><button type="button" class="conjugation">conjugation</button><button type="button" class="interjection">interjection</button></div>
-          </fieldset>
-          <fieldset id="gender" data-selected="no">
-            <div><button type="button" class="masculine">masculine</button><button type="button" class="feminine">feminine</button><button type="button" class="default">dual</button></div>
-          </fieldset>
-          <fieldset id="number" data-selected="no">
-            <div><button type="button" class="singular">singular</button><button type="button" class="plural">plural</button></div>
-          </fieldset>
-          <fieldset id="countableUncountable" data-selected="no">
-            <div><button type="button" class="countable">countable</button><button type="button" class="uncountable">uncountable</button></div>
-          </fieldset>
-          <fieldset id="concreteAbstract" data-selected="no">
-            <div><button type="button" class="concrete">concrete</button><button type="button" class="abstract">abstract</button></div>
-          </fieldset>
-          <fieldset id="commonProper" data-selected="no">
-            <div><button type="button" class="common">common</button><button type="button" class="proper">proper</button></div>
-          </fieldset>
-          <fieldset id="collectiveMass" data-selected="no">
-            <div></div>
-          </fieldset>
-          <fieldset id="addTranslation">
+          <div class="translation">
+            <fieldset id="lexicalCategory" data-selected="no">
+              <div><button type="button" class="noun">noun</button><button type="button" class="verb">verb</button><button type="button" class="adjective">adjective</button></div>
+              <div><button type="button" class="pronoun">pronoun</button><button type="button" class="adverb">adverb</button><button type="button" class="determiner">determiner</button></div>
+              <div><button type="button" class="preposition">preposition</button><button type="button" class="conjugation">conjugation</button><button type="button" class="interjection">interjection</button></div>
+            </fieldset>
+            <div id="lexicalCategorySpecificFieldsets">
+              <fieldset id="gender" data-selected="no">
+                <div><button type="button" class="masculine">masculine</button><button type="button" class="feminine">feminine</button></div>
+              </fieldset>
+              <fieldset id="number" data-selected="no">
+                <div><button type="button" class="singular">singular</button><button type="button" class="plural">plural</button></div>
+              </fieldset>
+              <fieldset id="countableUncountable" data-selected="no">
+                <div><button type="button" class="countable">countable</button><button type="button" class="uncountable">uncountable</button></div>
+              </fieldset>
+              <fieldset id="concreteAbstract" data-selected="no">
+                <div><button type="button" class="concrete">concrete</button><button type="button" class="abstract">abstract</button></div>
+              </fieldset>
+              <fieldset id="commonProper" data-selected="no">
+                <div><button type="button" class="common">common</button><button type="button" class="proper">proper</button></div>
+              </fieldset>
+              <fieldset id="collectiveMass" data-selected="no">
+                <div><button type="button" class="collective">collective</button><button type="button" class="mass">mass</button></div>
+              </fieldset>
+            </div>
+          </div>
+          <fieldset id="addTranslation" data-selected="no">
             <div><button type="button" class="default">add translation</button></div>
           </fieldset>
         </form>

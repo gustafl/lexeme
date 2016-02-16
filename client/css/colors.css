@@ -1,6 +1,6 @@
 /* Defaults */
-.default { background-color: #3f3f3f; }
-.default:hover { background-color: #555555; }
+.default { background-color: #202020; }
+.default:hover { background-color: #202020; }
 
 /* Lexical categories */
 .noun { background-color: #26263f; }
@@ -51,3 +51,9 @@
 .countable:hover { background-color: #555555; }
 .uncountable { background-color: #3f3f3f; }
 .uncountable:hover { background-color: #555555; }
+
+/* Collective/mass */
+.collective { background-color: #3f3f3f; }
+.collective:hover { background-color: #555555; }
+.mass { background-color: #3f3f3f; }
+.mass:hover { background-color: #555555; }
