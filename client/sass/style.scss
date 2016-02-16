@@ -73,8 +73,12 @@ fieldset {
     background-color: $color-dark-gray-2;
     border: 2px solid $color-dark-gray-1;
     margin-bottom: 20px;
-    border-radius: 12px;
     padding: 18px;
+}
+
+fieldset:first-child {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
 }
 
 input[type="text"] {
@@ -96,6 +100,11 @@ input[type="text"] {
 
 input {
     color: $color-almost-white;
+}
+
+input:hover {
+    color: white;
+    cursor: pointer;
 }
 
 input:focus, textarea:focus {
@@ -124,200 +133,44 @@ article span {
     cursor: pointer;
 }
 
-#lexicalCategory {
-    padding: 0px;
-    background-color: $color-dark-gray-1;
-    div {
-        height: 60px;
-        white-space: nowrap;
-        button {
-            cursor: pointer;
-            position: relative;
-            width: (100% / 3);
-            height: 100%;
-            margin: 0px;
-            @include button-text;
-            border: 2px solid $color-dark-gray-1;
-            padding-bottom: 5px;
-            color: $color-almost-white;
-        }
-        .noun {
-            border-top-left-radius: 12px;
-        }
-        .adjective {
-            border-top-right-radius: 12px;
-        }
-        .preposition {
-            border-bottom-left-radius: 12px;
-        }
-        .interjection {
-            border-bottom-right-radius: 12px;
-        }
-    }
+@mixin button-border {
+    border-width: 0px;
+    border-style: solid;
+    border-color: $color-dark-gray-1;
+    border-collapse: collapse;
 }
 
-#gender {
+@mixin myFieldset($columns) {
     padding: 0px;
     background-color: $color-dark-gray-1;
     div {
         height: 60px;
         white-space: nowrap;
-        button {
-            cursor: pointer;
-            position: relative;
-            width: (100% / 2);
-            height: 100%;
-            margin: 0px;
-            @include button-text;
-            border: 2px solid $color-dark-gray-1;
-            padding-bottom: 5px;
-            color: $color-almost-white;
-        }
-        .masculine {
-            border-top-left-radius: 12px;
-            border-bottom-left-radius: 12px;
-        }
-        .feminine {
-            border-top-right-radius: 12px;
-            border-bottom-right-radius: 12px;
-        }
-    }
-}
-
-#number {
-    padding: 0px;
-    background-color: $color-dark-gray-1;
-    div {
-        height: 60px;
-        white-space: nowrap;
-        button {
-            cursor: pointer;
-            position: relative;
-            width: (100% / 2);
-            height: 100%;
-            margin: 0px;
-            @include button-text;
-            border: 2px solid $color-dark-gray-1;
-            padding-bottom: 5px;
-            color: $color-almost-white;
-        }
-        .singular {
-            border-top-left-radius: 12px;
-            border-bottom-left-radius: 12px;
-        }
-        .plural {
-            border-top-right-radius: 12px;
-            border-bottom-right-radius: 12px;
-        }
-    }
-}
-
-#commonProper {
-    padding: 0px;
-    background-color: $color-dark-gray-1;
-    div {
-        height: 60px;
-        white-space: nowrap;
-        button {
-            cursor: pointer;
-            position: relative;
-            width: (100% / 2);
-            height: 100%;
-            margin: 0px;
-            @include button-text;
-            border: 2px solid $color-dark-gray-1;
-            padding-bottom: 5px;
-            color: $color-almost-white;
-        }
-        .common {
-            border-top-left-radius: 12px;
-            border-bottom-left-radius: 12px;
-        }
-        .proper {
-            border-top-right-radius: 12px;
-            border-bottom-right-radius: 12px;
-        }
-    }
-}
-
-#concreteAbstract {
-    padding: 0px;
-    background-color: $color-dark-gray-1;
-    div {
-        height: 60px;
-        white-space: nowrap;
-        button {
-            cursor: pointer;
-            position: relative;
-            width: (100% / 2);
-            height: 100%;
-            margin: 0px;
-            @include button-text;
-            border: 2px solid $color-dark-gray-1;
-            padding-bottom: 5px;
-            color: $color-almost-white;
-        }
-        .concrete {
-            border-top-left-radius: 12px;
-            border-bottom-left-radius: 12px;
-        }
-        .abstract {
-            border-top-right-radius: 12px;
-            border-bottom-right-radius: 12px;
-        }
-    }
-}
-
-#countableUncountable {
-    padding: 0px;
-    background-color: $color-dark-gray-1;
-    div {
-        height: 60px;
-        white-space: nowrap;
-        button {
-            cursor: pointer;
-            position: relative;
-            width: (100% / 2);
-            height: 100%;
-            margin: 0px;
-            @include button-text;
-            border: 2px solid $color-dark-gray-1;
-            padding-bottom: 5px;
-            color: $color-almost-white;
-        }
-        .countable {
-            border-top-left-radius: 12px;
-            border-bottom-left-radius: 12px;
-        }
-        .uncountable {
-            border-top-right-radius: 12px;
-            border-bottom-right-radius: 12px;
-        }
-    }
-}
-
-@mixin test($columns) {
-    padding: 0px;
-    background-color: $color-dark-gray-1;
-    div {
-        height: 60px;
-        white-space: nowrap;
+        overflow: hidden;
         button {
             cursor: pointer;
             position: relative;
             width: (100% / $columns);
             height: 100%;
             margin: 0px;
+            padding: 0px;
             @include button-text;
-            border: 2px solid $color-dark-gray-1;
+            @include button-border;
             padding-bottom: 5px;
             color: $color-almost-white;
         }
     }
 }
 
+#lexicalCategory { @include myFieldset(3); }
+#gender { @include myFieldset(3); }
+#number { @include myFieldset(2); }
+#countableUncountable { @include myFieldset(2); }
+#concreteAbstract { @include myFieldset(2); }
+#commonProper { @include myFieldset(2); }
+
 #addTranslation {
-    @include test(1);
+
 }
 
 .button-row {

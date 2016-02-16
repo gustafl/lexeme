@@ -5,6 +5,58 @@ function isValidLetter(letter) {
     return (letter !== '') ? true : false;
 }
 
+function fieldsetClickHandler(id, columns) {
+    $(id + ' button').click(function (event) {
+        var $fieldset = $(id);
+        var $cell = $(this);
+        var $row = $cell.parent();
+        var $siblingRows = $row.siblings();
+        var $siblingCells = $cell.siblings();
+        if ($fieldset.data('selected') === 'no') {
+            $fieldset.data('selected', 'yes');
+            $cell.css('border-width', '0px');
+            $(function () {
+                $siblingRows.animate(
+                    { height: '0px' },
+                    { duration: 200, queue: false }
+                );
+                $cell.animate(
+                    { width: '100%' },
+                    { duration: 200, queue: false, complete: function () {
+                        $cell.css('border-width', '2px 0px');
+                    }}
+                );
+                $siblingCells.animate(
+                    { width: '0%' },
+                    { duration: 200, queue: false, complete: function () {
+                        $siblingCells.css('border-width', '2px 0px');
+                    }}
+                );
+            });
+        } else {
+            $fieldset.data('selected', 'no');
+            $(function () {
+                $siblingRows.animate(
+                    { height: '60px' },
+                    { duration: 200, queue: false }
+                );
+                $cell.animate(
+                    { width: (100 / columns) + '%' },
+                    { duration: 200, queue: false, complete: function () {
+                        $cell.css('border-width', '2px 2px');
+                    }}
+                );
+                $siblingCells.animate(
+                    { width: (100 / columns) + '%' },
+                    { duration: 200, queue: false, complete: function () {
+                        $siblingCells.css('border-width', '2px 2px');
+                    }}
+                );
+            });
+        }
+    });
+}
+
 $(document).ready(function () {
 
     $('#ipa').focus(function () {
@@ -19,30 +71,21 @@ $(document).ready(function () {
         $('#ipa').val(text);
     });
 
-    // If a button in the lexical category fieldset is clicked
-    $('#lexicalCategory button').click(function (event) {
-        // Prevent submit
-        event.preventDefault();
-        var $fieldset = $('#lexicalCategory');
-        // If no lexical category is selected
-        if ($fieldset.data('selected') === 'no') {
-            // Show all buttons
-            $fieldset.append('<div><button id="noun">noun</button><button id="verb">verb</button><button id="adjective">adjective</button></div>');
-            $fieldset.append('<div><button id="pronoun">pronoun</button><button id="adverb">adverb</button><button id="determiner">determiner</button></div>');
-            $fieldset.append('<div><button id="preposition">preposition</button><button id="conjugation">conjugation</button><button id="interjection">interjection</button></div>');
-        } else {
-            // Show one button
+    // Border defaults
+    $('#lexicalCategory button').css('border-width', '2px');
+    $('#gender button').css('border-width', '2px');
+    $('#number button').css('border-width', '2px');
+    $('#countableUncountable button').css('border-width', '2px');
+    $('#concreteAbstract button').css('border-width', '2px');
+    $('#commonProper button').css('border-width', '2px');
 
-        }
-
-        /*
-        var bgColor = $(this).css('background-color');
-        $('#lexicalCategory').slideUp(function (event) {
-            $('#lexicalCategory').empty();
-            var $div = $('#lexicalCategory').append('<div><button id="noun">noun</button></div>');
-            $('#lexicalCategory').slideDown();
-        });*/
-    });
+    // Fieldset click-handlers
+    fieldsetClickHandler('#lexicalCategory', 3);
+    fieldsetClickHandler('#gender', 3);
+    fieldsetClickHandler('#number', 2);
+    fieldsetClickHandler('#countableUncountable', 2);
+    fieldsetClickHandler('#concreteAbstract', 2);
+    fieldsetClickHandler('#commonProper', 2);
 
     $('article').click(function (event) {
         // Get the current position of the caret.

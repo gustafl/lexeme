@@ -69,8 +69,11 @@ fieldset {
   background-color: #2A2A2A;
   border: 2px solid #202020;
   margin-bottom: 20px;
-  border-radius: 12px;
   padding: 18px; }
+
+fieldset:first-child {
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px; }
 
 input[type="text"] {
   text-align: center;
@@ -88,6 +91,10 @@ input[type="text"] {
 
 input {
   color: #efeede; }
+
+input:hover {
+  color: white;
+  cursor: pointer; }
 
 input:focus, textarea:focus {
   border-bottom: 2px dashed #efeede;
@@ -110,169 +117,142 @@ article span {
   background-color: #202020; }
   #lexicalCategory div {
     height: 60px;
-    white-space: nowrap; }
+    white-space: nowrap;
+    overflow: hidden; }
     #lexicalCategory div button {
       cursor: pointer;
       position: relative;
       width: 33.33333%;
       height: 100%;
       margin: 0px;
+      padding: 0px;
       font-family: "Roboto Mono", monospace;
       font-size: 20pt;
       font-variant: small-caps;
-      border: 2px solid #202020;
+      border-width: 0px;
+      border-style: solid;
+      border-color: #202020;
+      border-collapse: collapse;
       padding-bottom: 5px;
       color: #efeede; }
-    #lexicalCategory div .noun {
-      border-top-left-radius: 12px; }
-    #lexicalCategory div .adjective {
-      border-top-right-radius: 12px; }
-    #lexicalCategory div .preposition {
-      border-bottom-left-radius: 12px; }
-    #lexicalCategory div .interjection {
-      border-bottom-right-radius: 12px; }
 
 #gender {
   padding: 0px;
   background-color: #202020; }
   #gender div {
     height: 60px;
-    white-space: nowrap; }
+    white-space: nowrap;
+    overflow: hidden; }
     #gender div button {
       cursor: pointer;
       position: relative;
-      width: 50%;
+      width: 33.33333%;
       height: 100%;
       margin: 0px;
+      padding: 0px;
       font-family: "Roboto Mono", monospace;
       font-size: 20pt;
       font-variant: small-caps;
-      border: 2px solid #202020;
+      border-width: 0px;
+      border-style: solid;
+      border-color: #202020;
+      border-collapse: collapse;
       padding-bottom: 5px;
       color: #efeede; }
-    #gender div .masculine {
-      border-top-left-radius: 12px;
-      border-bottom-left-radius: 12px; }
-    #gender div .feminine {
-      border-top-right-radius: 12px;
-      border-bottom-right-radius: 12px; }
 
 #number {
   padding: 0px;
   background-color: #202020; }
   #number div {
     height: 60px;
-    white-space: nowrap; }
+    white-space: nowrap;
+    overflow: hidden; }
     #number div button {
       cursor: pointer;
       position: relative;
       width: 50%;
       height: 100%;
       margin: 0px;
+      padding: 0px;
       font-family: "Roboto Mono", monospace;
       font-size: 20pt;
       font-variant: small-caps;
-      border: 2px solid #202020;
+      border-width: 0px;
+      border-style: solid;
+      border-color: #202020;
+      border-collapse: collapse;
       padding-bottom: 5px;
       color: #efeede; }
-    #number div .singular {
-      border-top-left-radius: 12px;
-      border-bottom-left-radius: 12px; }
-    #number div .plural {
-      border-top-right-radius: 12px;
-      border-bottom-right-radius: 12px; }
-
-#commonProper {
-  padding: 0px;
-  background-color: #202020; }
-  #commonProper div {
-    height: 60px;
-    white-space: nowrap; }
-    #commonProper div button {
-      cursor: pointer;
-      position: relative;
-      width: 50%;
-      height: 100%;
-      margin: 0px;
-      font-family: "Roboto Mono", monospace;
-      font-size: 20pt;
-      font-variant: small-caps;
-      border: 2px solid #202020;
-      padding-bottom: 5px;
-      color: #efeede; }
-    #commonProper div .common {
-      border-top-left-radius: 12px;
-      border-bottom-left-radius: 12px; }
-    #commonProper div .proper {
-      border-top-right-radius: 12px;
-      border-bottom-right-radius: 12px; }
-
-#concreteAbstract {
-  padding: 0px;
-  background-color: #202020; }
-  #concreteAbstract div {
-    height: 60px;
-    white-space: nowrap; }
-    #concreteAbstract div button {
-      cursor: pointer;
-      position: relative;
-      width: 50%;
-      height: 100%;
-      margin: 0px;
-      font-family: "Roboto Mono", monospace;
-      font-size: 20pt;
-      font-variant: small-caps;
-      border: 2px solid #202020;
-      padding-bottom: 5px;
-      color: #efeede; }
-    #concreteAbstract div .concrete {
-      border-top-left-radius: 12px;
-      border-bottom-left-radius: 12px; }
-    #concreteAbstract div .abstract {
-      border-top-right-radius: 12px;
-      border-bottom-right-radius: 12px; }
 
 #countableUncountable {
   padding: 0px;
   background-color: #202020; }
   #countableUncountable div {
     height: 60px;
-    white-space: nowrap; }
+    white-space: nowrap;
+    overflow: hidden; }
     #countableUncountable div button {
       cursor: pointer;
       position: relative;
       width: 50%;
       height: 100%;
       margin: 0px;
+      padding: 0px;
       font-family: "Roboto Mono", monospace;
       font-size: 20pt;
       font-variant: small-caps;
-      border: 2px solid #202020;
+      border-width: 0px;
+      border-style: solid;
+      border-color: #202020;
+      border-collapse: collapse;
       padding-bottom: 5px;
       color: #efeede; }
-    #countableUncountable div .countable {
-      border-top-left-radius: 12px;
-      border-bottom-left-radius: 12px; }
-    #countableUncountable div .uncountable {
-      border-top-right-radius: 12px;
-      border-bottom-right-radius: 12px; }
 
-#addTranslation {
+#concreteAbstract {
   padding: 0px;
   background-color: #202020; }
-  #addTranslation div {
+  #concreteAbstract div {
     height: 60px;
-    white-space: nowrap; }
-    #addTranslation div button {
+    white-space: nowrap;
+    overflow: hidden; }
+    #concreteAbstract div button {
       cursor: pointer;
       position: relative;
-      width: 100%;
+      width: 50%;
       height: 100%;
       margin: 0px;
+      padding: 0px;
       font-family: "Roboto Mono", monospace;
       font-size: 20pt;
       font-variant: small-caps;
-      border: 2px solid #202020;
+      border-width: 0px;
+      border-style: solid;
+      border-color: #202020;
+      border-collapse: collapse;
+      padding-bottom: 5px;
+      color: #efeede; }
+
+#commonProper {
+  padding: 0px;
+  background-color: #202020; }
+  #commonProper div {
+    height: 60px;
+    white-space: nowrap;
+    overflow: hidden; }
+    #commonProper div button {
+      cursor: pointer;
+      position: relative;
+      width: 50%;
+      height: 100%;
+      margin: 0px;
+      padding: 0px;
+      font-family: "Roboto Mono", monospace;
+      font-size: 20pt;
+      font-variant: small-caps;
+      border-width: 0px;
+      border-style: solid;
+      border-color: #202020;
+      border-collapse: collapse;
       padding-bottom: 5px;
       color: #efeede; }
 
