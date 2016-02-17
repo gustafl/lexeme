@@ -14,7 +14,6 @@ function fieldsetClickHandler(id, columns) {
         var $siblingCells = $cell.siblings();
         if ($fieldset.data('selected') === 'no') {
             $fieldset.data('selected', 'yes');
-            $cell.css('border-width', '0px');
             $(function () {
                 $siblingRows.animate(
                     { height: '0px' },
@@ -60,20 +59,20 @@ function fieldsetClickHandler(id, columns) {
 $(document).ready(function () {
 
     function initialize() {
+
+        // Top section
+        $('#word').val('Click on a word');
+        $('#ipa').hide();
+
         // Add brackets to IPA
         var text = $('#ipa').val();
         text = '[' + text + ']';
         $('#ipa').val(text);
 
         // Border defaults
-        $('#lexicalCategory button').css('border-width', '2px');
-        $('#gender button').css('border-width', '2px');
-        $('#number button').css('border-width', '2px');
-        $('#countableUncountable button').css('border-width', '2px');
-        $('#concreteAbstract button').css('border-width', '2px');
-        $('#commonProper button').css('border-width', '2px');
-        $('#collectiveMass button').css('border-width', '2px');
-        $('#addTranslation button').css('border-width', '2px');
+        $('.col-1 button').css('border-width', '2px');
+        $('.col-2 button').css('border-width', '2px');
+        $('.col-3 button').css('border-width', '2px');
     }
 
     initialize();
@@ -91,14 +90,9 @@ $(document).ready(function () {
     });
 
     // Fieldset click-handlers
-    fieldsetClickHandler('#lexicalCategory', 3);
-    fieldsetClickHandler('#gender', 2);
-    fieldsetClickHandler('#number', 2);
-    fieldsetClickHandler('#countableUncountable', 2);
-    fieldsetClickHandler('#concreteAbstract', 2);
-    fieldsetClickHandler('#commonProper', 2);
-    fieldsetClickHandler('#collectiveMass', 2);
-    fieldsetClickHandler('#addTranslation', 1);
+    fieldsetClickHandler('.col-1', 1);
+    fieldsetClickHandler('.col-2', 2);
+    fieldsetClickHandler('.col-3', 3);
 
     $('article').click(function (event) {
         // Get the current position of the caret.

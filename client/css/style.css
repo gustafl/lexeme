@@ -66,7 +66,6 @@ aside {
 
 fieldset {
   position: relative;
-  background-color: #2A2A2A;
   border: 2px solid #202020;
   margin-bottom: 20px;
   padding: 18px; }
@@ -97,7 +96,7 @@ input:hover {
   cursor: pointer; }
 
 input:focus, textarea:focus {
-  border-bottom: 2px dashed #efeede;
+  border-bottom: 2px dashed #404040;
   color: #efeede; }
 
 ::selection {
@@ -112,185 +111,65 @@ article span {
   border-radius: 8px;
   cursor: pointer; }
 
-#lexicalCategory {
+.col-1 {
   padding: 0px;
   background-color: #202020; }
-  #lexicalCategory div {
+  .col-1 div {
     height: 60px;
     white-space: nowrap;
     overflow: hidden; }
-    #lexicalCategory div button {
-      cursor: pointer;
-      position: relative;
-      width: 33.33333%;
-      height: 100%;
-      margin: 0px;
-      padding: 0px;
-      font-family: "Roboto Mono", monospace;
-      font-size: 20pt;
-      font-variant: small-caps;
-      border-width: 0px;
-      border-style: solid;
-      border-color: #202020;
-      border-collapse: collapse;
-      padding-bottom: 5px;
-      color: #efeede; }
-
-#gender {
-  padding: 0px;
-  background-color: #202020; }
-  #gender div {
-    height: 60px;
-    white-space: nowrap;
-    overflow: hidden; }
-    #gender div button {
-      cursor: pointer;
-      position: relative;
-      width: 50%;
-      height: 100%;
-      margin: 0px;
-      padding: 0px;
-      font-family: "Roboto Mono", monospace;
-      font-size: 20pt;
-      font-variant: small-caps;
-      border-width: 0px;
-      border-style: solid;
-      border-color: #202020;
-      border-collapse: collapse;
-      padding-bottom: 5px;
-      color: #efeede; }
-
-#number {
-  padding: 0px;
-  background-color: #202020; }
-  #number div {
-    height: 60px;
-    white-space: nowrap;
-    overflow: hidden; }
-    #number div button {
-      cursor: pointer;
-      position: relative;
-      width: 50%;
-      height: 100%;
-      margin: 0px;
-      padding: 0px;
-      font-family: "Roboto Mono", monospace;
-      font-size: 20pt;
-      font-variant: small-caps;
-      border-width: 0px;
-      border-style: solid;
-      border-color: #202020;
-      border-collapse: collapse;
-      padding-bottom: 5px;
-      color: #efeede; }
-
-#countableUncountable {
-  padding: 0px;
-  background-color: #202020; }
-  #countableUncountable div {
-    height: 60px;
-    white-space: nowrap;
-    overflow: hidden; }
-    #countableUncountable div button {
-      cursor: pointer;
-      position: relative;
-      width: 50%;
-      height: 100%;
-      margin: 0px;
-      padding: 0px;
-      font-family: "Roboto Mono", monospace;
-      font-size: 20pt;
-      font-variant: small-caps;
-      border-width: 0px;
-      border-style: solid;
-      border-color: #202020;
-      border-collapse: collapse;
-      padding-bottom: 5px;
-      color: #efeede; }
-
-#concreteAbstract {
-  padding: 0px;
-  background-color: #202020; }
-  #concreteAbstract div {
-    height: 60px;
-    white-space: nowrap;
-    overflow: hidden; }
-    #concreteAbstract div button {
-      cursor: pointer;
-      position: relative;
-      width: 50%;
-      height: 100%;
-      margin: 0px;
-      padding: 0px;
-      font-family: "Roboto Mono", monospace;
-      font-size: 20pt;
-      font-variant: small-caps;
-      border-width: 0px;
-      border-style: solid;
-      border-color: #202020;
-      border-collapse: collapse;
-      padding-bottom: 5px;
-      color: #efeede; }
-
-#commonProper {
-  padding: 0px;
-  background-color: #202020; }
-  #commonProper div {
-    height: 60px;
-    white-space: nowrap;
-    overflow: hidden; }
-    #commonProper div button {
-      cursor: pointer;
-      position: relative;
-      width: 50%;
-      height: 100%;
-      margin: 0px;
-      padding: 0px;
-      font-family: "Roboto Mono", monospace;
-      font-size: 20pt;
-      font-variant: small-caps;
-      border-width: 0px;
-      border-style: solid;
-      border-color: #202020;
-      border-collapse: collapse;
-      padding-bottom: 5px;
-      color: #efeede; }
-
-#collectiveMass {
-  padding: 0px;
-  background-color: #202020; }
-  #collectiveMass div {
-    height: 60px;
-    white-space: nowrap;
-    overflow: hidden; }
-    #collectiveMass div button {
-      cursor: pointer;
-      position: relative;
-      width: 50%;
-      height: 100%;
-      margin: 0px;
-      padding: 0px;
-      font-family: "Roboto Mono", monospace;
-      font-size: 20pt;
-      font-variant: small-caps;
-      border-width: 0px;
-      border-style: solid;
-      border-color: #202020;
-      border-collapse: collapse;
-      padding-bottom: 5px;
-      color: #efeede; }
-
-#addTranslation {
-  padding: 0px;
-  background-color: #202020; }
-  #addTranslation div {
-    height: 60px;
-    white-space: nowrap;
-    overflow: hidden; }
-    #addTranslation div button {
+    .col-1 div button {
       cursor: pointer;
       position: relative;
       width: 100%;
+      height: 100%;
+      margin: 0px;
+      padding: 0px;
+      font-family: "Roboto Mono", monospace;
+      font-size: 20pt;
+      font-variant: small-caps;
+      border-width: 0px;
+      border-style: solid;
+      border-color: #202020;
+      border-collapse: collapse;
+      padding-bottom: 5px;
+      color: #efeede; }
+
+.col-2 {
+  padding: 0px;
+  background-color: #202020; }
+  .col-2 div {
+    height: 60px;
+    white-space: nowrap;
+    overflow: hidden; }
+    .col-2 div button {
+      cursor: pointer;
+      position: relative;
+      width: 50%;
+      height: 100%;
+      margin: 0px;
+      padding: 0px;
+      font-family: "Roboto Mono", monospace;
+      font-size: 20pt;
+      font-variant: small-caps;
+      border-width: 0px;
+      border-style: solid;
+      border-color: #202020;
+      border-collapse: collapse;
+      padding-bottom: 5px;
+      color: #efeede; }
+
+.col-3 {
+  padding: 0px;
+  background-color: #202020; }
+  .col-3 div {
+    height: 60px;
+    white-space: nowrap;
+    overflow: hidden; }
+    .col-3 div button {
+      cursor: pointer;
+      position: relative;
+      width: 33.33333%;
       height: 100%;
       margin: 0px;
       padding: 0px;

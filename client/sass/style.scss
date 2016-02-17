@@ -70,7 +70,6 @@ aside {
 
 fieldset {
     position: relative;
-    background-color: $color-dark-gray-2;
     border: 2px solid $color-dark-gray-1;
     margin-bottom: 20px;
     padding: 18px;
@@ -108,7 +107,7 @@ input:hover {
 }
 
 input:focus, textarea:focus {
-    border-bottom: 2px dashed $color-almost-white;
+    border-bottom: 2px dashed $color-gray;
     color: $color-almost-white;
 }
 
@@ -162,11 +161,6 @@ article span {
     }
 }
 
-#lexicalCategory { @include fieldsetHandler(3); }
-#gender { @include fieldsetHandler(2); }
-#number { @include fieldsetHandler(2); }
-#countableUncountable { @include fieldsetHandler(2); }
-#concreteAbstract { @include fieldsetHandler(2); }
-#commonProper { @include fieldsetHandler(2); }
-#collectiveMass { @include fieldsetHandler(2); }
-#addTranslation { @include fieldsetHandler(1); }
+.col-1 { @include fieldsetHandler(1); }
+.col-2 { @include fieldsetHandler(2); }
+.col-3 { @include fieldsetHandler(3); }
