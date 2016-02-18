@@ -12,5 +12,6 @@
 	"loopfunc": true,
 	"node": true,
 	"browser": true,
-	"jquery": true
+	"jquery": true,
+	"predef": [ "_" ]
 }

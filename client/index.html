@@ -52,17 +52,17 @@
       </article>
       <aside>
         <form>
-          <fieldset id="formHeader">
+          <fieldset class="header">
             <input type="text" id="word" name="lexeme" autocomplete="off" /><br/>
             <input type="text" id="ipa" name="ipa" autocomplete="off" />
           </fieldset>
-          <fieldset class="col-3" data-selected="no">
-            <div><button type="button" class="noun">noun</button><button type="button" class="verb">verb</button><button type="button" class="adjective">adjective</button></div>
-            <div><button type="button" class="pronoun">pronoun</button><button type="button" class="adverb">adverb</button><button type="button" class="determiner">determiner</button></div>
-            <div><button type="button" class="preposition">preposition</button><button type="button" class="conjugation">conjugation</button><button type="button" class="interjection">interjection</button></div>
+          <fieldset id="lexical-categories" class="col-3" data-selected="no">
+            <div><button type="button" class="noun" value="1">noun</button><button type="button" class="verb" value="2">verb</button><button type="button" class="adjective" value="3">adjective</button></div>
+            <div><button type="button" class="pronoun" value="4">pronoun</button><button type="button" class="adverb" value="5">adverb</button><button type="button" class="determiner" value="6">determiner</button></div>
+            <div><button type="button" class="preposition" value="7">preposition</button><button type="button" class="conjugation" value="8">conjugation</button><button type="button" class="interjection" value="9">interjection</button></div>
           </fieldset>
           <div id="fieldsets">
-            <fieldset class="col-2" data-selected="no">
+            <!-- <fieldset class="col-2" data-selected="no">
               <div><button type="button" class="masculine">masculine</button><button type="button" class="feminine">feminine</button></div>
             </fieldset>
             <fieldset class="col-2" data-selected="no">
@@ -79,9 +79,9 @@
             </fieldset>
             <fieldset class="col-2" data-selected="no">
               <div><button type="button" class="collective">collective</button><button type="button" class="mass">mass</button></div>
-            </fieldset>
+            </fieldset> -->
           </div>
-          <fieldset class="col-1">
+          <fieldset id="translation" class="col-1">
             <div><button type="button" class="default">add translation</button></div>
           </fieldset>
         </form>
@@ -89,6 +89,7 @@
     </div>
     <footer></footer>
     <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.5.0/lodash.min.js"></script>
     <script src="./js/scripts.js"></script>
   </body>
 </html>

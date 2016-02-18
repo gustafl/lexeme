@@ -73,9 +73,119 @@ $(document).ready(function () {
         $('.col-1 button').css('border-width', '2px');
         $('.col-2 button').css('border-width', '2px');
         $('.col-3 button').css('border-width', '2px');
+
+        // Hide the lexical category selector
+        $('#lexical-categories').hide();
+
+        // Hide the translation button
+        $('#translation').hide();
     }
 
     initialize();
+
+    function compareGrammaticalCategoryIds(object1, object2) {
+        if (object1.grammatical_category < object2.grammatical_category) {
+            return -1;
+        } else if (object1.grammatical_category > object2.grammatical_category) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    function compareGrammemeIds(object1, object2) {
+        if (object1.id < object2.id) {
+            return -1;
+        } else if (object1.id > object2.id) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    $('#lexical-categories button').click(function () {
+
+        // Prevent AJAX request if we're resetting the lexical category selection.
+        if ($('#lexical-categories').data('selected') === 'yes') {
+            return;
+        }
+
+        var settings = {
+            dataType: 'json',
+            url: 'http://localhost:3000/api/grammatical_category',
+            data: {
+                lexical_category: $(this).val(),
+                language: $('article').attr('lang'),
+                format: 'json'
+            },
+            success: function (data) {
+                handleGrammaticalCategory(data);
+            }
+        };
+        $.get(settings);
+    });
+
+    function handleGrammaticalCategory(data) {
+        //console.log(data);
+        $.each(data, function(key, val) {
+            //console.log(val);
+            var settings = {
+                dataType: 'json',
+                url: 'http://localhost:3000/api/grammeme',
+                data: {
+                    grammatical_category: key,
+                    language: $('article').attr('lang'),
+                    format: 'json'
+                },
+                success: function (data) {
+                    handleGrammene(data);
+                }
+            };
+            $.get(settings);
+        });
+    }
+
+    function handleGrammene(data) {
+        //console.log(data);
+
+        // NOTE: So far so good. We are getting some empty arrays back, but that is for
+        // collective and mass nouns, which don't have any grammemes. Remember to catch
+        // any categories that don't have grammemes, so we can make checkboxes for them.
+
+        $.each(data, function(key, val) {
+            console.log(val);
+        });
+    }
+
+    function drawForm(array) {
+
+        array.sort(compareGrammaticalCategoryIds);
+        array.sort(compareGrammemeIds);
+
+        var html;
+        // Version 1.0 (put all buttons on a single row)
+        // Get array of unique grammatical categories in original array
+        var uniqueGrammaticalCategoryIds = _.uniqBy(array, 'grammatical_category');
+
+        // For each unique grammatical category
+        for (var id in uniqueGrammaticalCategoryIds) {
+            // Get all grammeme objects with this grammatical category
+            var matchingGrammemes = array.filter(function (element, index, array) {
+                if (element.grammatical_category === id) {
+                    return true;
+                }
+            });
+            // Write <fieldset><div>, using number of matching grammemes
+            html += '<fieldset class="col-' + matchingGrammemes.length + '" data-selected="no">\n              <div>';
+            // For each matching grammeme
+            for (var grammeme in matchingGrammemes) {
+                // Write <button>, using the grammeme name
+                html += '<button type="button" class="' + grammeme.name.toLowerCase() + '">' + grammeme.name.toLowerCase() + '</button>';
+            }
+        }
+        // Write </div></fieldset>
+        html += '\n              </div>\n            </fieldset>\n';
+    }
 
     $('#ipa').focus(function () {
         var text = $('#ipa').val();
@@ -126,6 +236,17 @@ $(document).ready(function () {
                 selection.collapse(range.startContainer, start);
                 selection.extend(range.endContainer, end);
                 $('#word').val(word);
+                $(function () {
+                    $('fieldset.header').animate(
+                        { height: '165px' },
+                        { duration: 250, queue: false, complete: function () {
+                            $('#ipa').show();
+                            $('#ipa').val('[...]');
+                        }}
+                    );
+                    $('#lexical-categories').slideDown();
+                    $('#translation').slideDown();
+                });
             }
         }
     });

@@ -67,10 +67,11 @@ aside {
 fieldset {
   position: relative;
   border: 2px solid #202020;
-  margin-bottom: 20px;
-  padding: 18px; }
+  margin-bottom: 20px; }
 
-fieldset:first-child {
+fieldset.header {
+  background-color: #2A2A2A;
+  padding-top: 20px;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px; }
 
