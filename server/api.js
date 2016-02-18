@@ -28,115 +28,112 @@ function getFormat(req) {
         case 'json':
             return FormatEnum.JSON;
         default:
-            return FormatEnum.XML;
+            return FormatEnum.JSON;
     }
+}
+
+/**
+ *     var idealData = [
+        {
+            id: 1,
+            name: 'gender',
+            grammemes: [{ id: 1, name: 'masculine' }, { id: 2, name: 'feminine' }]
+        },
+        {
+            id: 2,
+            name: 'number',
+            grammemes: [{ id: 3, name: 'singular' }, { id: 4, name: 'plural' }]
+        }
+    ];
+ */
+
+/**
+ * Takes an object array and returns an array of unique property values.
+ * @param  {array}  objectArray  An object array.
+ * @param  {string} property     The name of the property to look for.
+ * @return {array}               An array of unique property values.
+ */
+function getUniqueValues(objectArray, property) {
+    var array = [];
+    for (var i = 0; i < objectArray.length; i++) {
+        var value = objectArray[i][property];
+        if (array.indexOf(value) < 0) {
+            array.push(value);
+        }
+    }
+    return array;
+}
+
+/**
+ * Takes an object array and returns an array of objects matching a
+ * given property and a property value.
+ * @param  {array}  objectArray  An object array.
+ * @param  {string} property     The name of the property to look for.
+ * @param  {any}    value        The property value that has to match.
+ * @return {array}               An array of matching objects.
+ */
+function getMatchingObjects(objectArray, property, value) {
+    var array = [];
+    for (var i = 0; i < objectArray.length; i++) {
+        if (objectArray[i][property] === value) {
+            array.push(objectArray[i]);
+        }
+    }
+    return array;
 }
 
 module.exports = function (app) {
 
-    // Example: /api/lexical_category
-    app.get('/api/lexical_category', function (req, res) {
-        var query = "SELECT * FROM lexical_category";
-        handleRequest(req, res, query, getFormat(req), false);
-    });
-
-    // Example: /api/lexical_category/1
-    app.get('/api/lexical_category/:id', function (req, res) {
-        var query = "SELECT * FROM lexical_category WHERE id = " + req.params.id;
-        handleRequest(req, res, query, getFormat(req), true);
-    });
-
-    // Example: /api/language
-    app.get('/api/language', function (req, res) {
-        var query = "SELECT * FROM language";
-        handleRequest(req, res, query, getFormat(req), false);
-    });
-
-    // Example: /api/language/1
-    app.get('/api/language/:id', function (req, res) {
-        var query = "SELECT * FROM language WHERE id = " + req.params.id;
-        handleRequest(req, res, query, getFormat(req), true);
-    });
-
-    // Example: /api/grammatical_category
-    // Example: /api/grammatical_category?lexical_category=1
-    // Example: /api/grammatical_category?language=fr
     // Example: /api/grammatical_category?lexical_category=1&language=fr
     app.get('/api/grammatical_category', function (req, res) {
-        var query;
-        if (req.query.language === undefined) {
-            if (req.query.lexical_category === undefined) {
-                query = "SELECT grammatical_category.id, grammatical_category.name FROM grammatical_category";
-            } else {
-                query = "SELECT grammatical_category.id, grammatical_category.name FROM grammatical_category " +
-                        "INNER JOIN lexical_category ON grammatical_category.lexical_category = lexical_category.id " +
-                        "WHERE lexical_category.id = '" + req.query.lexical_category + "'";
-            }
+        log(util.format('%s %s', req.method, req.url));
+        if (req.query.language !== undefined &&
+            req.query.lexical_category !== undefined) {
+
+            // Query database for relevant grammatical categories
+            var query = util.format("CALL select_grammatical_categories('%s', %s);", req.query.language, req.query.lexical_category);
+            queryDatabase(query, function (err, data) {
+                if (err) {
+                    res.status(500).end();
+                    return;
+                }
+
+                var objects = [];
+
+                // Loop through unique grammatical category IDs
+                var array = getUniqueValues(data, 'grammatical_category_id');
+                array.forEach(function (element, index, array) {
+                    // Get all objects for this ID
+                    var matching = getMatchingObjects(data, 'grammatical_category_id', element);
+                    if (matching.length > 0) {
+                        var object = {};
+                        object.id = element;
+                        object.name = matching[0].grammatical_category_name;
+                        object.grammemes = [];
+                        matching.forEach(function (element2, index2, array2) {
+                            var grammeme = {};
+                            grammeme.id = element2.grammeme_id;
+                            grammeme.name = element2.grammeme_name;
+                            if (grammeme.id !== null && grammeme.name !== null) {
+                                object.grammemes.push(grammeme);
+                            }
+                        });
+                        objects.push(object);
+                    }
+                });
+                handleResponse(res, objects, getFormat(req));
+            });
         } else {
-            if (req.query.lexical_category === undefined) {
-                query = "SELECT grammatical_category.id, grammatical_category.name FROM grammatical_category " +
-                        "INNER JOIN language_grammatical_category ON grammatical_category.id = language_grammatical_category.grammatical_category " +
-                        "INNER JOIN language ON language.id = language_grammatical_category.language " +
-                        "WHERE language.code = '" + req.query.language + "'";
-            } else {
-                query = "SELECT grammatical_category.id, grammatical_category.name FROM grammatical_category " +
-                        "INNER JOIN language_grammatical_category ON grammatical_category.id = language_grammatical_category.grammatical_category " +
-                        "INNER JOIN language ON language.id = language_grammatical_category.language " +
-                        "INNER JOIN lexical_category ON grammatical_category.lexical_category = lexical_category.id " +
-                        "WHERE language.code = '" + req.query.language + "' AND lexical_category.id = '" + req.query.lexical_category + "'";
-            }
+            res.status(400).end();
         }
-        handleRequest(req, res, query, getFormat(req), false);
     });
 
-    // Example: /api/grammatical_category/1
-    app.get('/api/grammatical_category/:id', function (req, res) {
-        var query = 'SELECT * FROM grammatical_category WHERE id = ' + req.params.id;
-        handleRequest(req, res, query, getFormat(req), true);
-    });
-
-    // Example: /api/grammeme
-    // Example: /api/grammeme?grammatical_category=1
-    // Example: /api/grammeme?language=fr
-    // Example: /api/grammeme?grammatical_category=1&language=fr
-    app.get('/api/grammeme', function (req, res) {
-        var query;
-        if (req.query.language === undefined) {
-            if (req.query.grammatical_category === undefined) {
-                query = "SELECT grammeme.id, grammeme.name, grammeme.grammatical_category FROM grammeme";
-            } else {
-                query = "SELECT grammeme.id, grammeme.name, grammeme.grammatical_category FROM grammeme " +
-                        "INNER JOIN grammatical_category ON grammeme.grammatical_category = grammatical_category.id " +
-                        "WHERE grammatical_category.id = '" + req.query.grammatical_category + "'";
-            }
-        } else {
-            if (req.query.grammatical_category === undefined) {
-                query = "SELECT grammeme.id, grammeme.name, grammeme.grammatical_category FROM grammeme " +
-                        "INNER JOIN language_grammeme ON grammeme.id = language_grammeme.grammeme " +
-                        "INNER JOIN language ON language.id = language_grammeme.language " +
-                        "WHERE language.code = '" + req.query.language + "'";
-            } else {
-                query = "SELECT grammeme.id, grammeme.name, grammeme.grammatical_category FROM grammeme " +
-                        "INNER JOIN language_grammeme ON grammeme.id = language_grammeme.grammeme " +
-                        "INNER JOIN language ON language.id = language_grammeme.language " +
-                        "INNER JOIN grammatical_category ON grammeme.grammatical_category = grammatical_category.id " +
-                        "WHERE language.code = '" + req.query.language + "' AND grammatical_category.id = '" + req.query.grammatical_category + "'";
-            }
-        }
-        handleRequest(req, res, query, getFormat(req), false);
-    });
-
-    // Example: /api/grammeme/1
-    app.get('/api/grammeme/:id', function (req, res) {
-        var query = 'SELECT * FROM grammeme WHERE id = ' + req.params.id;
-        handleRequest(req, res, query, getFormat(req), true);
-    });
 };
 
 function log(text) {
     var now = new Date();
     var time = now.toLocaleTimeString('sv-SE');
-    console.log('%s: %s', time, text);
+    //console.log('%s: %s', time, text);
 }
 
 function queryDatabase(query, callback) {
@@ -147,11 +144,11 @@ function queryDatabase(query, callback) {
         if (err) {
             throw err;
         }
-        console.log(query);
-        for (var i = 0; i < rows.length; i++) {
-            var row = rows[i];
+        var actualRows = rows[0];
+        for (var i = 0; i < actualRows.length; i++) {
+            var row = actualRows[i];
             var object = {};
-            for (var key in rows[i]) {
+            for (var key in row) {
                 object[key] = row[key];
             }
             result.push(object);
@@ -162,40 +159,20 @@ function queryDatabase(query, callback) {
     });
 }
 
-function handleRequest(req, res, query, format, stripArray) {
-    log(util.format('%s %s', req.method, req.url));
-    queryDatabase(query, function (err, data) {
-        if (err) {
-            throw err;
-        }
-        if (format === FormatEnum.JSON) {
-            if (stripArray) {
-                console.log(util.inspect(data[0]) + '\n');
-                res.AddHeader('Access-Control-Allow-Origin', '*');
-                res.json(data[0]);
-            } else {
-                console.log(util.inspect(data) + '\n');
-                res.json(data);
+function handleResponse(res, data, format) {
+    if (format === FormatEnum.JSON) {
+        //console.log(util.inspect(data) + '\n');
+        res.json(data);
+    }
+    if (format === FormatEnum.XML) {
+        var object = {
+            '?xml version="1.0" encoding="utf-8"?': null,
+            list: {
+                item: data
             }
-        }
-        if (format === FormatEnum.XML) {
-            var object;
-            if (stripArray) {
-                object = {
-                    '?xml version="1.0" encoding="utf-8"?': null,
-                    item: data[0]
-                };
-            } else {
-                object = {
-                    '?xml version="1.0" encoding="utf-8"?': null,
-                    list: {
-                        item: data
-                    }
-                };
-            }
-            console.log(xml(object));
-            res.set('Content-Type', 'text/xml');
-            res.send(xml(object));
-        }
-    });
+        };
+        //console.log(xml(object));
+        res.set('Content-Type', 'text/xml');
+        res.send(xml(object));
+    }
 }

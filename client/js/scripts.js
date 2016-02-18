@@ -70,43 +70,31 @@ $(document).ready(function () {
         $('#ipa').val(text);
 
         // Border defaults
-        $('.col-1 button').css('border-width', '2px');
-        $('.col-2 button').css('border-width', '2px');
-        $('.col-3 button').css('border-width', '2px');
+        refreshBorders();
 
         // Hide the lexical category selector
         $('#lexical-categories').hide();
 
         // Hide the translation button
         $('#translation').hide();
+
+        // Hide the fieldsets collection
+        $('#fieldsets').hide();
+    }
+
+    function refreshBorders() {
+        $('.col-1 button').css('border-width', '2px');
+        $('.col-2 button').css('border-width', '2px');
+        $('.col-3 button').css('border-width', '2px');
     }
 
     initialize();
-
-    function compareGrammaticalCategoryIds(object1, object2) {
-        if (object1.grammatical_category < object2.grammatical_category) {
-            return -1;
-        } else if (object1.grammatical_category > object2.grammatical_category) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
-
-    function compareGrammemeIds(object1, object2) {
-        if (object1.id < object2.id) {
-            return -1;
-        } else if (object1.id > object2.id) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
 
     $('#lexical-categories button').click(function () {
 
         // Prevent AJAX request if we're resetting the lexical category selection.
         if ($('#lexical-categories').data('selected') === 'yes') {
+            $('#fieldsets').empty();
             return;
         }
 
@@ -115,8 +103,7 @@ $(document).ready(function () {
             url: 'http://localhost:3000/api/grammatical_category',
             data: {
                 lexical_category: $(this).val(),
-                language: $('article').attr('lang'),
-                format: 'json'
+                language: $('article').attr('lang')
             },
             success: function (data) {
                 handleGrammaticalCategory(data);
@@ -125,66 +112,39 @@ $(document).ready(function () {
         $.get(settings);
     });
 
-    function handleGrammaticalCategory(data) {
-        //console.log(data);
-        $.each(data, function(key, val) {
-            //console.log(val);
-            var settings = {
-                dataType: 'json',
-                url: 'http://localhost:3000/api/grammeme',
-                data: {
-                    grammatical_category: key,
-                    language: $('article').attr('lang'),
-                    format: 'json'
-                },
-                success: function (data) {
-                    handleGrammene(data);
-                }
-            };
-            $.get(settings);
-        });
-    }
-
-    function handleGrammene(data) {
-        //console.log(data);
-
-        // NOTE: So far so good. We are getting some empty arrays back, but that is for
-        // collective and mass nouns, which don't have any grammemes. Remember to catch
-        // any categories that don't have grammemes, so we can make checkboxes for them.
-
-        $.each(data, function(key, val) {
-            console.log(val);
-        });
-    }
-
-    function drawForm(array) {
-
-        array.sort(compareGrammaticalCategoryIds);
-        array.sort(compareGrammemeIds);
-
-        var html;
-        // Version 1.0 (put all buttons on a single row)
-        // Get array of unique grammatical categories in original array
-        var uniqueGrammaticalCategoryIds = _.uniqBy(array, 'grammatical_category');
-
-        // For each unique grammatical category
-        for (var id in uniqueGrammaticalCategoryIds) {
-            // Get all grammeme objects with this grammatical category
-            var matchingGrammemes = array.filter(function (element, index, array) {
-                if (element.grammatical_category === id) {
-                    return true;
-                }
-            });
-            // Write <fieldset><div>, using number of matching grammemes
-            html += '<fieldset class="col-' + matchingGrammemes.length + '" data-selected="no">\n              <div>';
-            // For each matching grammeme
-            for (var grammeme in matchingGrammemes) {
-                // Write <button>, using the grammeme name
-                html += '<button type="button" class="' + grammeme.name.toLowerCase() + '">' + grammeme.name.toLowerCase() + '</button>';
-            }
+    function getNumberOfColumns(numberOfGrammemes) {
+        switch (numberOfGrammemes) {
+            case 0:
+            case 1:
+                return 1;
+            case 2:
+                return 2;
+            default:
+                return 3;
         }
-        // Write </div></fieldset>
-        html += '\n              </div>\n            </fieldset>\n';
+    }
+
+    function handleGrammaticalCategory(data) {
+        $.each(data, function(key, val) {
+            var columns = getNumberOfColumns(val.grammemes.length);
+            var html = '\n<fieldset class="col-' + columns + '" data-selected="no"><div>';
+            if (val.grammemes.length > 0) {
+                // TODO: Add code to divide buttons on rows here, if there are > 3.
+                $.each(val.grammemes, function(key, val) {
+                    html += '<button type="button" class="' + val.name + '" value="' + val.id + '">' + val.name + '</button>';
+                });
+            } else {
+                html += '<button type="button" class="' + val.name + '" value="' + val.id + '">' + val.name + '</button>';
+            }
+            html += '</div></fieldset>\n';
+            refreshBorders();
+            $('#fieldsets').append(html);
+            $('#fieldsets').fadeIn(200);
+            // Fieldset click-handlers
+            fieldsetClickHandler('.col-1', 1);
+            fieldsetClickHandler('.col-2', 2);
+            fieldsetClickHandler('.col-3', 3);
+        });
     }
 
     $('#ipa').focus(function () {
