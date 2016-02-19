@@ -151,10 +151,26 @@ article span {
 }
 
 @mixin button-border {
-    border-width: 0px;
+    border-width: 2px;
     border-style: solid;
     border-color: $color-dark-gray-1;
     border-collapse: collapse;
+}
+
+aside {
+    form {
+        button:first-child {
+            border-left-width: 0px;
+        }
+        button:last-child {
+            border-right-width: 0px;
+        }
+        /* This is less than ideal, but works. */
+        button[style="width: 100%;"], button[style="width: 0%;"] {
+            border-left-width: 0px;
+            border-right-width: 0px;
+        }
+    }
 }
 
 @mixin fieldsetHandler($columns) {

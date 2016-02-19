@@ -25,15 +25,11 @@ function fieldsetClickHandler(selector, columns) {
                 );
                 $cell.animate(
                     { width: '100%' },
-                    { duration: duration, queue: false, complete: function () {
-                        $cell.css('border-width', '2px 0px');
-                    }}
+                    { duration: duration, queue: false }
                 );
                 $siblingCells.animate(
                     { width: '0%' },
-                    { duration: duration, queue: false, complete: function () {
-                        $siblingCells.css('border-width', '2px 0px');
-                    }}
+                    { duration: duration, queue: false }
                 );
             });
         } else {
@@ -45,15 +41,11 @@ function fieldsetClickHandler(selector, columns) {
                 );
                 $cell.animate(
                     { width: (100 / columns) + '%' },
-                    { duration: duration, queue: false, complete: function () {
-                        $cell.css('border-width', '2px 2px');
-                    }}
+                    { duration: duration, queue: false }
                 );
                 $siblingCells.animate(
                     { width: (100 / columns) + '%' },
-                    { duration: duration, queue: false, complete: function () {
-                        $siblingCells.css('border-width', '2px 2px');
-                    }}
+                    { duration: duration, queue: false }
                 );
             });
         }

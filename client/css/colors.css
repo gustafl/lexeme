@@ -57,3 +57,15 @@
 .collective:hover { background-color: #555555; }
 .mass { background-color: #3f3f3f; }
 .mass:hover { background-color: #555555; }
+
+/* Verb: Present */
+.present { background-color: #3f3f3f; }
+.present:hover { background-color: #555555; }
+
+/* Verb: Mood */
+.mood { background-color: #3f3f3f; }
+.mood:hover { background-color: #555555; }
+
+/* Verb: Voice */
+.voice { background-color: #3f3f3f; }
+.voice:hover { background-color: #555555; }

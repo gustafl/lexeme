@@ -125,6 +125,16 @@ article span {
   border-radius: 8px;
   cursor: pointer; }
 
+aside form {
+  /* This is less than ideal, but works. */ }
+  aside form button:first-child {
+    border-left-width: 0px; }
+  aside form button:last-child {
+    border-right-width: 0px; }
+  aside form button[style="width: 100%;"], aside form button[style="width: 0%;"] {
+    border-left-width: 0px;
+    border-right-width: 0px; }
+
 .col-1 {
   padding: 0px;
   background-color: #202020; }
@@ -142,7 +152,7 @@ article span {
       font-family: "Roboto Mono", monospace;
       font-size: 20pt;
       font-variant: small-caps;
-      border-width: 0px;
+      border-width: 2px;
       border-style: solid;
       border-color: #202020;
       border-collapse: collapse;
@@ -166,7 +176,7 @@ article span {
       font-family: "Roboto Mono", monospace;
       font-size: 20pt;
       font-variant: small-caps;
-      border-width: 0px;
+      border-width: 2px;
       border-style: solid;
       border-color: #202020;
       border-collapse: collapse;
@@ -190,7 +200,7 @@ article span {
       font-family: "Roboto Mono", monospace;
       font-size: 20pt;
       font-variant: small-caps;
-      border-width: 0px;
+      border-width: 2px;
       border-style: solid;
       border-color: #202020;
       border-collapse: collapse;
