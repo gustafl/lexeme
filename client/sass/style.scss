@@ -81,6 +81,14 @@ fieldset.header {
     border-top-right-radius: 12px;
 }
 
+#fieldsets fieldset  {
+    margin-bottom: 0px;
+}
+
+#fieldsets div  {
+    height: 0px;
+}
+
 input[type="text"] {
     text-align: center;
     border: none;
@@ -96,6 +104,15 @@ input[type="text"] {
 #ipa {
     font-family: $font-monospace;
     font-size: 24pt;
+    display: none;
+}
+
+#lexical-categories {
+    display: none;
+}
+
+#translation {
+    display: none;
 }
 
 input {

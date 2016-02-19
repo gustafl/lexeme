@@ -5,49 +5,53 @@ function isValidLetter(letter) {
     return (letter !== '') ? true : false;
 }
 
-function fieldsetClickHandler(id, columns) {
-    $(id + ' button').click(function (event) {
-        var $fieldset = $(id);
+function fieldsetClickHandler(selector, columns) {
+
+    console.info("fieldsetClickHandler('%s', %d) called.", selector, columns);
+
+    $(selector + ' button').click(function (event) {
+        var $fieldset = $(selector);
         var $cell = $(this);
         var $row = $cell.parent();
         var $siblingRows = $row.siblings();
         var $siblingCells = $cell.siblings();
-        if ($fieldset.data('selected') === 'no') {
-            $fieldset.data('selected', 'yes');
+        var duration = 400;
+        if ($fieldset.attr('data-selected') === 'no') {
+            $fieldset.attr('data-selected', 'yes');
             $(function () {
                 $siblingRows.animate(
                     { height: '0px' },
-                    { duration: 200, queue: false }
+                    { duration: duration, queue: false }
                 );
                 $cell.animate(
                     { width: '100%' },
-                    { duration: 200, queue: false, complete: function () {
+                    { duration: duration, queue: false, complete: function () {
                         $cell.css('border-width', '2px 0px');
                     }}
                 );
                 $siblingCells.animate(
                     { width: '0%' },
-                    { duration: 200, queue: false, complete: function () {
+                    { duration: duration, queue: false, complete: function () {
                         $siblingCells.css('border-width', '2px 0px');
                     }}
                 );
             });
         } else {
-            $fieldset.data('selected', 'no');
+            $fieldset.attr('data-selected', 'no');
             $(function () {
                 $siblingRows.animate(
                     { height: '60px' },
-                    { duration: 200, queue: false }
+                    { duration: duration, queue: false }
                 );
                 $cell.animate(
                     { width: (100 / columns) + '%' },
-                    { duration: 200, queue: false, complete: function () {
+                    { duration: duration, queue: false, complete: function () {
                         $cell.css('border-width', '2px 2px');
                     }}
                 );
                 $siblingCells.animate(
                     { width: (100 / columns) + '%' },
-                    { duration: 200, queue: false, complete: function () {
+                    { duration: duration, queue: false, complete: function () {
                         $siblingCells.css('border-width', '2px 2px');
                     }}
                 );
@@ -56,44 +60,69 @@ function fieldsetClickHandler(id, columns) {
     });
 }
 
+function getNumberOfColumns(numberOfGrammemes) {
+
+    console.info("getNumberOfColumns(%d) called.", numberOfGrammemes);
+
+    switch (numberOfGrammemes) {
+        case 0:
+        case 1:
+            return 1;
+        case 2:
+            return 2;
+        default:
+            return 3;
+    }
+}
+
+function changeWord(word, selection) {
+
+    console.info("changeWord('%s', %O) called.", word, selection);
+
+    // Display word in header
+    changeContent('#word', word);
+
+    // If this is the first time a word is selected
+    if ($('fieldset.header').attr('data-selected') === 'no') {
+
+        // Display the IPA field
+        $('fieldset.header').animate(
+            { height: '165px' },
+            { duration: 250, queue: false, complete: function () {
+                $('#ipa').fadeIn(100);
+            }}
+        );
+
+        // Display lexical categories buttons
+        $('#lexical-categories').slideDown();
+
+        // Display 'Add translation' button
+        $('#translation').slideDown();
+
+        // Set click handlers for all created buttons
+        fieldsetClickHandler('.col-1', 1);
+        fieldsetClickHandler('.col-2', 2);
+        fieldsetClickHandler('.col-3', 3);
+
+        // Prevent this section to run again
+        $('fieldset.header').attr('data-selected', 'yes');
+    }
+}
+
 $(document).ready(function () {
 
-    function initialize() {
+    console.info("$(document).ready() called.");
 
-        // Top section
-        $('#word').val('Click on a word');
-        $('#ipa').hide();
-
-        // Add brackets to IPA
-        var text = $('#ipa').val();
-        text = '[' + text + ']';
-        $('#ipa').val(text);
-
-        // Border defaults
-        refreshBorders();
-
-        // Hide the lexical category selector
-        $('#lexical-categories').hide();
-
-        // Hide the translation button
-        $('#translation').hide();
-
-        // Hide the fieldsets collection
-        $('#fieldsets').hide();
-    }
-
-    function refreshBorders() {
-        $('.col-1 button').css('border-width', '2px');
-        $('.col-2 button').css('border-width', '2px');
-        $('.col-3 button').css('border-width', '2px');
-    }
-
-    initialize();
+    // Prompt user to click on a word
+    $('#word').val('Click on a word');
 
     $('#lexical-categories button').click(function () {
 
-        // Prevent AJAX request if we're resetting the lexical category selection.
-        if ($('#lexical-categories').data('selected') === 'yes') {
+        console.info("$('#lexical-categories button').click() called.");
+
+        // If we're resetting the lexical category selection.
+        if ($('#lexical-categories').attr('data-selected') === 'yes') {
+            // Remove all lexical category specific fieldsets.
             $('#fieldsets').empty();
             return;
         }
@@ -107,24 +136,25 @@ $(document).ready(function () {
             },
             success: function (data) {
                 handleGrammaticalCategory(data);
+                $('#fieldsets fieldset').each(function () {
+                    var $fieldset = $(this);
+                    var duration = 250;
+                    $(function () {
+                        $fieldset.find('div').animate(
+                            { height: '60px', marginBottom: '20px' },
+                            { duration: duration, queue: true }
+                        );
+                    });
+                });
             }
         };
         $.get(settings);
     });
 
-    function getNumberOfColumns(numberOfGrammemes) {
-        switch (numberOfGrammemes) {
-            case 0:
-            case 1:
-                return 1;
-            case 2:
-                return 2;
-            default:
-                return 3;
-        }
-    }
-
     function handleGrammaticalCategory(data) {
+
+        console.info("handleGrammaticalCategory() called.");
+
         $.each(data, function(key, val) {
             var columns = getNumberOfColumns(val.grammemes.length);
             var html = '\n<fieldset class="col-' + columns + '" data-selected="no"><div>';
@@ -137,13 +167,7 @@ $(document).ready(function () {
                 html += '<button type="button" class="' + val.name + '" value="' + val.id + '">' + val.name + '</button>';
             }
             html += '</div></fieldset>\n';
-            refreshBorders();
             $('#fieldsets').append(html);
-            $('#fieldsets').fadeIn(200);
-            // Fieldset click-handlers
-            fieldsetClickHandler('.col-1', 1);
-            fieldsetClickHandler('.col-2', 2);
-            fieldsetClickHandler('.col-3', 3);
         });
     }
 
@@ -159,12 +183,10 @@ $(document).ready(function () {
         $('#ipa').val(text);
     });
 
-    // Fieldset click-handlers
-    fieldsetClickHandler('.col-1', 1);
-    fieldsetClickHandler('.col-2', 2);
-    fieldsetClickHandler('.col-3', 3);
-
     $('article').click(function (event) {
+
+        console.info("$('article').click() called.");
+
         // Get the current position of the caret.
         var selection = window.getSelection();
         // Get the Range object corresponding to the selection.
@@ -195,19 +217,21 @@ $(document).ready(function () {
                 // Select the word in the browser.
                 selection.collapse(range.startContainer, start);
                 selection.extend(range.endContainer, end);
-                $('#word').val(word);
-                $(function () {
-                    $('fieldset.header').animate(
-                        { height: '165px' },
-                        { duration: 250, queue: false, complete: function () {
-                            $('#ipa').show();
-                            $('#ipa').val('[...]');
-                        }}
-                    );
-                    $('#lexical-categories').slideDown();
-                    $('#translation').slideDown();
-                });
+
+                // Initialize the form
+                changeWord(word, selection);
             }
         }
     });
 });
+
+// Change the text content of a jQuery selection smoothly, using fadeOut() and fadeIn()
+function changeContent(selector, text, duration) {
+    if (duration === undefined) {
+        duration = 100;
+    }
+    $(selector).fadeOut(duration, function () {
+        $(selector).val(text);
+        $(selector).fadeIn(duration);
+    });
+}

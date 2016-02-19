@@ -33,21 +33,6 @@ function getFormat(req) {
 }
 
 /**
- *     var idealData = [
-        {
-            id: 1,
-            name: 'gender',
-            grammemes: [{ id: 1, name: 'masculine' }, { id: 2, name: 'feminine' }]
-        },
-        {
-            id: 2,
-            name: 'number',
-            grammemes: [{ id: 3, name: 'singular' }, { id: 4, name: 'plural' }]
-        }
-    ];
- */
-
-/**
  * Takes an object array and returns an array of unique property values.
  * @param  {array}  objectArray  An object array.
  * @param  {string} property     The name of the property to look for.

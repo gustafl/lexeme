@@ -52,9 +52,9 @@
       </article>
       <aside>
         <form>
-          <fieldset class="header">
+          <fieldset class="header" data-selected="no">
             <input type="text" id="word" name="lexeme" autocomplete="off" /><br/>
-            <input type="text" id="ipa" name="ipa" autocomplete="off" />
+            <input type="text" id="ipa" name="ipa" value="[IPA]" autocomplete="off" />
           </fieldset>
           <fieldset id="lexical-categories" class="col-3" data-selected="no">
             <div><button type="button" class="noun" value="1">noun</button><button type="button" class="verb" value="2">verb</button><button type="button" class="adjective" value="3">adjective</button></div>
@@ -69,8 +69,8 @@
       </aside>
     </div>
     <footer></footer>
-    <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.5.0/lodash.min.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.0.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.5.0/lodash.js"></script>
     <script src="./js/scripts.js"></script>
   </body>
 </html>
