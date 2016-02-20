@@ -69,131 +69,73 @@ function handleGrammaticalCategory(data) {
     });
 }
 
-$(document).ready(function () {
+// Handle clicks in the <article> element
+function articleClickHandler() {
 
-    console.info("$(document).ready() called.");
+    console.info("$('article').click() called.");
 
-    // Prompt user to click on a word
-    $('#word').val('Click on a word');
-
-    // Handle clicks within the <article> element
-    $('article').click(function (event) {
-
-        console.info("$('article').click() called.");
-
-        // Get the current position of the caret.
-        var selection = window.getSelection();
-        // Get the Range object corresponding to the selection.
-        var range = selection.getRangeAt(0);
-        // If the user clicked a word (instead of drag-selecting).
-        if (range.startOffset === range.endOffset) {
-            // Get the zero-based index of the letter where the user clicked.
-            var index = range.startOffset;
-            // Get the full string.
-            var data = selection.anchorNode.data;
-            // Get the actual letter the user clicked on.
-            var letter = data.substring(index, index + 1);
-            // If the letter is in the valid span of Unicode letters.
-            if (isValidLetter(letter)) {
-                // Prepare start and end boundary-points.
-                var start = index;
-                var end = index;
-                // Expand the selection left.
-                while (start > 0 && isValidLetter(data.substring(start - 1, start))) {
-                    start = start - 1;
-                }
-                // Expand the selection right.
-                while (end <= data.length - 1 && isValidLetter(data.substring(end, end + 1))) {
-                    end = end + 1;
-                }
-                // Get the full word.
-                var word = data.substring(start, end);
-                // Select the word in the browser.
-                selection.collapse(range.startContainer, start);
-                selection.extend(range.endContainer, end);
-
-                // Initialize the form
-                changeWord(word, selection);
+    // Get the current position of the caret.
+    var selection = window.getSelection();
+    // Get the Range object corresponding to the selection.
+    var range = selection.getRangeAt(0);
+    // If the user clicked a word (instead of drag-selecting).
+    if (range.startOffset === range.endOffset) {
+        // Get the zero-based index of the letter where the user clicked.
+        var index = range.startOffset;
+        // Get the full string.
+        var data = selection.anchorNode.data;
+        // Get the actual letter the user clicked on.
+        var letter = data.substring(index, index + 1);
+        // If the letter is in the valid span of Unicode letters.
+        if (isValidLetter(letter)) {
+            // Prepare start and end boundary-points.
+            var start = index;
+            var end = index;
+            // Expand the selection left.
+            while (start > 0 && isValidLetter(data.substring(start - 1, start))) {
+                start = start - 1;
             }
-        }
-    });
-
-    // Handle focus/blur on IPA
-    $('#ipa').focus(function () {
-        var text = $('#ipa').val();
-        text = text.replace(/[\[\]]/g, '');
-        $('#ipa').val(text);
-    });
-    $('#ipa').focusout(function () {
-        var text = $('#ipa').val();
-        text = '[' + text + ']';
-        $('#ipa').val(text);
-    });
-
-    // Handle any button clicks in form
-    $('.col-1 button, .col-2 button, .col-3 button').click(function (event) {
-
-        // Get properties if this call
-        var $cell = $(this);
-        var $fieldset = $cell.parent().parent();
-
-        if ($fieldset.attr('id') === 'lexical-category') {
-            // If a lexical category has been selected.
-            if ($fieldset.attr('data-selected') === 'yes') {
-                // Remove all lexical category specific fieldsets.
-                $('#fieldsets').hide();
-                toggleButtons($(this));
-                $fieldset.attr('data-selected', 'no');
-                return;
-            // If a lexical category has not been selected, but buttons have been loaded before.
-            } else if ($('#fieldsets').children().length > 0) {
-                // Show buttons again.
-                $('#fieldsets').show();
-                toggleButtons($(this));
-                $fieldset.attr('data-selected', 'yes');
-                return;
-            // If this is the first time a lexical category is selected.
-            } else {
-                var settings = {
-                    dataType: 'json',
-                    url: 'http://localhost:3000/api/grammatical_category',
-                    data: {
-                        lexical_category: $(this).val(),
-                        language: $('article').attr('lang')
-                    },
-                    success: function (data) {
-                        handleGrammaticalCategory(data);
-                        $('#fieldsets fieldset').each(function () {
-                            var $fieldset = $(this);
-                            var duration = 250;
-                            $(function () {
-                                $fieldset.find('div').animate(
-                                    { height: '60px', marginBottom: '20px' },
-                                    { duration: duration, queue: true }
-                                );
-                            });
-                        });
-                    }
-                };
-                $.get(settings);
+            // Expand the selection right.
+            while (end <= data.length - 1 && isValidLetter(data.substring(end, end + 1))) {
+                end = end + 1;
             }
+            // Get the full word.
+            var word = data.substring(start, end);
+            // Select the word in the browser.
+            selection.collapse(range.startContainer, start);
+            selection.extend(range.endContainer, end);
+
+            // Initialize the form
+            changeWord(word, selection);
         }
-        toggleButtons($(this));
-        $fieldset.attr('data-selected', 'yes');
-    });
+    }
+}
 
-});
+function ipaFocusHandler() {
+    var text = $('#ipa').val();
+    text = text.replace(/[\[\]]/g, '');
+    $('#ipa').val(text);
+}
 
-function toggleButtons($button) {
+function ipaFocusOutHandler() {
+    var text = $('#ipa').val();
+    text = '[' + text + ']';
+    $('#ipa').val(text);
+}
 
-    var $cell = $button;
+function toggleButtons(event) {
+
+    // Get properties if this call
+    var $cell = $(event.toElement);
     var $fieldset = $cell.parent().parent();
     var $row = $cell.parent();
     var $siblingRows = $row.siblings();
     var $siblingCells = $cell.siblings();
     var duration = 400;
 
+    // If data is not selected
     if ($fieldset.attr('data-selected') === 'no') {
+        $fieldset.attr('data-selected', 'yes');
         $(function () {
             $siblingRows.animate(
                 { height: '0px' },
@@ -209,22 +151,79 @@ function toggleButtons($button) {
             );
         });
     } else {
+        $fieldset.attr('data-selected', 'no');
         $(function () {
             $siblingRows.animate(
                 { height: '60px' },
                 { duration: duration, queue: false }
             );
             $cell.animate(
-                { width: (100 / $siblingCells.length) + '%' },
+                { width: (100 / ($siblingCells.length + 1)) + '%' },
                 { duration: duration, queue: false }
             );
             $siblingCells.animate(
-                { width: (100 / $siblingCells.length) + '%' },
+                { width: (100 / ($siblingCells.length + 1)) + '%' },
                 { duration: duration, queue: false }
             );
         });
     }
 }
+
+// Handle clicks on any button
+function lexicalCategoryButtonClickHandler(event) {
+
+    // Get properties if this call
+    var $cell = $(event.toElement);
+    var $fieldset = $cell.parent().parent();
+
+    // If a lexical category has been selected.
+    if ($fieldset.attr('data-selected') === 'yes') {
+        // Remove all lexical category specific fieldsets.
+        $('#fieldsets').hide();
+    } else {
+        var settings = {
+            dataType: 'json',
+            url: 'http://localhost:3000/api/grammatical_category',
+            data: {
+                lexical_category: $cell.val(),
+                language: $('article').attr('lang')
+            },
+            success: function (data) {
+                handleGrammaticalCategory(data);
+                /*$('#fieldsets fieldset').each(function () {
+                    var $fieldset = $(this);
+                    var duration = 250;
+                    $(function () {
+                        $fieldset.find('div').animate(
+                            { height: '60px', marginBottom: '20px' },
+                            { duration: duration, queue: true }
+                        );
+                    });
+                });*/
+            }
+        };
+        $.get(settings);
+    }
+}
+
+$(document).ready(function () {
+
+    console.info("$(document).ready() called.");
+
+    // Handle clicks in the <article> element
+    $('article').on('click', articleClickHandler);
+
+    // Handle focus/focusout on IPA
+    $('#ipa').on({
+        focus: ipaFocusHandler,
+        focusout: ipaFocusOutHandler
+    });
+
+    // Handle any button clicks in form
+    $('#lexical-category').on('click', 'button', null, lexicalCategoryButtonClickHandler);
+    $('fieldset').on('click', 'button', null, toggleButtons);
+
+});
 
 // Change the text content of a jQuery selection smoothly, using fadeOut() and fadeIn()
 function changeContent(selector, text, duration) {
