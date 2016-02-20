@@ -96,7 +96,7 @@ input[type="text"] {
   font-size: 24pt;
   display: none; }
 
-#lexical-categories {
+#lexical-category {
   display: none; }
 
 #translation {
@@ -126,7 +126,7 @@ article span {
   cursor: pointer; }
 
 aside form {
-  /* This is less than ideal, but works. */ }
+  /* NOTE: The style attribute content has to match precisely! */ }
   aside form button:first-child {
     border-left-width: 0px; }
   aside form button:last-child {
@@ -134,6 +134,9 @@ aside form {
   aside form button[style="width: 100%;"], aside form button[style="width: 0%;"] {
     border-left-width: 0px;
     border-right-width: 0px; }
+  aside form div[style="height: 0px;"] button {
+    border-top-width: 0px;
+    border-bottom-width: 0px; }
 
 .col-1 {
   padding: 0px;

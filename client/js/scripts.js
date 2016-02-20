@@ -5,53 +5,6 @@ function isValidLetter(letter) {
     return (letter !== '') ? true : false;
 }
 
-function fieldsetClickHandler(selector, columns) {
-
-    console.info("fieldsetClickHandler('%s', %d) called.", selector, columns);
-
-    $(selector + ' button').click(function (event) {
-        var $fieldset = $(selector);
-        var $cell = $(this);
-        var $row = $cell.parent();
-        var $siblingRows = $row.siblings();
-        var $siblingCells = $cell.siblings();
-        var duration = 400;
-        if ($fieldset.attr('data-selected') === 'no') {
-            $fieldset.attr('data-selected', 'yes');
-            $(function () {
-                $siblingRows.animate(
-                    { height: '0px' },
-                    { duration: duration, queue: false }
-                );
-                $cell.animate(
-                    { width: '100%' },
-                    { duration: duration, queue: false }
-                );
-                $siblingCells.animate(
-                    { width: '0%' },
-                    { duration: duration, queue: false }
-                );
-            });
-        } else {
-            $fieldset.attr('data-selected', 'no');
-            $(function () {
-                $siblingRows.animate(
-                    { height: '60px' },
-                    { duration: duration, queue: false }
-                );
-                $cell.animate(
-                    { width: (100 / columns) + '%' },
-                    { duration: duration, queue: false }
-                );
-                $siblingCells.animate(
-                    { width: (100 / columns) + '%' },
-                    { duration: duration, queue: false }
-                );
-            });
-        }
-    });
-}
-
 function getNumberOfColumns(numberOfGrammemes) {
 
     console.info("getNumberOfColumns(%d) called.", numberOfGrammemes);
@@ -69,7 +22,7 @@ function getNumberOfColumns(numberOfGrammemes) {
 
 function changeWord(word, selection) {
 
-    console.info("changeWord('%s', %O) called.", word, selection);
+    console.info("changeWord('%c%s%c', %O) called.", "font-weight: bold; color: blue;", word, "font-weight: normal; color: black;", selection);
 
     // Display word in header
     changeContent('#word', word);
@@ -86,19 +39,34 @@ function changeWord(word, selection) {
         );
 
         // Display lexical categories buttons
-        $('#lexical-categories').slideDown();
+        $('#lexical-category').slideDown();
 
         // Display 'Add translation' button
         $('#translation').slideDown();
 
-        // Set click handlers for all created buttons
-        fieldsetClickHandler('.col-1', 1);
-        fieldsetClickHandler('.col-2', 2);
-        fieldsetClickHandler('.col-3', 3);
-
         // Prevent this section to run again
         $('fieldset.header').attr('data-selected', 'yes');
     }
+}
+
+function handleGrammaticalCategory(data) {
+
+    console.info("handleGrammaticalCategory() called.");
+
+    $.each(data, function(key, val) {
+        var columns = getNumberOfColumns(val.grammemes.length);
+        var html = '\n<fieldset class="col-' + columns + '" data-selected="no"><div>';
+        if (val.grammemes.length > 0) {
+            // TODO: Add code to divide buttons on rows here, if there are > 3.
+            $.each(val.grammemes, function(key, val) {
+                html += '<button type="button" class="' + val.name + '" value="' + val.id + '">' + val.name + '</button>';
+            });
+        } else {
+            html += '<button type="button" class="' + val.name + '" value="' + val.id + '">' + val.name + '</button>';
+        }
+        html += '</div></fieldset>\n';
+        $('#fieldsets').append(html);
+    });
 }
 
 $(document).ready(function () {
@@ -108,73 +76,7 @@ $(document).ready(function () {
     // Prompt user to click on a word
     $('#word').val('Click on a word');
 
-    $('#lexical-categories button').click(function () {
-
-        console.info("$('#lexical-categories button').click() called.");
-
-        // If we're resetting the lexical category selection.
-        if ($('#lexical-categories').attr('data-selected') === 'yes') {
-            // Remove all lexical category specific fieldsets.
-            $('#fieldsets').empty();
-            return;
-        }
-
-        var settings = {
-            dataType: 'json',
-            url: 'http://localhost:3000/api/grammatical_category',
-            data: {
-                lexical_category: $(this).val(),
-                language: $('article').attr('lang')
-            },
-            success: function (data) {
-                handleGrammaticalCategory(data);
-                $('#fieldsets fieldset').each(function () {
-                    var $fieldset = $(this);
-                    var duration = 250;
-                    $(function () {
-                        $fieldset.find('div').animate(
-                            { height: '60px', marginBottom: '20px' },
-                            { duration: duration, queue: true }
-                        );
-                    });
-                });
-            }
-        };
-        $.get(settings);
-    });
-
-    function handleGrammaticalCategory(data) {
-
-        console.info("handleGrammaticalCategory() called.");
-
-        $.each(data, function(key, val) {
-            var columns = getNumberOfColumns(val.grammemes.length);
-            var html = '\n<fieldset class="col-' + columns + '" data-selected="no"><div>';
-            if (val.grammemes.length > 0) {
-                // TODO: Add code to divide buttons on rows here, if there are > 3.
-                $.each(val.grammemes, function(key, val) {
-                    html += '<button type="button" class="' + val.name + '" value="' + val.id + '">' + val.name + '</button>';
-                });
-            } else {
-                html += '<button type="button" class="' + val.name + '" value="' + val.id + '">' + val.name + '</button>';
-            }
-            html += '</div></fieldset>\n';
-            $('#fieldsets').append(html);
-        });
-    }
-
-    $('#ipa').focus(function () {
-        var text = $('#ipa').val();
-        text = text.replace(/[\[\]]/g, '');
-        $('#ipa').val(text);
-    });
-
-    $('#ipa').focusout(function () {
-        var text = $('#ipa').val();
-        text = '[' + text + ']';
-        $('#ipa').val(text);
-    });
-
+    // Handle clicks within the <article> element
     $('article').click(function (event) {
 
         console.info("$('article').click() called.");
@@ -215,7 +117,114 @@ $(document).ready(function () {
             }
         }
     });
+
+    // Handle focus/blur on IPA
+    $('#ipa').focus(function () {
+        var text = $('#ipa').val();
+        text = text.replace(/[\[\]]/g, '');
+        $('#ipa').val(text);
+    });
+    $('#ipa').focusout(function () {
+        var text = $('#ipa').val();
+        text = '[' + text + ']';
+        $('#ipa').val(text);
+    });
+
+    // Handle any button clicks in form
+    $('.col-1 button, .col-2 button, .col-3 button').click(function (event) {
+
+        // Get properties if this call
+        var $cell = $(this);
+        var $fieldset = $cell.parent().parent();
+
+        if ($fieldset.attr('id') === 'lexical-category') {
+            // If a lexical category has been selected.
+            if ($fieldset.attr('data-selected') === 'yes') {
+                // Remove all lexical category specific fieldsets.
+                $('#fieldsets').hide();
+                toggleButtons($(this));
+                $fieldset.attr('data-selected', 'no');
+                return;
+            // If a lexical category has not been selected, but buttons have been loaded before.
+            } else if ($('#fieldsets').children().length > 0) {
+                // Show buttons again.
+                $('#fieldsets').show();
+                toggleButtons($(this));
+                $fieldset.attr('data-selected', 'yes');
+                return;
+            // If this is the first time a lexical category is selected.
+            } else {
+                var settings = {
+                    dataType: 'json',
+                    url: 'http://localhost:3000/api/grammatical_category',
+                    data: {
+                        lexical_category: $(this).val(),
+                        language: $('article').attr('lang')
+                    },
+                    success: function (data) {
+                        handleGrammaticalCategory(data);
+                        $('#fieldsets fieldset').each(function () {
+                            var $fieldset = $(this);
+                            var duration = 250;
+                            $(function () {
+                                $fieldset.find('div').animate(
+                                    { height: '60px', marginBottom: '20px' },
+                                    { duration: duration, queue: true }
+                                );
+                            });
+                        });
+                    }
+                };
+                $.get(settings);
+            }
+        }
+        toggleButtons($(this));
+        $fieldset.attr('data-selected', 'yes');
+    });
+
 });
+
+function toggleButtons($button) {
+
+    var $cell = $button;
+    var $fieldset = $cell.parent().parent();
+    var $row = $cell.parent();
+    var $siblingRows = $row.siblings();
+    var $siblingCells = $cell.siblings();
+    var duration = 400;
+
+    if ($fieldset.attr('data-selected') === 'no') {
+        $(function () {
+            $siblingRows.animate(
+                { height: '0px' },
+                { duration: duration, queue: false }
+            );
+            $cell.animate(
+                { width: '100%' },
+                { duration: duration, queue: false }
+            );
+            $siblingCells.animate(
+                { width: '0%' },
+                { duration: duration, queue: false }
+            );
+        });
+    } else {
+        $(function () {
+            $siblingRows.animate(
+                { height: '60px' },
+                { duration: duration, queue: false }
+            );
+            $cell.animate(
+                { width: (100 / $siblingCells.length) + '%' },
+                { duration: duration, queue: false }
+            );
+            $siblingCells.animate(
+                { width: (100 / $siblingCells.length) + '%' },
+                { duration: duration, queue: false }
+            );
+        });
+    }
+}
 
 // Change the text content of a jQuery selection smoothly, using fadeOut() and fadeIn()
 function changeContent(selector, text, duration) {

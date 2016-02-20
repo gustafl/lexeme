@@ -107,7 +107,7 @@ input[type="text"] {
     display: none;
 }
 
-#lexical-categories {
+#lexical-category {
     display: none;
 }
 
@@ -165,10 +165,14 @@ aside {
         button:last-child {
             border-right-width: 0px;
         }
-        /* This is less than ideal, but works. */
+        /* NOTE: The style attribute content has to match precisely! */
         button[style="width: 100%;"], button[style="width: 0%;"] {
             border-left-width: 0px;
             border-right-width: 0px;
+        }
+        div[style="height: 0px;"] button {
+            border-top-width: 0px;
+            border-bottom-width: 0px;
         }
     }
 }
