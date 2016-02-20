@@ -81,13 +81,9 @@ fieldset.header {
     border-top-right-radius: 12px;
 }
 
-/* #fieldsets fieldset  {
-    margin-bottom: 0px;
-} */
-
-/* #fieldsets div  {
-    height: 0px;
-} */
+legend {
+    display: none;
+}
 
 input[type="text"] {
     text-align: center;
