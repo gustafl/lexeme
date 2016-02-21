@@ -18,7 +18,7 @@ function changeContent(selector, text, duration) {
     });
 }
 
-function changeWord(word, selection) {
+function showSingleWordForm(word, selection) {
 
     console.info("changeWord('%c%s%c', %O) called.", "font-weight: bold; color: blue;", word, "font-weight: normal; color: black;", selection);
 
@@ -38,6 +38,32 @@ function changeWord(word, selection) {
 
         // Display lexical categories buttons
         $('#lexical-category').slideDown();
+
+        // Display 'Add translation' button
+        $('#translation').slideDown();
+
+        // Prevent this section to run again
+        $('fieldset.header').attr('data-selected', 'yes');
+    }
+}
+
+function showCompoundWordForm(word, selection) {
+
+    console.info("changeWord('%c%s%c', %O) called.", "font-weight: bold; color: blue;", word, "font-weight: normal; color: black;", selection);
+
+    // Display word in header
+    changeContent('#word', word);
+
+    // If this is the first time a word is selected
+    if ($('fieldset.header').attr('data-selected') === 'no') {
+
+        // Display the IPA field
+        $('fieldset.header').animate(
+            { height: '165px' },
+            { duration: 250, queue: false, complete: function () {
+                $('#ipa').fadeIn(100);
+            }}
+        );
 
         // Display 'Add translation' button
         $('#translation').slideDown();
@@ -204,15 +230,28 @@ function lexicalCategoryHandler(event) {
     }
 
     // Highlight the word in the text
-    //highlightWord($cell.attr('class'));
+    highlightWord($cell.attr('class'));
+}
 
+function resetForm() {
+    $('#lexical-category').attr('data-selected', 'no');
+    $('#ipa').slideUp();
+    $('#lexical-category').slideUp();
+    $('#translation').slideUp();
 }
 
 function selectionHandler() {
+
     console.info('A mouseup event fired.');
 
     /* NOTE: This code assumes that whitespace has been normalized, so that
              there are no TAB, LF or CR characters and no consecutive spaces. */
+
+    // If the word or compound word form is shown
+    if ($('#lexical-category').attr('data-selected') === 'yes') {
+        // Reset form
+        resetForm();
+    }
 
     // Get selection object
     var selection = window.getSelection();
@@ -226,6 +265,13 @@ function selectionHandler() {
 
     // Get anchor node object
     var node = selection.anchorNode;
+
+    // Make sure the parent of this textnode is not a <span>
+    if (node.parentNode.nodeName === 'SPAN') {
+        console.warn('There is already a highlight here.');
+        selection.removeAllRanges();
+        return;
+    }
 
     // Make sure it's a text node
     if (node.nodeType !== 3) {
@@ -263,14 +309,14 @@ function selectionHandler() {
     var selectedText = node.nodeValue.substring(start, end);
 
     // Make sure all characters in selection are valid letters or spaces
-    var hasSpaces = false;
+    var selectionHasSpaces = false;
     var numberOfValidLetters = 0;
     for (var i = 0; i < selectedText.length; i++) {
         if (isValidLetter(selectedText[i]) || selectedText[i] === ' ') {
             if (selectedText[i] !== ' ') {
                 numberOfValidLetters++;
             } else {
-                hasSpaces = true;
+                selectionHasSpaces = true;
             }
         } else {
             console.warn('The selection contains invalid characters.');
@@ -309,10 +355,36 @@ function selectionHandler() {
     // Get adjusted selected text
     var adjustedSelectedText = node.nodeValue.substring(start, end);
     console.info('A selection was made: %s (%d:%d)', adjustedSelectedText, start, end);
+
+    // Adjust form according to selection
+    if (!selectionHasSpaces) {
+        showSingleWordForm(adjustedSelectedText, selection);
+    } else {
+        showCompoundWordForm(adjustedSelectedText, selection);
+    }
 }
 
-function highlightHandler() {
+function highlightWord(lexicalCategory) {
 
+    // Get Selection object
+    var selection = window.getSelection();
+
+    // Make sure we got a selection
+    if (selection.rangeCount > 0) {
+
+        // Wrap selection in a span with the right class
+        var range = selection.getRangeAt(0);
+        var selectedText = range.extractContents();
+        var span = document.createElement('span');
+        span.classList.add(lexicalCategory);
+
+        // Insert span in textnode
+        span.appendChild(selectedText);
+        range.insertNode(span);
+
+        // Remove selection to show highlight
+        selection.removeAllRanges();
+    }
 }
 
 $(document).ready(function () {
@@ -321,9 +393,6 @@ $(document).ready(function () {
 
     // Handle selections in the <article> element
     $('article').on('mouseup', selectionHandler);
-
-    // Test highlighting
-    $('#highlight').on('click', highlightHandler);
 
     // Handle focus/focusout on IPA
     $('#ipa').on({

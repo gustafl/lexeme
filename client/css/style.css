@@ -51,6 +51,8 @@ article {
   top: 0px;
   width: 60%;
   padding-bottom: 150px; }
+  article p {
+    line-height: 1.5em; }
 
 aside {
   position: absolute;
@@ -121,8 +123,7 @@ input:focus, textarea:focus {
   background-color: #808080; }
 
 article span {
-  padding: 0px 0px;
-  border-radius: 8px;
+  border-radius: 5px;
   cursor: pointer; }
 
 aside form {
