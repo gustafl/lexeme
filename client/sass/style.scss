@@ -134,8 +134,12 @@ input:focus, textarea:focus {
     outline: none;
 }
 
+#fieldsets fieldset[data-selected='yes'] button:only-child {
+    background-color: #808080;
+}
+
 article span {
-    padding: 0px 6px;
+    padding: 0px 0px;
     border-radius: 8px;
     cursor: pointer;
 }

@@ -1,11 +1,13 @@
 'use strict';
 
-function isValidLetter(letter) {
-    letter = letter.replace(/[^a-zA-Z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF]/, '');
-    return (letter !== '') ? true : false;
+const SELECTION_MAX_LENGTH = 100;
+
+function isValidLetter(character) {
+    character = character.replace(/[^a-zA-Z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF]/, '');
+    return (character !== '');
 }
 
-// Change the text content of a jQuery selection smoothly, using fadeOut() and fadeIn()
+// Change the text smoothly, using fadeOut() and fadeIn()
 function changeContent(selector, text, duration) {
     if (duration === undefined) {
         duration = 100;
@@ -42,48 +44,6 @@ function changeWord(word, selection) {
 
         // Prevent this section to run again
         $('fieldset.header').attr('data-selected', 'yes');
-    }
-}
-
-// Handle clicks in the <article> element
-function articleClickHandler() {
-
-    console.info("$('article').click() called.");
-
-    // Get the current position of the caret.
-    var selection = window.getSelection();
-    // Get the Range object corresponding to the selection.
-    var range = selection.getRangeAt(0);
-    // If the user clicked a word (instead of drag-selecting).
-    if (range.startOffset === range.endOffset) {
-        // Get the zero-based index of the letter where the user clicked.
-        var index = range.startOffset;
-        // Get the full string.
-        var data = selection.anchorNode.data;
-        // Get the actual letter the user clicked on.
-        var letter = data.substring(index, index + 1);
-        // If the letter is in the valid span of Unicode letters.
-        if (isValidLetter(letter)) {
-            // Prepare start and end boundary-points.
-            var start = index;
-            var end = index;
-            // Expand the selection left.
-            while (start > 0 && isValidLetter(data.substring(start - 1, start))) {
-                start = start - 1;
-            }
-            // Expand the selection right.
-            while (end <= data.length - 1 && isValidLetter(data.substring(end, end + 1))) {
-                end = end + 1;
-            }
-            // Get the full word.
-            var word = data.substring(start, end);
-            // Select the word in the browser.
-            selection.collapse(range.startContainer, start);
-            selection.extend(range.endContainer, end);
-
-            // Initialize the form
-            changeWord(word, selection);
-        }
     }
 }
 
@@ -242,14 +202,128 @@ function lexicalCategoryHandler(event) {
         };
         $.get(settings);
     }
+
+    // Highlight the word in the text
+    //highlightWord($cell.attr('class'));
+
+}
+
+function selectionHandler() {
+    console.info('A mouseup event fired.');
+
+    /* NOTE: This code assumes that whitespace has been normalized, so that
+             there are no TAB, LF or CR characters and no consecutive spaces. */
+
+    // Get selection object
+    var selection = window.getSelection();
+
+    // Make sure anchor and focus nodes are the same
+    if (selection.anchorNode !== selection.focusNode) {
+        console.warn('The anchor and focus nodes are different.');
+        selection.removeAllRanges();
+        return;
+    }
+
+    // Get anchor node object
+    var node = selection.anchorNode;
+
+    // Make sure it's a text node
+    if (node.nodeType !== 3) {
+        console.warn('The node is not a text node.');
+        selection.removeAllRanges();
+        return;
+    }
+
+    // Get start and end of selection
+    var start = selection.anchorOffset;
+    var end = selection.focusOffset;
+
+    // Make sure we got a proper mousedown-drag-mouseup selection
+    if (start === end) {
+        console.warn('At least one character must be selected.');
+        selection.removeAllRanges();
+        return;
+    }
+
+    // Reverse start and end if user made a backwards selection
+    if (start > end) {
+        var temp = end;
+        end = start;
+        start = temp;
+    }
+
+    // Make sure selection is not too long
+    if ((end - start) > SELECTION_MAX_LENGTH) {
+        console.warn('The selection is too long.');
+        selection.removeAllRanges();
+        return;
+    }
+
+    // Get selected text
+    var selectedText = node.nodeValue.substring(start, end);
+
+    // Make sure all characters in selection are valid letters or spaces
+    var hasSpaces = false;
+    var numberOfValidLetters = 0;
+    for (var i = 0; i < selectedText.length; i++) {
+        if (isValidLetter(selectedText[i]) || selectedText[i] === ' ') {
+            if (selectedText[i] !== ' ') {
+                numberOfValidLetters++;
+            } else {
+                hasSpaces = true;
+            }
+        } else {
+            console.warn('The selection contains invalid characters.');
+            selection.removeAllRanges();
+            return;
+        }
+    }
+
+    // Contract selection left and right to trim spaces
+    while (start > 0 && node.nodeValue.substring(start, start + 1) === ' ') {
+        start++;
+    }
+    while (end <= node.nodeValue.length - 1 && node.nodeValue.substring(end - 1, end) === ' ') {
+        end--;
+    }
+
+    // Expand selection left and right to include valid letters
+    while (start > 0 && isValidLetter(node.nodeValue.substring(start - 1, start))) {
+        start--;
+    }
+    while (end <= node.nodeValue.length - 1 && isValidLetter(node.nodeValue.substring(end, end + 1))) {
+        end++;
+    }
+
+    // Adjust selection
+    selection.collapse(node, start);
+    selection.extend(node, end);
+
+    // Make sure selection has at least one valid letter
+    if (numberOfValidLetters === 0) {
+        console.warn('The selection must have at least one valid letter.');
+        selection.removeAllRanges();
+        return;
+    }
+
+    // Get adjusted selected text
+    var adjustedSelectedText = node.nodeValue.substring(start, end);
+    console.info('A selection was made: %s (%d:%d)', adjustedSelectedText, start, end);
+}
+
+function highlightHandler() {
+
 }
 
 $(document).ready(function () {
 
-    console.info("$(document).ready() called.");
+    console.info("$(document).ready() called!");
 
-    // Handle clicks in the <article> element
-    $('article').on('click', articleClickHandler);
+    // Handle selections in the <article> element
+    $('article').on('mouseup', selectionHandler);
+
+    // Test highlighting
+    $('#highlight').on('click', highlightHandler);
 
     // Handle focus/focusout on IPA
     $('#ipa').on({

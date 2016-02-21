@@ -11,17 +11,17 @@
     <link rel="stylesheet" href="./css/colors.css" media="screen" />
   </head>
   <body>
-    <header>
-      <div>
-        <h1>Vingt mille lieues sous les mers</h1>
-        <p class="lead">Tour du monde sous marin</p>
-      </div>
-    </header>
     <div id="container">
       <article lang="fr">
+        <header>
+          <div>
+            <h1>Vingt mille lieues sous les mers</h1>
+            <p class="lead">Tour du monde sous marin</p>
+          </div>
+        </header>
         <section>
           <h2>1. Un écueil fuyant</h2>
-          <p><span class="determiner">L</span>'<span class="noun">année</span> 1866 fut marquée par un <span class="noun">événement</span> <span class="adjective">bizarre</span>, un phénomène inexpliqué et inexplicable que personne n'a sans doute oublié. Sans parler des rumeurs qui agitaient les populations des ports et surexcitaient l'esprit public à l'intérieur des continents les gens de mer furent particulièrement émus. Les négociants, armateurs, capitaines de navires, skippers et masters de l'Europe et de l'Amérique, officiers des marines militaires de tous pays, et, après eux, les gouvernements des divers États des deux continents, se préoccupèrent de ce fait au plus haut point.</p>
+          <p>L'année 1866 fut marquée par un événement bizarre, un phénomène inexpliqué et inexplicable que personne n'a sans doute oublié. Sans parler des rumeurs qui agitaient les populations des ports et surexcitaient l'esprit public à l'intérieur des continents les gens de mer furent particulièrement émus. Les négociants, armateurs, capitaines de navires, skippers et masters de l'Europe et de l'Amérique, officiers des marines militaires de tous pays, et, après eux, les gouvernements des divers États des deux continents, se préoccupèrent de ce fait au plus haut point.</p>
           <p>En effet, depuis quelque temps, plusieurs navires s'étaient rencontrés sur mer avec « une chose énorme » un objet long, fusiforme, parfois phosphorescent, infiniment plus vaste et plus rapide qu'une baleine.</p>
           <p>Les faits relatifs à cette apparition, consignés aux divers livres de bord, s'accordaient assez exactement sur la structure de l'objet ou de l'être en question, la vitesse inouïe de ses mouvements, la puissance surprenante de sa locomotion, la vie particulière dont il semblait doué. Si c'était un cétacé, il surpassait en volume tous ceux que la science avait classés jusqu'alors. Ni Cuvier, ni Lacépède, ni M. Dumeril, ni M. de Quatrefages n'eussent admis l'existence d'un tel monstre &ndash; à moins de l'avoir vu, ce qui s'appelle vu de leurs propres yeux de savants.</p>
           <p>A prendre la moyenne des observations faites à diverses reprises &ndash; en rejetant les évaluations timides qui assignaient à cet objet une longueur de deux cents pieds et en repoussant les opinions exagérées qui le disaient large d'un mille et long de trois &ndash; on pouvait affirmer, cependant, que cet être phénoménal dépassait de beaucoup toutes les dimensions admises jusqu'à ce jour par les ichtyologistes &ndash; s'il existait toutefois.</p>
@@ -55,6 +55,9 @@
           <fieldset class="header" data-selected="no">
             <input type="text" id="word" name="lexeme" value="Click on a word" autocomplete="off" /><br/>
             <input type="text" id="ipa" name="ipa" value="[IPA]" autocomplete="off" />
+          </fieldset>
+          <fieldset class="col-1">
+            <div><button type="button" id="highlight" class="determiner">highlight</button></div>
           </fieldset>
           <fieldset id="lexical-category" class="col-3" data-selected="no">
             <div><button type="button" class="noun" value="1">noun</button><button type="button" class="verb" value="2">verb</button><button type="button" class="adjective" value="3">adjective</button></div>
