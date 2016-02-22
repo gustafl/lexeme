@@ -3,32 +3,89 @@
 @import 'mixins';
 
 article {
-    @media screen and (max-width: 767px) {
-        font-size: $default-font-size + 0pt;
+    @media screen and (max-width: 1279px) {
+        width: 100%;
+        font-size: 18px;
     }
-    @media screen and (min-width: 768px) and (max-width: 991px) {
-        font-size: $default-font-size + 2pt;
+    @media screen and (min-width: 1280px) and (max-width: 1365px) {
+        /* 93.7% of 1366px */
+        width: 60%;
+        font-size: 24px;
     }
-    @media screen and (min-width: 992px) and (max-width: 1199px) {
-        font-size: $default-font-size + 4pt;
+    @media screen and (min-width: 1366px) and (max-width: 1599px) {
+        /* 85.4% of 1600px */
+        width: 60%;
+        font-size: 26px;
     }
-    @media screen and (min-width: 1200px) {
-        font-size: $default-font-size + 6pt;
+    @media screen and (min-width: 1600px) and (max-width: 1919px) {
+        /* 83.3% of 1920px */
+        width: 60%;
+        font-size: 30px;
+    }
+    @media screen and (min-width: 1920px) {
+        width: 60%;
+        font-size: 36px;
     }
 }
 
 aside {
-    @media screen and (max-width: 767px) {
+    @media screen and (max-width: 1279px) {
         display: none;
     }
-    @media screen and (min-width: 768px) and (max-width: 991px) {
-        display: none;
+    @media screen and (min-width: 1280px) and (max-width: 1365px) {
+        /* 93.7% of 1366px */
+        padding: 12px 11px 17px 11px;
+        border-radius: 14px;
+        #word {
+            font-size: 32px;
+        }
+        #ipa {
+            font-size: 19px;
+        }
+        button {
+            font-size: 20px;
+        }
     }
-    @media screen and (min-width: 992px) and (max-width: 1199px) {
-
+    @media screen and (min-width: 1366px) and (max-width: 1599px) {
+        /* 85.4% of 1600px */
+        padding: 13px 12px 18px 12px;
+        border-radius: 15px;
+        #word {
+            font-size: 34px;
+        }
+        #ipa {
+            font-size: 20px;
+        }
+        button {
+            font-size: 21px;
+        }
     }
-    @media screen and (min-width: 1200px) {
-
+    @media screen and (min-width: 1600px) and (max-width: 1919px) {
+        /* 83.3% of 1920px */
+        padding: 15px 13px 21px 13px;
+        border-radius: 17px;
+        #word {
+            font-size: 40px;
+        }
+        #ipa {
+            font-size: 23px;
+        }
+        button {
+            font-size: 25px;
+        }
+    }
+    @media screen and (min-width: 1920px) {
+        padding: 18px 16px 25px 16px;
+        border-radius: 20px;
+        #word {
+            font-size: 48px;
+        }
+        #ipa {
+            font-size: 28px;
+        }
+        button {
+            font-size: 30px;
+        }
     }
 }
 
@@ -51,8 +108,7 @@ article {
     position: absolute;
     left: 0px;
     top: 0px;
-    width: 60%;
-    padding-bottom: 150px;
+    padding-bottom: 5em;
     p {
         line-height: 1.5em;
     }
@@ -63,12 +119,9 @@ aside {
     right: 0px;
     top: 0px;
     width: 38%;
-    padding: 18px;
-    padding-bottom: 25px;
     text-align: center;
     background-color: $color-dark-gray-1;
     border: 2px solid $color-dark-gray-1;
-    border-radius: 20px;
 }
 
 fieldset {
@@ -84,6 +137,13 @@ fieldset.header {
     border-top-right-radius: 12px;
 }
 
+fieldset:last-child {
+    text-align: right;
+    #save {
+        display: none;
+    }
+}
+
 legend {
     display: none;
 }
@@ -96,13 +156,11 @@ input[type="text"] {
 }
 
 #word {
-    font-size: 40pt;
     margin-bottom: 10px;
 }
 
 #ipa {
     font-family: $font-monospace;
-    font-size: 24pt;
     display: none;
 }
 
@@ -146,9 +204,17 @@ article span {
     cursor: pointer;
 }
 
+button.none {
+    background-color: $color-dark-gray-1;
+    cursor: default;
+}
+
+button.action {
+    background-color: $color-dark-gray-2;
+}
+
 @mixin button-text {
     font-family: $font-monospace;
-    font-size: 20pt;
     font-variant: small-caps;
 }
 
@@ -168,11 +234,11 @@ aside {
             border-right-width: 0px;
         }
         /* NOTE: The style attribute content has to match precisely! */
-        button[style="width: 100%;"], button[style="width: 0%;"] {
+        button[style*="width: 100%;"], button[style*="width: 0%;"] {
             border-left-width: 0px;
             border-right-width: 0px;
         }
-        div[style="height: 0px;"] button {
+        div[style*="height: 0px;"] button {
             border-top-width: 0px;
             border-bottom-width: 0px;
         }

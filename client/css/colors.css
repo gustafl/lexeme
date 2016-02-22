@@ -23,10 +23,10 @@
 .interjection:hover { background-color: #555555; }
 
 /* Gender */
-.masculine { background-color: #273641; }
-.masculine:hover { background-color: #224056; }
-.feminine { background-color: #402636; }
-.feminine:hover { background-color: #562242; }
+.masculine { background-color: #3f3f3f; }
+.masculine:hover { background-color: #555555; }
+.feminine { background-color: #3f3f3f; }
+.feminine:hover { background-color: #555555; }
 
 /* Number */
 .singular { background-color: #3f3f3f; }
@@ -53,10 +53,10 @@
 .uncountable:hover { background-color: #555555; }
 
 /* Collective/mass */
-.collective { background-color: #3f3f3f; }
-.collective:hover { background-color: #555555; }
-.mass { background-color: #3f3f3f; }
-.mass:hover { background-color: #555555; }
+.collective-noun { background-color: #3f3f3f; }
+.collective-noun:hover { background-color: #555555; }
+.mass-noun { background-color: #3f3f3f; }
+.mass-noun:hover { background-color: #555555; }
 
 /* Verb: Present */
 .present { background-color: #3f3f3f; }
@@ -69,3 +69,11 @@
 /* Verb: Voice */
 .voice { background-color: #3f3f3f; }
 .voice:hover { background-color: #555555; }
+
+/* Application buttons */
+.action {
+	color: white;
+}
+.action[disabled] {
+	color: #555555;
+}

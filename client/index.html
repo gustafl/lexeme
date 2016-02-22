@@ -53,17 +53,20 @@
       <aside>
         <form>
           <fieldset class="header" data-selected="no">
-            <input type="text" id="word" name="lexeme" value="Click on a word" autocomplete="off" /><br/>
+            <input type="text" id="word" name="lexeme" value="Select a word" autocomplete="off" /><br/>
             <input type="text" id="ipa" name="ipa" value="[IPA]" autocomplete="off" />
           </fieldset>
-          <fieldset id="lexical-category" class="col-3" data-selected="no">
+          <fieldset id="translation" class="col-1">
+            <div><button type="button" class="default">add translation</button></div>
+          </fieldset>
+          <fieldset id="lexical-category" class="col-3" data-button-type="radio" data-selected="no">
             <div><button type="button" class="noun" value="1">noun</button><button type="button" class="verb" value="2">verb</button><button type="button" class="adjective" value="3">adjective</button></div>
             <div><button type="button" class="pronoun" value="4">pronoun</button><button type="button" class="adverb" value="5">adverb</button><button type="button" class="determiner" value="6">determiner</button></div>
             <div><button type="button" class="preposition" value="7">preposition</button><button type="button" class="conjugation" value="8">conjugation</button><button type="button" class="interjection" value="9">interjection</button></div>
           </fieldset>
           <div id="fieldsets"></div>
-          <fieldset id="translation" class="col-1">
-            <div><button type="button" class="default">add translation</button></div>
+          <fieldset class="col-3">
+            <div><button type="button" class="action" id="save">save</button><button type="button" class="action" id="close">close</button></div>
           </fieldset>
         </form>
       </aside>
