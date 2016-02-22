@@ -27,59 +27,69 @@ function changeContent(selector, text, duration) {
     });
 }
 
-function showSingleWordForm(word, selection) {
+function changeWord(word, options) {
 
-    console.info("changeWord('%c%s%c', %O) called.", "font-weight: bold; color: blue;", word, "font-weight: normal; color: black;", selection);
+    console.info("changeWord('%c%s') called.", "font-weight: bold; color: blue;", word);
 
     // Display word in header
     changeContent('#word', word);
 
-    // If this is the first time a word is selected
-    if ($('fieldset.header').attr('data-selected') === 'no') {
-
-        // Display the IPA field
+    // Display the IPA field
+    var height = parseInt($('fieldset.header').css('height'));
+    if (height < 160) {
         $('fieldset.header').animate(
             { height: '160px' }, // TODO: Adapt to screen resolution
             { duration: 250, queue: false, complete: function () {
                 $('#ipa').fadeIn(100);
             }}
         );
-
-        // Display lexical categories buttons
-        $('#lexical-category').slideDown();
-
-        // Display 'Add translation' button
-        $('#translation').slideDown();
-
-        // Prevent this section to run again
-        $('fieldset.header').attr('data-selected', 'yes');
     }
+
+    // Display lexical categories buttons
+    if (options.single === true) {
+        $('#lexical-category').slideDown();
+    } else {
+        $('#lexical-category').slideUp();
+    }
+
+    // Display 'Add translation' button
+    $('#translation').slideDown();
 }
 
-function showCompoundWordForm(word, selection) {
+function resetForm() {
 
-    console.info("changeWord('%c%s%c', %O) called.", "font-weight: bold; color: blue;", word, "font-weight: normal; color: black;", selection);
-
-    // Display word in header
-    changeContent('#word', word);
-
-    // If this is the first time a word is selected
-    if ($('fieldset.header').attr('data-selected') === 'no') {
-
-        // Display the IPA field
-        $('fieldset.header').animate(
-            { height: '165px' },
-            { duration: 250, queue: false, complete: function () {
-                $('#ipa').fadeIn(100);
-            }}
-        );
-
-        // Display 'Add translation' button
-        $('#translation').slideDown();
-
-        // Prevent this section to run again
-        $('fieldset.header').attr('data-selected', 'yes');
+    // Reset lexical category selection
+    var $fieldset = $('#lexical-category');
+    var $list = $fieldset.find('button[style="width: 100%;"]');
+    var $cell = ($list.length !== 0) ? $($list[0]) : null;
+    if ($cell === null) {
+        return;
     }
+    var $row = $cell.parent();
+    var $siblingRows = $row.siblings();
+    var $siblingCells = $cell.siblings();
+    var duration = 400;
+    $(function () {
+        $siblingRows.animate(
+            { height: '60px' },
+            { duration: duration, queue: false }
+        );
+        $cell.animate(
+            { width: (100 / ($siblingCells.length + 1)) + '%' },
+            { duration: duration, queue: false }
+        );
+        $siblingCells.animate(
+            { width: (100 / ($siblingCells.length + 1)) + '%' },
+            { duration: duration, queue: false }
+        );
+    });
+
+    // Set 'data-selected' attribute
+    $('fieldset.header').attr('data-selected', 'no');
+    $fieldset.attr('data-selected', 'no');
+
+    // Remove grammatical categories
+    $('#fieldsets').empty();
 }
 
 function selectionHandler() {
@@ -88,6 +98,16 @@ function selectionHandler() {
 
     /* NOTE: This code assumes that whitespace has been normalized, so that
              there are no TAB, LF or CR characters and no consecutive spaces. */
+
+    // If a new selection is made with unsaved changes
+    if ($unsavedChanges) {
+        // Remove last highlight
+        $lastHightlight.contents().unwrap();
+        // Reset form
+        resetForm();
+        // Set unsaved changes flag
+        $unsavedChanges = false;
+    }
 
     // Get selection object
     var selection = window.getSelection();
@@ -194,9 +214,9 @@ function selectionHandler() {
 
     // Adjust form according to selection
     if (!selectionHasSpaces) {
-        showSingleWordForm(adjustedSelectedText, selection);
+        changeWord(adjustedSelectedText, { single: true });
     } else {
-        showCompoundWordForm(adjustedSelectedText, selection);
+        changeWord(adjustedSelectedText, { single: false });
     }
 }
 
@@ -212,7 +232,7 @@ function ipaFocusOutHandler() {
     $('#ipa').val(text);
 }
 
-function grammaticalCategoryHandler(data) {
+function grammaticalCategoryHandler(data, lexicalCategory) {
 
     console.info("grammaticalCategoryHandler() called.");
 
@@ -251,10 +271,11 @@ function grammaticalCategoryHandler(data) {
         var $button;
 
         // If there are grammemes
+        var className = lexicalCategory + '-property';
         if (val.grammemes.length > 0) {
             for (var i = 0; i < val.grammemes.length; i++) {
                 $button = $('<button type="button" />');
-                $button.addClass(val.grammemes[i].name.replace(' ', '-'));
+                $button.addClass(className);
                 $button.val(val.grammemes[i].id);
                 $button.text(val.grammemes[i].name);
                 $div.append($button);
@@ -264,7 +285,7 @@ function grammaticalCategoryHandler(data) {
             }
         } else {
             $button = $('<button type="button" />');
-            $button.addClass(val.name.replace(' ', '-'));
+            $button.addClass(className);
             $button.val(val.id);
             $button.text(val.name);
             $div.append($button);
@@ -278,7 +299,7 @@ function grammaticalCategoryHandler(data) {
 // Toggle the data-selected attribute on the <fieldset> grandparent.
 // If there are siblings, toggle between expanding the clicked button
 // to fill the whole fieldset, and contracting it to show all buttons.
-function buttonClickHandler(event) {
+function radioButtonClickHandler(event) {
 
     var $cell = null;
     if (event !== undefined) {
@@ -342,10 +363,11 @@ function lexicalCategoryHandler(event) {
     // Get properties of this call
     var $cell = $(event.target);
     var $fieldset = $cell.parent().parent();
+    var lexicalCategory = $cell.attr('class');
 
-    // If a lexical category has been selected.
+    // If a lexical category has been selected
     if ($fieldset.attr('data-selected') === 'yes') {
-        // Remove all lexical category specific fieldsets.
+        // Remove all lexical category specific fieldsets
         $('#fieldsets').empty();
     } else {
         var settings = {
@@ -356,14 +378,14 @@ function lexicalCategoryHandler(event) {
                 language: $('article').attr('lang')
             },
             success: function (data) {
-                grammaticalCategoryHandler(data);
+                grammaticalCategoryHandler(data, lexicalCategory);
             }
         };
         $.get(settings);
     }
 
     // Highlight the word in the text
-    highlightWord($cell.attr('class'));
+    highlightWord(lexicalCategory);
 
     // Set unsavedChanges flag
     $unsavedChanges = true;
@@ -404,6 +426,8 @@ $(document).ready(function () {
     // Handle selections in the <article> element
     $('article').on('mouseup', selectionHandler);
 
+    $('#close').on('click', resetForm);
+
     // Handle focus/focusout on IPA
     $('#ipa').on({
         focus: ipaFocusHandler,
@@ -412,6 +436,6 @@ $(document).ready(function () {
 
     // Handle any button clicks in form
     $('#lexical-category').on('click', 'button', lexicalCategoryHandler);
-    $('form').on('click', 'button', buttonClickHandler);
+    $('form').on('click', 'fieldset[data-button-type="radio"] button', radioButtonClickHandler);
 
 });
