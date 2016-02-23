@@ -2,10 +2,7 @@
 
 // Constants
 const SELECTION_MAX_LENGTH = 100;
-const WIDTH_SMALL = 1280;
-const WIDTH_MEDIUM = 1366;
-const WIDTH_LARGE = 1600;
-const WIDTH_XLARGE = 1920;
+const CASE_SENSITIVE_MATCHING = false;
 
 // Global variables
 var $unsavedChanges = false;
@@ -29,7 +26,7 @@ function changeContent(selector, text, duration) {
 
 function changeWord(word, options) {
 
-    console.info("changeWord('%c%s') called.", "font-weight: bold; color: blue;", word);
+    console.info("changeWord('%s') called with options: %O", word, options);
 
     // Display word in header
     changeContent('#word', word);
@@ -59,37 +56,33 @@ function changeWord(word, options) {
 function resetForm() {
 
     // Reset lexical category selection
-    var $fieldset = $('#lexical-category');
-    var $list = $fieldset.find('button[style="width: 100%;"]');
-    var $cell = ($list.length !== 0) ? $($list[0]) : null;
-    if ($cell === null) {
-        return;
-    }
-    var $row = $cell.parent();
-    var $siblingRows = $row.siblings();
-    var $siblingCells = $cell.siblings();
-    var duration = 400;
-    $(function () {
-        $siblingRows.animate(
-            { height: '60px' },
-            { duration: duration, queue: false }
-        );
-        $cell.animate(
-            { width: (100 / ($siblingCells.length + 1)) + '%' },
-            { duration: duration, queue: false }
-        );
-        $siblingCells.animate(
-            { width: (100 / ($siblingCells.length + 1)) + '%' },
-            { duration: duration, queue: false }
-        );
-    });
+    $('#lexical-category button[style="width: 100%;"]').trigger('click');
+    $('#lexical-category').attr('data-selected', 'no');
+    $('#lexical-category').hide();
 
-    // Set 'data-selected' attribute
-    $('fieldset.header').attr('data-selected', 'no');
-    $fieldset.attr('data-selected', 'no');
+    // Hide 'Add translation' button
+    $('#translation').hide();
+
+    // Reset top fieldset
+    changeContent('#word', 'Select a word');
+    $('#ipa').hide();
+    var height = parseInt($('fieldset.header').css('height'));
+    if (height === 160) {
+        $('fieldset.header').animate(
+            { height: '97px' }, // TODO: Adapt to screen resolution
+            { duration: 250, queue: false }
+        );
+    }
 
     // Remove grammatical categories
+    $('#fieldsets').slideUp();
     $('#fieldsets').empty();
+
+    // Remove Save button
+    $('#save').hide();
+
+    // Set unsavedChanges flag
+    $unsavedChanges = false;
 }
 
 function selectionHandler() {
@@ -369,6 +362,12 @@ function lexicalCategoryHandler(event) {
     if ($fieldset.attr('data-selected') === 'yes') {
         // Remove all lexical category specific fieldsets
         $('#fieldsets').empty();
+        // Remove last highlight
+        //$lastHightlight.contents().unwrap();
+        // Remove Save button
+        $('#save').hide();
+        // Set unsavedChanges flag
+        $unsavedChanges = false;
     } else {
         var settings = {
             dataType: 'json',
@@ -382,16 +381,14 @@ function lexicalCategoryHandler(event) {
             }
         };
         $.get(settings);
+        // Highlight the word in the text
+        highlightWord(lexicalCategory);
+        // Show Save button
+        $('#save').show();
+        // Set unsavedChanges flag
+        $unsavedChanges = true;
     }
-
-    // Highlight the word in the text
-    highlightWord(lexicalCategory);
-
-    // Set unsavedChanges flag
-    $unsavedChanges = true;
 }
-
-
 
 function highlightWord(lexicalCategory) {
 
@@ -400,6 +397,12 @@ function highlightWord(lexicalCategory) {
 
     // Make sure we got a selection
     if (selection.rangeCount > 0) {
+
+        // Get selected text
+        var node = selection.anchorNode;
+        var start = selection.anchorOffset;
+        var end = selection.focusOffset;
+        var searchText = node.nodeValue.substring(start, end);
 
         // Wrap selection in a span with the right class
         var range = selection.getRangeAt(0);
@@ -416,7 +419,45 @@ function highlightWord(lexicalCategory) {
 
         // Save last highlight (in case we need to undo it)
         $lastHightlight = $(span);
+
+        // Look for other instances of the selection and highlight them too
+        var $paragraphs = $('article p');
+        $paragraphs.each(function () {
+            // Get element
+            var paragraph = $(this);
+            // Get all textnode children of element
+            var $textNodes = paragraph.contents().filter(function() {
+                return this.nodeType === 3;
+            });
+            // Loop through textnodes
+            $textNodes.each(function () {
+                // Current textnode
+                var $textNode = $(this);
+                // NOTE: As soon as the text is wrapped in a <span>, it will disappear from the textnode
+                // and therefore not be found in the next iteration.
+                var regex = new RegExp('[^\w]*' + searchText + '[^\w]*', 'ig');
+                var array = [];
+                while ((array = regex.exec(searchText)) !== null) {
+                    var message = 'Found ' + array[0] + '. ';
+                    var nextMatchIndex = regex.lastIndex;
+                    message += 'Next match starts at ' + nextMatchIndex;
+                    console.log(message);
+                    /*var start = $textNode.text().indexOf(searchText);
+                    var end = start + searchText.length;
+                    highlightWordInElement($textNode, start, end);*/
+                }
+            });
+
+        });
     }
+}
+
+function saveForm() {
+    resetForm();
+}
+
+function highlightWordInElement(textNode, start, end) {
+    console.log(textNode.nodeValue, start, end);
 }
 
 $(document).ready(function () {
@@ -427,6 +468,8 @@ $(document).ready(function () {
     $('article').on('mouseup', selectionHandler);
 
     $('#close').on('click', resetForm);
+
+    $('#save').on('click', saveForm);
 
     // Handle focus/focusout on IPA
     $('#ipa').on({
