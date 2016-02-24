@@ -256,37 +256,43 @@ function grammaticalCategoryHandler(data, lexicalCategory) {
         }
 
         // Create new fieldset
-        var $fieldset = $('<fieldset class="col-' + numberOfColumns + '" data-button-type="radio" data-selected="no" />');
+        var $fieldset = $('<fieldset />');
+        $fieldset.addClass('col-' + numberOfColumns);
+        $fieldset.attr('data-gc-id', val.id);
+        $fieldset.attr('data-type', 'single-select');
+        $fieldset.attr('data-selected', 'no');
         var $legend = $('<legend>' + val.name + '</legend>');
         var $div = $('<div />');
         $fieldset.append($legend);
         $fieldset.append($div);
         var $button;
+        var className = lexicalCategory + '-property';
 
         // If there are grammemes
-        var className = lexicalCategory + '-property';
         if (val.grammemes.length > 0) {
             for (var i = 0; i < val.grammemes.length; i++) {
-                $button = $('<button type="button" />');
-                $button.addClass(className);
-                $button.val(val.grammemes[i].id);
-                $button.text(val.grammemes[i].name);
+                $button = createGrammemeButton(className, val.grammemes[i].id, val.grammemes[i].name);
                 $div.append($button);
 
                 // TODO: Dividing buttons on multiple rows not implemented.
 
             }
         } else {
-            $button = $('<button type="button" />');
-            $button.addClass(className);
-            $button.val(val.id);
-            $button.text(val.name);
+            $button = createGrammemeButton(className, val.id, val.name);
             $div.append($button);
         }
 
         // Append new fieldset to <div id="fieldsets">
         $('#fieldsets').append($fieldset);
     });
+}
+
+function createGrammemeButton(className, id, name) {
+    var $button = $('<button type="button" />');
+    $button.addClass(className);
+    $button.attr('data-gc-id', id);
+    $button.text(name);
+    return $button;
 }
 
 // Toggle the data-selected attribute on the <fieldset> grandparent.
@@ -307,7 +313,7 @@ function radioButtonClickHandler(event) {
     var duration = 400;
 
     // If data is not selected
-    if ($fieldset.attr('data-button-type') === 'radio') {
+    if ($fieldset.attr('data-type') === 'single-select') {
         if ($fieldset.attr('data-selected') === 'no') {
             $fieldset.attr('data-selected', 'yes');
             if ($siblingCells.length === 0) {
@@ -373,7 +379,7 @@ function lexicalCategoryHandler(event) {
             dataType: 'json',
             url: 'http://localhost:3000/api/grammatical_category',
             data: {
-                lexical_category: $cell.val(),
+                lexical_category: $cell.attr('data-lc-id'),
                 language: $('article').attr('lang')
             },
             success: function (data) {
@@ -420,40 +426,26 @@ function highlightWord(lexicalCategory) {
         // Save last highlight (in case we need to undo it)
         $lastHightlight = $(span);
 
-        // Look for other instances of the selection and highlight them too
-        var $paragraphs = $('article p');
-        $paragraphs.each(function () {
-            // Get element
-            var paragraph = $(this);
-            // Get all textnode children of element
-            var $textNodes = paragraph.contents().filter(function() {
-                return this.nodeType === 3;
-            });
-            // Loop through textnodes
-            $textNodes.each(function () {
-                // Current textnode
-                var $textNode = $(this);
-                // NOTE: As soon as the text is wrapped in a <span>, it will disappear from the textnode
-                // and therefore not be found in the next iteration.
-                var regex = new RegExp('[^\w]*' + searchText + '[^\w]*', 'ig');
-                var array = [];
-                while ((array = regex.exec(searchText)) !== null) {
-                    var message = 'Found ' + array[0] + '. ';
-                    var nextMatchIndex = regex.lastIndex;
-                    message += 'Next match starts at ' + nextMatchIndex;
-                    console.log(message);
-                    /*var start = $textNode.text().indexOf(searchText);
-                    var end = start + searchText.length;
-                    highlightWordInElement($textNode, start, end);*/
-                }
-            });
-
-        });
+        // TODO: Look for other instances of the selection and highlight them too
     }
 }
 
 function saveForm() {
     resetForm();
+}
+
+/**
+ * To save words effectively, we need to have the lexical ID, grammatical ID,
+ * grammeme ID
+ * @return {[type]} [description]
+ */
+function saveWord() {
+
+
+    //
+    // and language code in the HTML. These values are saved:
+    //
+
 }
 
 function highlightWordInElement(textNode, start, end) {
@@ -479,6 +471,6 @@ $(document).ready(function () {
 
     // Handle any button clicks in form
     $('#lexical-category').on('click', 'button', lexicalCategoryHandler);
-    $('form').on('click', 'fieldset[data-button-type="radio"] button', radioButtonClickHandler);
+    $('form').on('click', 'fieldset[data-type="single-select"] button', radioButtonClickHandler);
 
 });
