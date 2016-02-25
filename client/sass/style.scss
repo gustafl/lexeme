@@ -187,15 +187,17 @@ input:focus, textarea:focus {
 }
 
 ::selection {
-    background-color: $color-essential-red;
+    background-color: $color-text-selection;
     color: $color-almost-white;
+    outline: 2px solid white;
 }
 
 *:focus {
     outline: none;
 }
 
-#fieldsets fieldset[data-selected='yes'] button:only-child {
+// Selected multi-select-style button
+#fieldsets button[data-selected] button:only-child {
     background-color: #808080;
 }
 

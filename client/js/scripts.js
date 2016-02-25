@@ -5,31 +5,28 @@ const SELECTION_MAX_LENGTH = 100;
 const CASE_SENSITIVE_MATCHING = false;
 
 // Global variables
-var $unsavedChanges = false;
-var $lastHightlight = null;
+var _unsavedChanges = false;
+var _lastUnsavedHighlight = null;
+var _lastSelection = {
+    node: null,
+    start: 0,
+    end: 0
+}
 
 function isValidLetter(character) {
     character = character.replace(/[^a-zA-Z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF]/, '');
     return (character !== '');
 }
 
-// Change the text smoothly, using fadeOut() and fadeIn()
-function changeContent(selector, text, duration) {
-    if (duration === undefined) {
-        duration = 100;
-    }
-    $(selector).fadeOut(duration, function () {
-        $(selector).val(text);
-        $(selector).fadeIn(duration);
-    });
-}
-
 function changeWord(word, options) {
 
-    console.info("changeWord('%s') called with options: %O", word, options);
+    console.info('changeWord() called: %s', word);
 
     // Display word in header
-    changeContent('#word', word);
+    $('#word').fadeOut(100, function () {
+        $('#word').val(word);
+        $('#word').fadeIn(100);
+    });
 
     // Display the IPA field
     var height = parseInt($('fieldset.header').css('height'));
@@ -43,7 +40,7 @@ function changeWord(word, options) {
     }
 
     // Display lexical categories buttons
-    if (options.single === true) {
+    if (options.singleWord === true) {
         $('#lexical-category').slideDown();
     } else {
         $('#lexical-category').slideUp();
@@ -55,16 +52,23 @@ function changeWord(word, options) {
 
 function resetForm() {
 
+    console.info('resetForm() called.');
+
     // Reset lexical category selection
-    $('#lexical-category button[style="width: 100%;"]').trigger('click');
-    $('#lexical-category').attr('data-selected', 'no');
+    $('#lexical-category button[data-selected]').trigger('click');
+    $('#lexical-category button[data-selected]').removeAttr('data-selected');
     $('#lexical-category').hide();
 
     // Hide 'Add translation' button
     $('#translation').hide();
 
-    // Reset top fieldset
-    changeContent('#word', 'Select a word');
+    // Reset word
+    $('#word').fadeOut(100, function () {
+        $('#word').val('Select a word');
+        $('#word').fadeIn(100);
+    });
+
+    // Reset IPA
     $('#ipa').hide();
     var height = parseInt($('fieldset.header').css('height'));
     if (height === 160) {
@@ -79,31 +83,32 @@ function resetForm() {
     $('#fieldsets').empty();
 
     // Remove Save button
-    $('#save').hide();
+    $('#save').fadeOut(100);
 
-    // Set unsavedChanges flag
-    $unsavedChanges = false;
+    // If there's an unsaved highlight, remove it
+    if (_lastUnsavedHighlight) {
+        _lastUnsavedHighlight.contents().unwrap();
+        _lastUnsavedHighlight = null;
+    }
+
+    // Forget about unsaved changes
+    _unsavedChanges = false;
 }
 
 function selectionHandler() {
 
-    console.info('A mouseup event fired.');
+    console.info('selectionHandler() called.');
 
-    /* NOTE: This code assumes that whitespace has been normalized, so that
-             there are no TAB, LF or CR characters and no consecutive spaces. */
+    /**
+     * NOTE: This code assumes that whitespace has been normalized, so that
+     * there are no TAB, LF or CR characters and no consecutive spaces.
+     */
 
-    // If a new selection is made with unsaved changes
-    if ($unsavedChanges) {
-        // Remove last highlight
-        $lastHightlight.contents().unwrap();
-        // Reset form
-        resetForm();
-        // Set unsaved changes flag
-        $unsavedChanges = false;
-    }
-
-    // Get selection object
+     // Get selection object
     var selection = window.getSelection();
+
+    // Get anchor node object
+    var node = selection.anchorNode;
 
     // Make sure anchor and focus nodes are the same
     if (selection.anchorNode !== selection.focusNode) {
@@ -111,9 +116,6 @@ function selectionHandler() {
         selection.removeAllRanges();
         return;
     }
-
-    // Get anchor node object
-    var node = selection.anchorNode;
 
     // Make sure the parent of this textnode is not a <span>
     if (node.parentNode.nodeName === 'SPAN') {
@@ -140,6 +142,12 @@ function selectionHandler() {
         return;
     }
 
+    // If a new selection is made with unsaved changes
+    if (_unsavedChanges) {
+        // Reset form
+        resetForm();
+    }
+
     // Reverse start and end if user made a backwards selection
     if (start > end) {
         var temp = end;
@@ -152,22 +160,6 @@ function selectionHandler() {
         console.warn('The selection is too long.');
         selection.removeAllRanges();
         return;
-    }
-
-    // Contract selection left and right to trim spaces
-    while (start > 0 && node.nodeValue.substring(start, start + 1) === ' ') {
-        start++;
-    }
-    while (end <= node.nodeValue.length - 1 && node.nodeValue.substring(end - 1, end) === ' ') {
-        end--;
-    }
-
-    // Expand selection left and right to include valid letters
-    while (start > 0 && isValidLetter(node.nodeValue.substring(start - 1, start))) {
-        start--;
-    }
-    while (end <= node.nodeValue.length - 1 && isValidLetter(node.nodeValue.substring(end, end + 1))) {
-        end++;
     }
 
     // Get selected text
@@ -190,6 +182,26 @@ function selectionHandler() {
         }
     }
 
+    // Move selection start right until the first non-space character
+    while (start > 0 && node.nodeValue.substring(start, start + 1) === ' ') {
+        start++;
+    }
+
+    // Move selection end left until the first non-space character
+    while (end <= node.nodeValue.length - 1 && node.nodeValue.substring(end - 1, end) === ' ') {
+        end--;
+    }
+
+    // Move selection start left while there are valid letters
+    while (start > 0 && isValidLetter(node.nodeValue.substring(start - 1, start))) {
+        start--;
+    }
+
+    // Move selection end right while there are valid letters
+    while (end <= node.nodeValue.length - 1 && isValidLetter(node.nodeValue.substring(end, end + 1))) {
+        end++;
+    }
+
     // Adjust selection
     selection.collapse(node, start);
     selection.extend(node, end);
@@ -207,27 +219,38 @@ function selectionHandler() {
 
     // Adjust form according to selection
     if (!selectionHasSpaces) {
-        changeWord(adjustedSelectedText, { single: true });
+        changeWord(adjustedSelectedText, { singleWord: true });
     } else {
-        changeWord(adjustedSelectedText, { single: false });
+        changeWord(adjustedSelectedText, { singleWord: false });
     }
+
+    // Save last selection
+    _lastSelection.node = node;
+    _lastSelection.start = start;
+    _lastSelection.end = end;
 }
 
 function ipaFocusHandler() {
+
+    console.info('ipaFocusHandler() called.');
+
     var text = $('#ipa').val();
     text = text.replace(/[\[\]]/g, '');
     $('#ipa').val(text);
 }
 
 function ipaFocusOutHandler() {
+
+    console.info('ipaFocusOutHandler() called.');
+
     var text = $('#ipa').val();
     text = '[' + text + ']';
     $('#ipa').val(text);
 }
 
-function grammaticalCategoryHandler(data, lexicalCategory) {
+function grammaticalCategoryHandler(data) {
 
-    console.info("grammaticalCategoryHandler() called.");
+    console.info('grammaticalCategoryHandler() called.');
 
     // For each grammatical category
     $.each(data, function(key, val) {
@@ -259,17 +282,18 @@ function grammaticalCategoryHandler(data, lexicalCategory) {
         var $fieldset = $('<fieldset />');
         $fieldset.addClass('col-' + numberOfColumns);
         $fieldset.attr('data-gc-id', val.id);
-        $fieldset.attr('data-type', 'single-select');
-        $fieldset.attr('data-selected', 'no');
         var $legend = $('<legend>' + val.name + '</legend>');
         var $div = $('<div />');
         $fieldset.append($legend);
         $fieldset.append($div);
         var $button;
-        var className = lexicalCategory + '-property';
+
+        // Get the class name from the selected lexical category button
+        var className = $('#lexical-category').find('button[data-selected]').attr('class') + '-property';
 
         // If there are grammemes
         if (val.grammemes.length > 0) {
+            $fieldset.attr('data-type', 'single-select');
             for (var i = 0; i < val.grammemes.length; i++) {
                 $button = createGrammemeButton(className, val.grammemes[i].id, val.grammemes[i].name);
                 $div.append($button);
@@ -278,6 +302,7 @@ function grammaticalCategoryHandler(data, lexicalCategory) {
 
             }
         } else {
+            $fieldset.attr('data-type', 'multi-select');
             $button = createGrammemeButton(className, val.id, val.name);
             $div.append($button);
         }
@@ -295,28 +320,34 @@ function createGrammemeButton(className, id, name) {
     return $button;
 }
 
-// Toggle the data-selected attribute on the <fieldset> grandparent.
-// If there are siblings, toggle between expanding the clicked button
-// to fill the whole fieldset, and contracting it to show all buttons.
-function radioButtonClickHandler(event) {
+function singleSelectClickHandler(event) {
 
-    var $cell = null;
-    if (event !== undefined) {
-        $cell = $(event.target);
-    } else {
-        $cell = $('button[style="width: 100%;"]')[0];
-    }
-    var $fieldset = $cell.parent().parent();
-    var $row = $cell.parent();
-    var $siblingRows = $row.siblings();
-    var $siblingCells = $cell.siblings();
-    var duration = 400;
+    console.info('singleSelectClickHandler() called.');
 
-    // If data is not selected
+    /**
+     * NOTE: This code assumes the following structure:
+     *
+     * <fieldset>
+     *   <div><button /> ... </div>
+     *   ...
+     * </fieldset>
+     */
+
+     // Get properties for this call
+     var $cell = $(event.target);
+     var $row = $cell.parent();
+     var $fieldset = $row.parent();
+     var $siblingRows = $row.siblings();
+     var $siblingCells = $cell.siblings();
+     var duration = 400;
+
+    // If the button clicked is located in a single-select fieldset
     if ($fieldset.attr('data-type') === 'single-select') {
-        if ($fieldset.attr('data-selected') === 'no') {
-            $fieldset.attr('data-selected', 'yes');
-            if ($siblingCells.length === 0) {
+        // If the clicked button has no 'data-selected' attribute
+        if ($cell.attr('data-selected') === undefined) {
+            // Set the 'data-selected' attribute
+            $cell.attr('data-selected', true);
+            if ($siblingCells.length === 0 && $siblingRows.length === 0) {
                 return;
             }
             $(function () {
@@ -334,8 +365,9 @@ function radioButtonClickHandler(event) {
                 );
             });
         } else {
-            $fieldset.attr('data-selected', 'no');
-            if ($siblingCells.length === 0) {
+            // Remove the 'data-selected' attribute
+            $cell.removeAttr('data-selected');
+            if ($siblingCells.length === 0 && $siblingRows.length === 0) {
                 return;
             }
             $(function () {
@@ -356,25 +388,90 @@ function radioButtonClickHandler(event) {
     }
 }
 
+function multiSelectClickHandler(event) {
+
+    console.info('multiSelectClickHandler() called.');
+
+    /**
+     * NOTE: This code assumes the following structure:
+     *
+     * <fieldset>
+     *   <div><button /> ... </div>
+     *   ...
+     * </fieldset>
+     */
+
+     // Get properties for this call
+     var $cell = $(event.target);
+     var $row = $cell.parent();
+     var $fieldset = $row.parent();
+
+    // If the button clicked is located in a single-select fieldset
+    if ($fieldset.attr('data-type') === 'multi-select') {
+        // If the button clicked has no 'data-selected' attribute
+        if ($cell.attr('data-selected') === null) {
+            // Set the 'data-selected' attribute on the clicked button
+            $cell.attr('data-selected', true);
+        } else {
+            $cell.attr('data-selected', false);
+        }
+    }
+}
+
 // Handle clicks on any button
 function lexicalCategoryHandler(event) {
 
-    // Get properties of this call
+    console.info('lexicalCategoryHandler() called.');
+
+    // Get properties for this call
     var $cell = $(event.target);
-    var $fieldset = $cell.parent().parent();
-    var lexicalCategory = $cell.attr('class');
+    var $fieldset = $cell.parents('fieldset');
 
     // If a lexical category has been selected
-    if ($fieldset.attr('data-selected') === 'yes') {
-        // Remove all lexical category specific fieldsets
+    if ($cell.attr('data-selected') !== undefined) {
+
+        /**
+         * NOTE: If the user clicks a lexical category button with a data-select
+         * attribute, it means she wants to cancel the previous selection. In this
+         * case, this happens:
+         *
+         * 1. the grammatical categories disappear
+         * 2. the save button disappears
+         * 3. the last highlight is removed, unless it's already saved
+         * 4. the last selection is restored
+         *
+         * The lexical category buttons also have the singleSelectClickHandler().
+         * So apart from the steps above, these things happen:
+         *
+         * 5. the lexical category fieldset resets
+         * 6. the 'data-selected' attribute on the clicked button disappears
+         */
+
+        // Remove grammatical categories
+        $('#fieldsets').slideUp();
         $('#fieldsets').empty();
-        // Remove last highlight
-        //$lastHightlight.contents().unwrap();
+
         // Remove Save button
-        $('#save').hide();
-        // Set unsavedChanges flag
-        $unsavedChanges = false;
+        $('#save').fadeOut(100);
+
+        // If there's an unsaved highlight, remove it
+        if (_lastUnsavedHighlight) {
+            _lastUnsavedHighlight.contents().unwrap();
+            _lastUnsavedHighlight = null;
+        }
+
+        // Redo last selection
+        if (_lastSelection.node !== null) {
+            _lastSelection.node.parentElement.normalize();
+            var range = document.createRange();
+            range.setStart(_lastSelection.node, _lastSelection.start);
+            range.setEnd(_lastSelection.node, _lastSelection.end);
+            var selection = window.getSelection();
+            selection.addRange(range);
+        }
+
     } else {
+
         var settings = {
             dataType: 'json',
             url: 'http://localhost:3000/api/grammatical_category',
@@ -383,20 +480,33 @@ function lexicalCategoryHandler(event) {
                 language: $('article').attr('lang')
             },
             success: function (data) {
-                grammaticalCategoryHandler(data, lexicalCategory);
+                grammaticalCategoryHandler(data);
             }
         };
+
+        // Make AJAX call
         $.get(settings);
+
         // Highlight the word in the text
+        var lexicalCategory = $cell.attr('class');
         highlightWord(lexicalCategory);
+
         // Show Save button
-        $('#save').show();
-        // Set unsavedChanges flag
-        $unsavedChanges = true;
+        $('#save').fadeIn(100);
+
+        /**
+         * NOTE: By selecting the lexical category, we now have unsaved data associated with
+         * this word. Therefore, we set the _unsavedChanges flag here. The lexical category
+         * is the least amount of data you can save with a single word.
+         */
+
+        _unsavedChanges = true;
     }
 }
 
 function highlightWord(lexicalCategory) {
+
+    console.info('highlightWord() called.');
 
     // Get Selection object
     var selection = window.getSelection();
@@ -424,32 +534,18 @@ function highlightWord(lexicalCategory) {
         selection.removeAllRanges();
 
         // Save last highlight (in case we need to undo it)
-        $lastHightlight = $(span);
+        _lastUnsavedHighlight = $(span);
 
-        // TODO: Look for other instances of the selection and highlight them too
+        /**
+         * TODO: Look for other instances of the selection and highlight them too.
+         */
     }
 }
 
 function saveForm() {
+
+    console.info('saveForm() called.');
     resetForm();
-}
-
-/**
- * To save words effectively, we need to have the lexical ID, grammatical ID,
- * grammeme ID
- * @return {[type]} [description]
- */
-function saveWord() {
-
-
-    //
-    // and language code in the HTML. These values are saved:
-    //
-
-}
-
-function highlightWordInElement(textNode, start, end) {
-    console.log(textNode.nodeValue, start, end);
 }
 
 $(document).ready(function () {
@@ -459,9 +555,9 @@ $(document).ready(function () {
     // Handle selections in the <article> element
     $('article').on('mouseup', selectionHandler);
 
-    $('#close').on('click', resetForm);
-
+    // Handle clicks on the application buttons
     $('#save').on('click', saveForm);
+    $('#close').on('click', resetForm);
 
     // Handle focus/focusout on IPA
     $('#ipa').on({
@@ -471,6 +567,7 @@ $(document).ready(function () {
 
     // Handle any button clicks in form
     $('#lexical-category').on('click', 'button', lexicalCategoryHandler);
-    $('form').on('click', 'fieldset[data-type="single-select"] button', radioButtonClickHandler);
+    $('form').on('click', 'fieldset[data-type="single-select"] button', singleSelectClickHandler);
+    $('form').on('click', 'fieldset[data-type="multi-select"] button', multiSelectClickHandler);
 
 });

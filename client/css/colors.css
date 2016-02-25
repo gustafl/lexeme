@@ -1,45 +1,99 @@
-/* Defaults */
-.default { background-color: #202020; }
-.default:hover { background-color: #202020; }
+.default {
+  background-color: #292929; }
+  .default:hover {
+    background-color: #363636; }
 
-/* Lexical categories */
+.transparent {
+  background-color: transparent; }
 
+.noun {
+  background-color: #29293d; }
+  .noun:hover {
+    background-color: #33334d; }
 
-.adjective { background-color: #3f2626; }
-.adjective:hover { background-color: #552222; }
-.pronoun { background-color: #263f3f; }
-.pronoun:hover { background-color: #225555; }
-.adverb { background-color: #3f3f26; }
-.adverb:hover { background-color: #555522; }
-.determiner { background-color: #3f263f; }
-.determiner:hover { background-color: #552255; }
-.preposition { background-color: #3f3f3f; }
-.preposition:hover { background-color: #555555; }
-.conjugation { background-color: #3f3f3f; }
-.conjugation:hover { background-color: #555555; }
-.interjection { background-color: #3f3f3f; }
-.interjection:hover { background-color: #555555; }
+.noun-property {
+  background-color: #292932; }
+  .noun-property:hover {
+    background-color: #32323e; }
 
-/**
- * PALETTE PROPERTIES
- *
- * Grammatical category: { h: undefined, s: 110, l = 60 }
- * Grammatical category (hover): { h: undefined, s: 110, l = 80 }
- * Grammatical category property: { h: undefined, s: 70, l = 60 }
- * Grammatical category property (hover): { h: undefined, s: 70, l = 80 }
- */
+.verb {
+  background-color: #293d29; }
+  .verb:hover {
+    background-color: #334d33; }
 
-/* Noun */
-.noun { background-color: #29293d; }
-.noun:hover { background-color: #33334d; }
-.noun-property { background-color: #2e2e38; }
-.noun-property:hover { background-color: #393946; }
+.verb-property {
+  background-color: #293229; }
+  .verb-property:hover {
+    background-color: #323e32; }
 
-/* Verb */
-.verb { background-color: #2c3d29; }
-.verb:hover { background-color: #374d33; }
-.verb-property { background-color: #2b3229; }
-.verb-property:hover { background-color: #30382e; }
+.adjective {
+  background-color: #3d2929; }
+  .adjective:hover {
+    background-color: #4d3333; }
 
-/* Application buttons (bottom row) */
-.action[disabled] { color: #555555; }
+.adjective-property {
+  background-color: #322929; }
+  .adjective-property:hover {
+    background-color: #3e3232; }
+
+.pronoun {
+  background-color: #293d3d; }
+  .pronoun:hover {
+    background-color: #334d4d; }
+
+.pronoun-property {
+  background-color: #293232; }
+  .pronoun-property:hover {
+    background-color: #323e3e; }
+
+.adverb {
+  background-color: #3d3d29; }
+  .adverb:hover {
+    background-color: #4d4d33; }
+
+.adverb-property {
+  background-color: #323229; }
+  .adverb-property:hover {
+    background-color: #3e3e32; }
+
+.determiner {
+  background-color: #3d293d; }
+  .determiner:hover {
+    background-color: #4d334d; }
+
+.determiner-property {
+  background-color: #322932; }
+  .determiner-property:hover {
+    background-color: #3e323e; }
+
+.preposition {
+  background-color: #363030; }
+  .preposition:hover {
+    background-color: #433d3d; }
+
+.preposition-property {
+  background-color: #302c2c; }
+  .preposition-property:hover {
+    background-color: #3b3535; }
+
+.conjugation {
+  background-color: #363030; }
+  .conjugation:hover {
+    background-color: #433d3d; }
+
+.conjugation-property {
+  background-color: #302c2c; }
+  .conjugation-property:hover {
+    background-color: #3b3535; }
+
+.interjection {
+  background-color: #363030; }
+  .interjection:hover {
+    background-color: #433d3d; }
+
+.interjection-property {
+  background-color: #302c2c; }
+  .interjection-property:hover {
+    background-color: #3b3535; }
+
+/*# sourceMappingURL=colors.css.map */
