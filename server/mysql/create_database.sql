@@ -18,8 +18,12 @@ CREATE TABLE `lexical_category` (
 
 CREATE TABLE `grammatical_category` (
   `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
-  PRIMARY KEY (`id`)
+  `name` varchar(50) NULL,
+  `lexical_category` tinyint(3) unsigned NOT NULL,
+  `subgroup` bit(2) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `lexical_category_fk_idx` (`lexical_category`),
+  CONSTRAINT `grammatical_category_lexical_category_fk` FOREIGN KEY (`lexical_category`) REFERENCES `lexical_category` (`id`)
 );
 
 CREATE TABLE `grammeme` (
@@ -36,7 +40,7 @@ CREATE TABLE `lexeme` (
   `language` tinyint(3) unsigned NOT NULL,
   `lexical_category` tinyint(3) unsigned NOT NULL,
   `spelling` varchar(100) NOT NULL,
-  `pronounciation` varchar(100),
+  `pronounciation` varchar(100) NULL,
   PRIMARY KEY (`id`),
   KEY `language_fk_idx` (`language`),
   KEY `lexical_category_fk_idx` (`lexical_category`),
@@ -48,7 +52,7 @@ CREATE TABLE `inflection` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `lexeme` int(10) unsigned NOT NULL,
   `spelling` varchar(100) NOT NULL,
-  `pronounciation` varchar(100),
+  `pronounciation` varchar(100) NULL,
   PRIMARY KEY (`id`),
   KEY `lexeme_fk_idx` (`lexeme`),
   CONSTRAINT `inflection_lexeme_fk` FOREIGN KEY (`lexeme`) REFERENCES `lexeme` (`id`)
