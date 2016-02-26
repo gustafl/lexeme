@@ -1,97 +1,107 @@
 USE `lexeme`;
 
-/* Lexical categories */
-INSERT INTO `lexical_category` (`name`) VALUES ('noun');
-INSERT INTO `lexical_category` (`name`) VALUES ('pronoun');
-INSERT INTO `lexical_category` (`name`) VALUES ('adjective');
-INSERT INTO `lexical_category` (`name`) VALUES ('determiner');
-INSERT INTO `lexical_category` (`name`) VALUES ('verb');
-INSERT INTO `lexical_category` (`name`) VALUES ('adverb');
-INSERT INTO `lexical_category` (`name`) VALUES ('preposition');
-INSERT INTO `lexical_category` (`name`) VALUES ('conjunction');
-INSERT INTO `lexical_category` (`name`) VALUES ('interjection');
+INSERT INTO `grammatical_category`
+VALUES
+    (1,'gender',1,3),
+    (2,'number',1,2),
+    (3,'case',1,2),
+    (4,NULL,1,1),
+    (5,NULL,1,1),
+    (6,NULL,1,1),
+    (7,'collective noun',1,1),
+    (8,'mass noun',1,1),
+    (9,'tense',2,2),
+    (10,'mood',2,2),
+    (11,'voice',2,2);
 
-/* Languages */
-INSERT INTO `language` (`name`, `code`) VALUES ('English', 'en');
-INSERT INTO `language` (`name`, `code`) VALUES ('French', 'fr');
-INSERT INTO `language` (`name`, `code`) VALUES ('Swedish', 'sv');
+INSERT INTO `grammeme`
+VALUES
+    (1,1,'masculine'),
+    (2,1,'feminine'),
+    (3,1,'neuter'),
+    (4,1,'common'),
+    (5,1,'dual'),
+    (6,2,'singular'),
+    (7,2,'plural'),
+    (8,3,'nominative'),
+    (9,3,'accusative'),
+    (10,3,'dative'),
+    (11,3,'ablative'),
+    (12,3,'genitive'),
+    (13,3,'vocative'),
+    (14,3,'locative'),
+    (15,3,'instrumental'),
+    (16,4,'proper'),
+    (17,4,'common'),
+    (18,5,'abstract'),
+    (19,5,'concrete'),
+    (20,6,'countable'),
+    (21,6,'uncountable'),
+    (22,9,'present');
 
-/* Grammatical categories */
-INSERT INTO `grammatical_category` (`name`) VALUES ('Gender');
-INSERT INTO `grammatical_category` (`name`) VALUES ('Number');
-INSERT INTO `grammatical_category` (`name`) VALUES ('Case');
-INSERT INTO `grammatical_category` (`name`) VALUES ('Proper/Common');
-INSERT INTO `grammatical_category` (`name`) VALUES ('Abstract/Concrete');
-INSERT INTO `grammatical_category` (`name`) VALUES ('Countable/Uncountable');
-INSERT INTO `grammatical_category` (`name`) VALUES ('Collective noun');
-INSERT INTO `grammatical_category` (`name`) VALUES ('Mass noun');
+INSERT INTO `language`
+VALUES
+    (1,'english','en'),
+    (2,'french','fr'),
+    (3,'swedish','sv');
 
-/* Grammemes */
-INSERT INTO `grammeme` (`grammatical_category`, `name`) VALUES (1, 'Masculine');
-INSERT INTO `grammeme` (`grammatical_category`, `name`) VALUES (1, 'Feminine');
-INSERT INTO `grammeme` (`grammatical_category`, `name`) VALUES (1, 'Neuter');
-INSERT INTO `grammeme` (`grammatical_category`, `name`) VALUES (1, 'Common');
-INSERT INTO `grammeme` (`grammatical_category`, `name`) VALUES (1, 'Dual');
-INSERT INTO `grammeme` (`grammatical_category`, `name`) VALUES (2, 'Singular');
-INSERT INTO `grammeme` (`grammatical_category`, `name`) VALUES (2, 'Plural');
-INSERT INTO `grammeme` (`grammatical_category`, `name`) VALUES (3, 'Nominative');
-INSERT INTO `grammeme` (`grammatical_category`, `name`) VALUES (3, 'Accusative');
-INSERT INTO `grammeme` (`grammatical_category`, `name`) VALUES (3, 'Dative');
-INSERT INTO `grammeme` (`grammatical_category`, `name`) VALUES (3, 'Ablative');
-INSERT INTO `grammeme` (`grammatical_category`, `name`) VALUES (3, 'Genitive');
-INSERT INTO `grammeme` (`grammatical_category`, `name`) VALUES (3, 'Vocative');
-INSERT INTO `grammeme` (`grammatical_category`, `name`) VALUES (3, 'Locative');
-INSERT INTO `grammeme` (`grammatical_category`, `name`) VALUES (3, 'Instrumental');
-INSERT INTO `grammeme` (`grammatical_category`, `name`) VALUES (4, 'Proper');
-INSERT INTO `grammeme` (`grammatical_category`, `name`) VALUES (4, 'Common');
-INSERT INTO `grammeme` (`grammatical_category`, `name`) VALUES (5, 'Abstract');
-INSERT INTO `grammeme` (`grammatical_category`, `name`) VALUES (5, 'Concrete');
-INSERT INTO `grammeme` (`grammatical_category`, `name`) VALUES (6, 'Countable');
-INSERT INTO `grammeme` (`grammatical_category`, `name`) VALUES (6, 'Uncountable');
+INSERT INTO `language_grammatical_category`
+VALUES
+    (1,1),
+    (1,2),
+    (1,3),
+    (1,4),
+    (1,5),
+    (1,6),
+    (1,7),
+    (1,8),
+    (2,1),
+    (2,2),
+    (2,4),
+    (2,5),
+    (2,6),
+    (2,7),
+    (2,8),
+    (2,9),
+    (2,10),
+    (2,11);
 
-/* Grammatical categories in English */
-INSERT INTO `language_grammatical_category` (`language`, `grammatical_category`) VALUES (1, 1);
-INSERT INTO `language_grammatical_category` (`language`, `grammatical_category`) VALUES (1, 2);
-INSERT INTO `language_grammatical_category` (`language`, `grammatical_category`) VALUES (1, 3);
-INSERT INTO `language_grammatical_category` (`language`, `grammatical_category`) VALUES (1, 4);
-INSERT INTO `language_grammatical_category` (`language`, `grammatical_category`) VALUES (1, 5);
-INSERT INTO `language_grammatical_category` (`language`, `grammatical_category`) VALUES (1, 6);
-INSERT INTO `language_grammatical_category` (`language`, `grammatical_category`) VALUES (1, 7);
-INSERT INTO `language_grammatical_category` (`language`, `grammatical_category`) VALUES (1, 8);
+INSERT INTO `language_grammeme`
+VALUES
+    (1,1),
+    (1,2),
+    (1,3),
+    (1,5),
+    (1,6),
+    (1,7),
+    (1,8),
+    (1,12),
+    (1,16),
+    (1,17),
+    (1,18),
+    (1,19),
+    (1,20),
+    (1,21),
+    (2,1),
+    (2,2),
+    (2,6),
+    (2,7),
+    (2,16),
+    (2,17),
+    (2,18),
+    (2,19),
+    (2,20),
+    (2,21),
+    (2,22);
 
-/* Grammemes in English */
-INSERT INTO `language_grammeme` (`language`, `grammeme`) VALUES (1, 1);
-INSERT INTO `language_grammeme` (`language`, `grammeme`) VALUES (1, 2);
-INSERT INTO `language_grammeme` (`language`, `grammeme`) VALUES (1, 3);
-INSERT INTO `language_grammeme` (`language`, `grammeme`) VALUES (1, 5);
-INSERT INTO `language_grammeme` (`language`, `grammeme`) VALUES (1, 6);
-INSERT INTO `language_grammeme` (`language`, `grammeme`) VALUES (1, 7);
-INSERT INTO `language_grammeme` (`language`, `grammeme`) VALUES (1, 8);
-INSERT INTO `language_grammeme` (`language`, `grammeme`) VALUES (1, 12);
-INSERT INTO `language_grammeme` (`language`, `grammeme`) VALUES (1, 16);
-INSERT INTO `language_grammeme` (`language`, `grammeme`) VALUES (1, 17);
-INSERT INTO `language_grammeme` (`language`, `grammeme`) VALUES (1, 18);
-INSERT INTO `language_grammeme` (`language`, `grammeme`) VALUES (1, 19);
-INSERT INTO `language_grammeme` (`language`, `grammeme`) VALUES (1, 20);
-INSERT INTO `language_grammeme` (`language`, `grammeme`) VALUES (1, 21);
-
-/* Grammatical categories in French */
-INSERT INTO `language_grammatical_category` (`language`, `grammatical_category`) VALUES (2, 1);
-INSERT INTO `language_grammatical_category` (`language`, `grammatical_category`) VALUES (2, 2);
-INSERT INTO `language_grammatical_category` (`language`, `grammatical_category`) VALUES (2, 4);
-INSERT INTO `language_grammatical_category` (`language`, `grammatical_category`) VALUES (2, 5);
-INSERT INTO `language_grammatical_category` (`language`, `grammatical_category`) VALUES (2, 6);
-INSERT INTO `language_grammatical_category` (`language`, `grammatical_category`) VALUES (2, 7);
-INSERT INTO `language_grammatical_category` (`language`, `grammatical_category`) VALUES (2, 8);
-
-/* Grammemes in French */
-INSERT INTO `language_grammeme` (`language`, `grammeme`) VALUES (2, 1);
-INSERT INTO `language_grammeme` (`language`, `grammeme`) VALUES (2, 2);
-INSERT INTO `language_grammeme` (`language`, `grammeme`) VALUES (2, 6);
-INSERT INTO `language_grammeme` (`language`, `grammeme`) VALUES (2, 7);
-INSERT INTO `language_grammeme` (`language`, `grammeme`) VALUES (2, 16);
-INSERT INTO `language_grammeme` (`language`, `grammeme`) VALUES (2, 17);
-INSERT INTO `language_grammeme` (`language`, `grammeme`) VALUES (2, 18);
-INSERT INTO `language_grammeme` (`language`, `grammeme`) VALUES (2, 19);
-INSERT INTO `language_grammeme` (`language`, `grammeme`) VALUES (2, 20);
-INSERT INTO `language_grammeme` (`language`, `grammeme`) VALUES (2, 21);
+INSERT INTO `lexical_category`
+VALUES
+    (1,'noun'),
+    (2,'verb'),
+    (3,'adjective'),
+    (4,'pronoun'),
+    (5,'adverb'),
+    (6,'determiner'),
+    (7,'preposition'),
+    (8,'conjunction'),
+    (9,'interjection');

@@ -7,4 +7,5 @@ old/
 errors.txt
 # Files
 bs-config.js
+mysqldump_commands.txt
 *.sublime-*

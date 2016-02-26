@@ -15,39 +15,48 @@ var localConnection = {
     charset: 'utf8mb4'
 };
 
-/**
- * Takes an object array and returns an array of unique property values.
- * @param  {array}  objectArray  An object array.
- * @param  {string} property     The name of the property to look for.
- * @return {array}               An array of unique property values.
- */
-function getUniqueValues(objectArray, property) {
+function getUniqueValues(objectArray, property, filter) {
     var array = [];
-    for (var i = 0; i < objectArray.length; i++) {
-        var value = objectArray[i][property];
-        if (array.indexOf(value) < 0) {
-            array.push(value);
+    if (filter === undefined) {
+        for (var i = 0; i < objectArray.length; i++) {
+            var value = objectArray[i][property];
+            if (value !== undefined && array.indexOf(value) === -1) {
+                array.push(value);
+            }
+        }
+    } else {
+        for (var i = 0; i < objectArray.length; i++) {
+            var filterKey = Object.keys(filter)[0];
+            var filterValue = filter[filterKey];
+            if (objectArray[i][filterKey] === filterValue) {
+                var value = objectArray[i][property];
+                if (value !== undefined && array.indexOf(value) === -1) {
+                    array.push(value);
+                }
+            }
         }
     }
     return array;
 }
 
-/**
- * Takes an object array and returns an array of objects matching a
- * given property and a property value.
- * @param  {array}  objectArray  An object array.
- * @param  {string} property     The name of the property to look for.
- * @param  {any}    value        The property value that has to match.
- * @return {array}               An array of matching objects.
- */
-function getMatchingObjects(objectArray, property, value) {
-    var array = [];
-    for (var i = 0; i < objectArray.length; i++) {
-        if (objectArray[i][property] === value) {
-            array.push(objectArray[i]);
+function findObject(objectArray, filters) {
+    var numberOfFilters = Object.keys(filters).length;
+    if (filters !== undefined) {
+        for (var i = 0; i < objectArray.length; i++) {
+            for (var j = 0; j < numberOfFilters; j++) {
+                var filterKey = Object.keys(filters)[j];
+                var filterValue = filters[filterKey];
+                if (objectArray[i][filterKey] === filterValue) {
+                    if (j === (numberOfFilters - 1)) {
+                        return objectArray[i];
+                    }
+                } else {
+                    break;
+                }
+            }
         }
     }
-    return array;
+    return null;
 }
 
 function compareNumbers(n1, n2) {
@@ -65,46 +74,81 @@ module.exports = function (app) {
             var query = util.format("CALL get_language_configuration('%s');", req.query.language);
             queryDatabase(query, function (err, data) {
 
+                // Check for errors
                 if (err) {
                     res.status(500).end();
                     return;
                 }
 
-                // Get a sorted array of unique 'gc_id' values
-                var array = getUniqueValues(data, 'gc_id');
-                array.sort(compareNumbers);
-
                 // Prepare an object array to be returned as JSON
                 var objects = [];
 
-                // Loop through unique grammatical category IDs
-                array.forEach(function (element) {
-                    // Get array of matching objects for this ID
-                    var matching = getMatchingObjects(data, 'gc_id', element);
-                    if (matching.length > 0) {
-                        var object = {};
-                        object.id = element;
-                        object.name = matching[0].gc_name;
-                        object.subgroup = matching[0].gc_subgroup[0];
-                        object.grammemes = [];
-                        matching.forEach(function (element2) {
+                // Loop through unique lexical category IDs in order
+                var lexicalCategoryArray = getUniqueValues(data, 'lc_id');
+                lexicalCategoryArray.sort(compareNumbers);
+                lexicalCategoryArray.forEach(function (lc_id) {
+
+                    // Create new object for lexical category
+                    var lexicalCategory = {};
+                    lexicalCategory.id = lc_id;
+
+                    // Get first object matching this grammatical ID
+                    var lc_object = findObject(data, { lc_id: lc_id });
+
+                    // Set lexical category properties
+                    lexicalCategory.name = lc_object.lc_name;
+                    lexicalCategory.grammaticalCategories = [];
+
+                    // Loop through unique grammatical category IDs in order
+                    var grammaticalCategoryFilter = { 'lc_id': lc_id };
+                    var grammaticalCategoryArray = getUniqueValues(data, 'gc_id', grammaticalCategoryFilter);
+                    grammaticalCategoryArray.sort(compareNumbers);
+                    grammaticalCategoryArray.forEach(function (gc_id) {
+
+                        // Create new object for grammatical category
+                        var grammaticalCategory = {};
+                        grammaticalCategory.id = gc_id;
+
+                        // Get first object matching this grammatical ID
+                        var gc_object = findObject(data, { gc_id: gc_id });
+
+                        // Set grammatical category properties
+                        grammaticalCategory.name = gc_object.gc_name;
+                        grammaticalCategory.subgroup = gc_object.gc_subgroup;
+                        grammaticalCategory.grammemes = [];
+
+                        // Loop through grammemes
+                        var grammemeFilter = { 'gc_id': gc_id };
+                        var grammemeArray = getUniqueValues(data, 'gr_id', grammemeFilter);
+                        grammemeArray.sort(compareNumbers);
+                        grammemeArray.forEach(function (gr_id) {
+
+                            // Create new object for grammeme
                             var grammeme = {};
-                            grammeme.id = element2.gr_id;
-                            grammeme.name = element2.gr_name;
+                            grammeme.id = gr_id;
+
+                            // Get first object matching this grammeme ID
+                            var gr_object = findObject(data, { gr_id: gr_id });
+                            grammeme.name = gr_object.gr_name;
+
+                            // Add grammeme to grammatical category
                             if (grammeme.id !== null && grammeme.name !== null) {
-                                object.grammemes.push(grammeme);
+                                grammaticalCategory.grammemes.push(grammeme);
                             }
                         });
-                        objects.push(object);
-                    }
+                        // Add grammatical category to lexical category
+                        lexicalCategory.grammaticalCategories.push(grammaticalCategory);
+                    });
+                    // Add lexical category to return array
+                    objects.push(lexicalCategory);
                 });
+                // Return object array
                 res.json(objects);
             });
         } else {
             res.status(400).end();
         }
     });
-
 };
 
 function log(text) {
