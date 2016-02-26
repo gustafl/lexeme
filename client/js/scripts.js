@@ -381,7 +381,7 @@ function lexicalCategoryHandler(event) {
         $('div[data-lc-id="' + id + '"]').slideUp(duration, function () {
             // Remove Save button
             $('#save').disable();
-            $('#save').hide(200);
+            $('#save').fadeOut(100);
         });
 
         // If there's an unsaved highlight, remove it
@@ -406,7 +406,7 @@ function lexicalCategoryHandler(event) {
         $('div[data-lc-id="' + id + '"]').slideDown(duration, function () {
             // Show Save button
             $('#save').enable();
-            $('#save').show(200);
+            $('#save').fadeIn(100);
         });
 
         // Highlight the word in the text
@@ -583,9 +583,9 @@ function addTranslationHandler(event) {
     }
 }
 
-function grammaticalCategoryHandler(data) {
+function loadLanguageConfiguration(data) {
 
-    console.info('grammaticalCategoryHandler() called.');
+    console.info('loadLanguageConfiguration() called.');
 
     // Get data from local storage
     var storage = window.localStorage;
@@ -632,6 +632,7 @@ function grammaticalCategoryHandler(data) {
             var $fieldset = $('<fieldset />');
             $fieldset.addClass('col-' + numberOfColumns);
             $fieldset.attr('data-gc-id', grammaticalCategory.id);
+            $fieldset.attr('data-gc-subgroup', grammaticalCategory.subgroup);
 
             // Add legend to fieldset
             var $legend = $('<legend>' + grammaticalCategory.name + '</legend>');
@@ -671,14 +672,13 @@ function grammaticalCategoryHandler(data) {
     });
 }
 
-// Make an AJAX call to get grammatical properties of selected language
-function loadGrammaticalCategories() {
+function adaptToLanguage(languageCode) {
 
     // Make sure we didn't already load this
     var storage = window.localStorage;
-    var languageCode = $('article').attr('lang');
     var key = 'config.' + languageCode;
     if (storage[key] !== undefined) {
+        loadLanguageConfiguration();
         return;
     }
 
@@ -691,7 +691,7 @@ function loadGrammaticalCategories() {
         },
         success: function (data) {
             storage[key] = JSON.stringify(data);
-            grammaticalCategoryHandler();
+            loadLanguageConfiguration();
         }
     };
 
@@ -704,8 +704,9 @@ $(document).ready(function () {
 
     console.info("$(document).ready() called!");
 
-    // Load the grammatical categories to Local Storage
-    loadGrammaticalCategories();
+    // Load languages-specific buttons from Local Storage or AJAX
+    var languageCode = $('article').attr('lang');
+    adaptToLanguage(languageCode);
 
     // Handle selections in the <article> element
     $('article').on('mouseup', selectionHandler);
