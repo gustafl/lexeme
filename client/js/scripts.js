@@ -248,78 +248,6 @@ function ipaFocusOutHandler() {
     $('#ipa').val(text);
 }
 
-function grammaticalCategoryHandler(data) {
-
-    console.info('grammaticalCategoryHandler() called.');
-
-    // For each grammatical category
-    $.each(data, function(key, val) {
-
-        // Get number of columns
-        var numberOfColumns = 3;
-        switch (val.grammemes.length) {
-            case 0:
-            case 1:
-                numberOfColumns = 1;
-                break;
-            case 2:
-            case 4:
-                numberOfColumns = 2;
-                break;
-        }
-
-        // Get number of rows
-        var numberOfRows = 1;
-        var buttonsOnLastRow = 0;
-        var remainingSpacesOnLastRow = 0;
-        if (val.grammemes.length > numberOfColumns) {
-            buttonsOnLastRow = val.grammemes.length % numberOfColumns;
-            remainingSpacesOnLastRow = numberOfColumns - buttonsOnLastRow;
-            numberOfRows = (val.grammemes.length - buttonsOnLastRow) / numberOfColumns;
-        }
-
-        // Create new fieldset
-        var $fieldset = $('<fieldset />');
-        $fieldset.addClass('col-' + numberOfColumns);
-        $fieldset.attr('data-gc-id', val.id);
-        var $legend = $('<legend>' + val.name + '</legend>');
-        var $div = $('<div />');
-        $fieldset.append($legend);
-        $fieldset.append($div);
-        var $button;
-
-        // Get the class name from the selected lexical category button
-        var className = $('#lexical-category').find('button[data-selected]').attr('class') + '-property';
-
-        // If there are grammemes
-        if (val.grammemes.length > 0) {
-            $fieldset.attr('data-type', 'single-select');
-            for (var i = 0; i < val.grammemes.length; i++) {
-                $button = createGrammemeButton(className, val.grammemes[i].id, val.grammemes[i].name);
-                $div.append($button);
-
-                // TODO: Dividing buttons on multiple rows not implemented.
-
-            }
-        } else {
-            $fieldset.attr('data-type', 'multi-select');
-            $button = createGrammemeButton(className, val.id, val.name);
-            $div.append($button);
-        }
-
-        // Append new fieldset to <div id="fieldsets">
-        $('#fieldsets').append($fieldset);
-    });
-}
-
-function createGrammemeButton(className, id, name) {
-    var $button = $('<button type="button" />');
-    $button.addClass(className);
-    $button.attr('data-gc-id', id);
-    $button.text(name);
-    return $button;
-}
-
 function singleSelectClickHandler(event) {
 
     console.info('singleSelectClickHandler() called.');
@@ -339,7 +267,7 @@ function singleSelectClickHandler(event) {
      var $fieldset = $row.parent();
      var $siblingRows = $row.siblings();
      var $siblingCells = $cell.siblings();
-     var duration = 400;
+     var duration = 200;
 
     // If the button clicked is located in a single-select fieldset
     if ($fieldset.attr('data-type') === 'single-select') {
@@ -426,13 +354,15 @@ function lexicalCategoryHandler(event) {
     // Get properties for this call
     var $cell = $(event.target);
     var $fieldset = $cell.parents('fieldset');
+    var id = $cell.attr('data-lc-id');
+    var duration = 400;
 
-    // If a lexical category has been selected
+    // If a lexical category is already selected
     if ($cell.attr('data-selected') !== undefined) {
 
         /**
          * NOTE: If the user clicks a lexical category button with a data-select
-         * attribute, it means she wants to cancel the previous selection. In this
+         * attribute, it means he/she wants to cancel the previous selection. In this
          * case, this happens:
          *
          * 1. the grammatical categories disappear
@@ -447,12 +377,12 @@ function lexicalCategoryHandler(event) {
          * 6. the 'data-selected' attribute on the clicked button disappears
          */
 
-        // Remove grammatical categories
-        $('#fieldsets').slideUp();
-        $('#fieldsets').empty();
-
-        // Remove Save button
-        $('#save').fadeOut(100);
+        // Hide the associated <div>
+        $('div[data-lc-id="' + id + '"]').slideUp(duration, function () {
+            // Remove Save button
+            $('#save').disable();
+            $('#save').hide(200);
+        });
 
         // If there's an unsaved highlight, remove it
         if (_lastUnsavedHighlight) {
@@ -472,27 +402,16 @@ function lexicalCategoryHandler(event) {
 
     } else {
 
-        var settings = {
-            dataType: 'json',
-            url: 'http://localhost:3000/api/grammatical_category',
-            data: {
-                lexical_category: $cell.attr('data-lc-id'),
-                language: $('article').attr('lang')
-            },
-            success: function (data) {
-                grammaticalCategoryHandler(data);
-            }
-        };
-
-        // Make AJAX call
-        $.get(settings);
+        // Show the associated <div>
+        $('div[data-lc-id="' + id + '"]').slideDown(duration, function () {
+            // Show Save button
+            $('#save').enable();
+            $('#save').show(200);
+        });
 
         // Highlight the word in the text
         var lexicalCategory = $cell.attr('class');
         highlightWord(lexicalCategory);
-
-        // Show Save button
-        $('#save').fadeIn(100);
 
         /**
          * NOTE: By selecting the lexical category, we now have unsaved data associated with
@@ -545,12 +464,248 @@ function highlightWord(lexicalCategory) {
 function saveForm() {
 
     console.info('saveForm() called.');
+
+    // Get LocalStorage object
+    var storage = window.localStorage;
+
+    // If lexeme doesn't exists
+    var lexeme = $('#word').val();
+    if (storage[lexeme] === undefined) {
+        // Add new lexeme
+        var lexemeRecord = {};
+        lexemeRecord.lcid = $('#lexical_category').find('button[data-selected]').attr('data-lc-id');
+        lexemeRecord.la = $('article').attr('lang');
+        lexemeRecord.sp = lexeme;
+        lexemeRecord.pr = $('#ipa').val();
+        lexemeRecord.gc = [];
+        $('#fieldsets').find('fieldset[data-lexeme-related]').each('button[data-selected]', function () {
+            // TODO: Handle multi-select fieldsets too.
+            var grammaticalCategory = {
+                gcid: $(this).parents('fieldset').attr('data-gc-id'),
+                grid: $(this).attr('data-gr-id')
+            };
+            lexemeRecord.gc.push(grammaticalCategory);
+        });
+        var key = 'lexeme.' + lexeme;
+        var value = JSON.stringify(lexemeRecord);
+        storage[key] = value;
+    }
+
+    // Persist translations and inflections in the DOM while working on a word.
+    // Show translations and
+
+    // Add new inflection(s)
+    var inflectionRecord = {};
+    inflectionRecord.ls = $('#lexical_category').find('button[data-selected]').attr('data-lc-id');
+    inflectionRecord.sp = lexeme;
+    inflectionRecord.pr = $('#ipa').val();
+    inflectionRecord.gc = [];
+    $('#fieldsets').find('fieldset:not([data-lexeme-related])').each('button[data-selected]', function () {
+        // TODO: Handle multi-select fieldsets too.
+        var grammaticalCategory = {
+            gcid: $(this).parents('fieldset').attr('data-gc-id'),
+            grid: $(this).attr('data-gr-id')
+        };
+        inflectionRecord.gc.push(grammaticalCategory);
+    });
+    var key = 'lexeme.' + lexeme;
+    var value = JSON.stringify(inflectionRecord);
+    storage[key] = value;
+
+    // Add new translation(s)
+
     resetForm();
+}
+
+function addTranslationHandler(event) {
+
+    console.info('singleSelectClickHandler() called.');
+
+    /**
+     * NOTE: This code assumes the following structure:
+     *
+     * <fieldset>
+     *   <div><button /> ... </div>
+     *   ...
+     * </fieldset>
+     */
+
+     // Get properties for this call
+     var $cell = $(event.target);
+     var $row = $cell.parent();
+     var $fieldset = $row.parent();
+     var duration = 400;
+
+     // Create an <input> element to type the translation in
+     var $input = $('<input type="text" autocomplete="off" maxlength="100" style="display: none" />');
+     $row.append($input);
+
+    // If the clicked button has no 'data-selected' attribute
+    if ($cell.attr('data-selected') === undefined) {
+        $cell.attr('data-selected', true);
+        $row.css('text-align', 'right');
+        $input.fadeIn(1000, function () {
+            $input.focus();
+        });
+        $(function () {
+            $cell.animate(
+                { width: '33%' },
+                { duration: duration, queue: false, complete: function () {
+
+
+                }}
+            );
+            $input.animate(
+                { width: '65%' },
+                { duration: duration, queue: false }
+            );
+        });
+    } else {
+        $cell.removeAttr('data-selected');
+        $input.fadeOut(1000, function () {
+
+        });
+        $input.fadeOut(1000, function() {
+            $('#translation input').remove();
+            $(function () {
+                $cell.animate(
+                    { width: '100%' },
+                    { duration: duration, queue: false, complete: function () {
+                        $row.css('text-align', '');
+                    }}
+                );
+                $input.animate(
+                    { width: '0%' },
+                    { duration: duration, queue: false }
+                );
+            });
+        });
+    }
+}
+
+function grammaticalCategoryHandler(data) {
+
+    console.info('grammaticalCategoryHandler() called.');
+
+    // Get data from local storage
+    var storage = window.localStorage;
+    var languageCode = $('article').attr('lang');
+    var data = JSON.parse(storage['config.' + languageCode]);
+
+    // For each lexical category
+    $.each(data, function(lc, lexicalCategory) {
+
+        // Find the prepared div for this lexical category
+        var div = $('form div[data-lc-id="' + lexicalCategory.id + '"]');
+
+        // For each grammatical category
+        $.each(lexicalCategory.grammaticalCategories, function (gc, grammaticalCategory) {
+
+            // Get grammatical category properties
+            var subgroup = grammaticalCategory.subgroup
+            var numberOfGrammmemes = grammaticalCategory.grammemes.length;
+
+            // Get number of columns
+            var numberOfColumns = 3;
+            switch (numberOfGrammmemes) {
+                case 0:
+                case 1:
+                    numberOfColumns = 1;
+                    break;
+                case 2:
+                case 4:
+                    numberOfColumns = 2;
+                    break;
+            }
+
+            // Get number of rows
+            var numberOfRows = 1;
+            var buttonsOnLastRow = 0;
+            var remainingSpacesOnLastRow = 0;
+            if (numberOfGrammmemes > numberOfColumns) {
+                buttonsOnLastRow = numberOfGrammmemes % numberOfColumns;
+                remainingSpacesOnLastRow = numberOfColumns - buttonsOnLastRow;
+                numberOfRows = (numberOfGrammmemes - buttonsOnLastRow) / numberOfColumns;
+            }
+
+            // Create new fieldset
+            var $fieldset = $('<fieldset />');
+            $fieldset.addClass('col-' + numberOfColumns);
+            $fieldset.attr('data-gc-id', grammaticalCategory.id);
+
+            // Add legend to fieldset
+            var $legend = $('<legend>' + grammaticalCategory.name + '</legend>');
+            $fieldset.append($legend);
+
+            // Add div to fieldset
+            var $div = $('<div />');
+            $fieldset.append($div);
+            var $button;
+
+            // If there are grammemes
+            if (numberOfGrammmemes > 0) {
+
+                // Set fieldset to type 'single-select'
+                $fieldset.attr('data-type', 'single-select');
+
+                // For each grammeme
+                $.each(grammaticalCategory.grammemes, function (gr, grammeme) {
+                    $button = $('<button type="button" />');
+                    $button.addClass(lexicalCategory.name + '-property');
+                    $button.attr('data-gr-id', grammeme.id);
+                    $button.text(grammeme.name);
+                    $div.append($button);
+                    // TODO: Dividing buttons on multiple rows not implemented.
+                });
+            } else {
+                $fieldset.attr('data-type', 'multi-select');
+                $button = $('<button type="button" />');
+                $button.addClass(lexicalCategory.name + '-property');
+                $button.text(grammaticalCategory.name);
+                $div.append($button);
+            }
+
+            // Append new fieldset to <div id="fieldsets">
+            div.append($fieldset);
+        });
+    });
+}
+
+// Make an AJAX call to get grammatical properties of selected language
+function loadGrammaticalCategories() {
+
+    // Make sure we didn't already load this
+    var storage = window.localStorage;
+    var languageCode = $('article').attr('lang');
+    var key = 'config.' + languageCode;
+    if (storage[key] !== undefined) {
+        return;
+    }
+
+    // Prepare AJAX call
+    var settings = {
+        dataType: 'json',
+        url: 'http://localhost:3000/api/grammatical_category',
+        data: {
+            language: languageCode
+        },
+        success: function (data) {
+            storage[key] = JSON.stringify(data);
+            grammaticalCategoryHandler();
+        }
+    };
+
+    // Make AJAX call
+    $.get(settings);
+
 }
 
 $(document).ready(function () {
 
     console.info("$(document).ready() called!");
+
+    // Load the grammatical categories to Local Storage
+    loadGrammaticalCategories();
 
     // Handle selections in the <article> element
     $('article').on('mouseup', selectionHandler);
@@ -558,6 +713,9 @@ $(document).ready(function () {
     // Handle clicks on the application buttons
     $('#save').on('click', saveForm);
     $('#close').on('click', resetForm);
+
+    // Handle Add translation
+    $('#translation').on('click', 'button', addTranslationHandler);
 
     // Handle focus/focusout on IPA
     $('#ipa').on({
@@ -569,5 +727,20 @@ $(document).ready(function () {
     $('#lexical-category').on('click', 'button', lexicalCategoryHandler);
     $('form').on('click', 'fieldset[data-type="single-select"] button', singleSelectClickHandler);
     $('form').on('click', 'fieldset[data-type="multi-select"] button', multiSelectClickHandler);
+
+    // jQuery extension to disable/enable buttons
+    // Usage: $('button').disable(true);
+    jQuery.fn.extend({
+        disable: function () {
+            return this.each(function () {
+                this.disabled = true;
+            });
+        },
+        enable: function () {
+            return this.each(function () {
+                this.disabled = false;
+            });
+        }
+    });
 
 });

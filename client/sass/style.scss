@@ -196,6 +196,24 @@ input:focus, textarea:focus {
     outline: none;
 }
 
+#translation input {
+    border-bottom: 2px dashed $color-gray;
+    color: $color-almost-white;
+    height: 58px;
+    background-color: $color-dark-gray-1;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    text-align: left;
+    font-size: 24px;
+    padding: 10px;
+    margin-right: 10px;
+}
+
+div[data-lc-id] {
+    display: none;
+}
+
 // Selected multi-select-style button
 #fieldsets button[data-selected] button:only-child {
     background-color: #808080;
