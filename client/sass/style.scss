@@ -1,6 +1,12 @@
-@import 'colors';
 @import 'fonts';
 @import 'mixins';
+
+$color-almost-black: hsla(0, 0%, 8%, 1);
+$color-almost-white: hsla(56, 35%, 90%, 1);
+$color-dark-gray-1: hsla(0, 0%, 13%, 1);
+$color-dark-gray-2: hsla(0, 0%, 16%, 1);
+$color-gray: hsla(0, 0%, 30%, 1);
+$color-text-selection: hsla(0, 65%, 50%, 1);
 
 article {
     @media screen and (max-width: 1279px) {

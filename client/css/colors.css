@@ -11,9 +11,9 @@
   .noun:hover {
     background-color: #33334d; }
 
-.noun-property {
+.noun-unselected {
   background-color: #292932; }
-  .noun-property:hover {
+  .noun-unselected:hover {
     background-color: #32323e; }
 
 .verb {
@@ -21,9 +21,9 @@
   .verb:hover {
     background-color: #334d33; }
 
-.verb-property {
+.verb-unselected {
   background-color: #293229; }
-  .verb-property:hover {
+  .verb-unselected:hover {
     background-color: #323e32; }
 
 .adjective {
@@ -31,9 +31,9 @@
   .adjective:hover {
     background-color: #4d3333; }
 
-.adjective-property {
+.adjective-unselected {
   background-color: #322929; }
-  .adjective-property:hover {
+  .adjective-unselected:hover {
     background-color: #3e3232; }
 
 .pronoun {
@@ -41,9 +41,9 @@
   .pronoun:hover {
     background-color: #334d4d; }
 
-.pronoun-property {
+.pronoun-unselected {
   background-color: #293232; }
-  .pronoun-property:hover {
+  .pronoun-unselected:hover {
     background-color: #323e3e; }
 
 .adverb {
@@ -51,9 +51,9 @@
   .adverb:hover {
     background-color: #4d4d33; }
 
-.adverb-property {
+.adverb-unselected {
   background-color: #323229; }
-  .adverb-property:hover {
+  .adverb-unselected:hover {
     background-color: #3e3e32; }
 
 .determiner {
@@ -61,9 +61,9 @@
   .determiner:hover {
     background-color: #4d334d; }
 
-.determiner-property {
+.determiner-unselected {
   background-color: #322932; }
-  .determiner-property:hover {
+  .determiner-unselected:hover {
     background-color: #3e323e; }
 
 .preposition {
@@ -71,9 +71,9 @@
   .preposition:hover {
     background-color: #433d3d; }
 
-.preposition-property {
+.preposition-unselected {
   background-color: #302c2c; }
-  .preposition-property:hover {
+  .preposition-unselected:hover {
     background-color: #3b3535; }
 
 .conjugation {
@@ -81,9 +81,9 @@
   .conjugation:hover {
     background-color: #433d3d; }
 
-.conjugation-property {
+.conjugation-unselected {
   background-color: #302c2c; }
-  .conjugation-property:hover {
+  .conjugation-unselected:hover {
     background-color: #3b3535; }
 
 .interjection {
@@ -91,9 +91,9 @@
   .interjection:hover {
     background-color: #433d3d; }
 
-.interjection-property {
+.interjection-unselected {
   background-color: #302c2c; }
-  .interjection-property:hover {
+  .interjection-unselected:hover {
     background-color: #3b3535; }
 
 /*# sourceMappingURL=colors.css.map */

@@ -285,7 +285,12 @@ function singleSelectClickHandler(event) {
                 );
                 $cell.animate(
                     { width: '100%' },
-                    { duration: duration, queue: false }
+                    { duration: duration, queue: false, complete: function () {
+                        if ($cell.parents('#lexical-category').length === 0) {
+                            var currentClass = $cell.attr('class');
+                            $cell.attr('class', currentClass.replace('-unselected', ''));
+                        }
+                    }}
                 );
                 $siblingCells.animate(
                     { width: '0%' },
@@ -305,7 +310,12 @@ function singleSelectClickHandler(event) {
                 );
                 $cell.animate(
                     { width: (100 / ($siblingCells.length + 1)) + '%' },
-                    { duration: duration, queue: false }
+                    { duration: duration, queue: false, complete: function () {
+                        if ($cell.parents('#lexical-category').length === 0) {
+                            var currentClass = $cell.attr('class');
+                            $cell.attr('class', currentClass + '-unselected');
+                        }
+                    }}
                 );
                 $siblingCells.animate(
                     { width: (100 / ($siblingCells.length + 1)) + '%' },
@@ -336,12 +346,20 @@ function multiSelectClickHandler(event) {
 
     // If the button clicked is located in a single-select fieldset
     if ($fieldset.attr('data-type') === 'multi-select') {
-        // If the button clicked has no 'data-selected' attribute
-        if ($cell.attr('data-selected') === null) {
-            // Set the 'data-selected' attribute on the clicked button
+        // If the clicked button has no 'data-selected' attribute
+        if ($cell.attr('data-selected') === undefined) {
+            // Set the 'data-selected' attribute
             $cell.attr('data-selected', true);
+            if ($cell.parents('#lexical-category').length === 0) {
+                var currentClass = $cell.attr('class');
+                $cell.attr('class', currentClass.replace('-unselected', ''));
+            }
         } else {
-            $cell.attr('data-selected', false);
+            $cell.removeAttr('data-selected');
+            if ($cell.parents('#lexical-category').length === 0) {
+                var currentClass = $cell.attr('class');
+                $cell.attr('class', currentClass + '-unselected');
+            }
         }
     }
 }
@@ -396,8 +414,10 @@ function lexicalCategoryHandler(event) {
             var range = document.createRange();
             range.setStart(_lastSelection.node, _lastSelection.start);
             range.setEnd(_lastSelection.node, _lastSelection.end);
-            var selection = window.getSelection();
-            selection.addRange(range);
+            if (range.startOffset !== range.endOffset) {
+                var selection = window.getSelection();
+                selection.addRange(range);
+            }
         }
 
     } else {
@@ -652,7 +672,7 @@ function loadLanguageConfiguration(data) {
                 // For each grammeme
                 $.each(grammaticalCategory.grammemes, function (gr, grammeme) {
                     $button = $('<button type="button" />');
-                    $button.addClass(lexicalCategory.name + '-property');
+                    $button.addClass(lexicalCategory.name + '-unselected');
                     $button.attr('data-gr-id', grammeme.id);
                     $button.text(grammeme.name);
                     $div.append($button);
@@ -661,7 +681,7 @@ function loadLanguageConfiguration(data) {
             } else {
                 $fieldset.attr('data-type', 'multi-select');
                 $button = $('<button type="button" />');
-                $button.addClass(lexicalCategory.name + '-property');
+                $button.addClass(lexicalCategory.name + '-unselected');
                 $button.text(grammaticalCategory.name);
                 $div.append($button);
             }
