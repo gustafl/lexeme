@@ -481,59 +481,120 @@ function highlightWord(lexicalCategory) {
     }
 }
 
+function saveLexeme() {
+
+    console.info('saveLexeme() called.');
+
+    /**
+     * NOTE: We may assume that a lexical category has been selected here. Otherwise
+     * the Save button would be hidden.
+     */
+
+    // Prepare a lexeme object
+    var lexeme = {};
+
+    // Find <div> matching selected lexical category
+    var lcid = $('#lexical-category').find('button[data-selected]').attr('data-lc-id');
+    var div = $('div[data-lc-id="%s"]'.replace('%s', lcid));
+
+    // Add basic lexeme data
+    lexeme.lcid = lcid;
+    lexeme.la = $('article').attr('lang');
+    lexeme.sp = $('#word').val();
+    var ipa = $('#ipa').val();
+    lexeme.pr = (ipa !== '[IPA]') ? ipa : null;
+    lexeme.gc = [];
+
+    // For each <fieldset> child of <div>
+    var fieldsets = div.children();
+    fieldsets.each(function (index, element) {
+
+        // Ignore fieldsets with wrong data-gc-subgroup values
+        var fieldset = $(element);
+        var subgroup = fieldset.attr('data-gc-subgroup');
+        if (subgroup !== '1' && subgroup !== '3') {
+            return true;
+        }
+
+        // Ignore fieldsets with no selected buttons
+        var selectedButtons = fieldset.find('button[data-selected]');
+        if (selectedButtons.length === 0) {
+            return true;
+        }
+
+        // Get the fieldset type
+        var fieldsetType = fieldset.attr('data-type');
+
+        // If it's a single-select fieldset
+        if (fieldsetType === 'single-select') {
+            var selectedButton = selectedButtons.first();
+            var grammaticalCategoryId = fieldset.attr('data-gc-id');
+            var grammemeId = selectedButton.attr('data-gr-id');
+            // Add selected button to grammatical categories array
+            lexeme.gc.push({
+                gcid: grammaticalCategoryId,
+                grid: grammemeId
+            });
+            return true;
+        }
+
+        // If it's a multi-select fieldset
+        if (fieldsetType === 'multi-select') {
+            // For each selected button
+            selectedButtons.each(function (index2, element2) {
+                // Add selected button to grammatical categories array
+                var selectedButton = $(element2);
+                var grammaticalCategoryId = fieldset.attr('data-gc-id');
+                var grammemeId = selectedButton.attr('data-gr-id');
+                grammemeId = (grammemeId !== undefined) ? grammemeId : null;
+                lexeme.gc.push({
+                    gcid: grammaticalCategoryId,
+                    grid: grammemeId
+                });
+            });
+            return true;
+        }
+    });
+
+    // Store lexeme object
+    var storage = window.localStorage;
+    var key = 'lexeme.' + lexeme.sp;
+    if (storage[key] !== undefined) {
+        console.warn('An existing lexeme was overwritten.');
+    } else {
+        console.info('A new lexeme was saved.');
+    }
+    var value = JSON.stringify(lexeme);
+    storage[key] = value;
+}
+
+function saveTranslations() {
+
+}
+
+function saveInflections() {
+
+}
+
+function loadLexeme() {
+
+}
+
+function loadTranslations() {
+
+}
+
+function loadInflections() {
+
+}
+
 function saveForm() {
 
     console.info('saveForm() called.');
 
-    // Get LocalStorage object
-    var storage = window.localStorage;
-
-    // If lexeme doesn't exists
-    var lexeme = $('#word').val();
-    if (storage[lexeme] === undefined) {
-        // Add new lexeme
-        var lexemeRecord = {};
-        lexemeRecord.lcid = $('#lexical_category').find('button[data-selected]').attr('data-lc-id');
-        lexemeRecord.la = $('article').attr('lang');
-        lexemeRecord.sp = lexeme;
-        lexemeRecord.pr = $('#ipa').val();
-        lexemeRecord.gc = [];
-        $('#fieldsets').find('fieldset[data-lexeme-related]').each('button[data-selected]', function () {
-            // TODO: Handle multi-select fieldsets too.
-            var grammaticalCategory = {
-                gcid: $(this).parents('fieldset').attr('data-gc-id'),
-                grid: $(this).attr('data-gr-id')
-            };
-            lexemeRecord.gc.push(grammaticalCategory);
-        });
-        var key = 'lexeme.' + lexeme;
-        var value = JSON.stringify(lexemeRecord);
-        storage[key] = value;
-    }
-
-    // Persist translations and inflections in the DOM while working on a word.
-    // Show translations and
-
-    // Add new inflection(s)
-    var inflectionRecord = {};
-    inflectionRecord.ls = $('#lexical_category').find('button[data-selected]').attr('data-lc-id');
-    inflectionRecord.sp = lexeme;
-    inflectionRecord.pr = $('#ipa').val();
-    inflectionRecord.gc = [];
-    $('#fieldsets').find('fieldset:not([data-lexeme-related])').each('button[data-selected]', function () {
-        // TODO: Handle multi-select fieldsets too.
-        var grammaticalCategory = {
-            gcid: $(this).parents('fieldset').attr('data-gc-id'),
-            grid: $(this).attr('data-gr-id')
-        };
-        inflectionRecord.gc.push(grammaticalCategory);
-    });
-    var key = 'lexeme.' + lexeme;
-    var value = JSON.stringify(inflectionRecord);
-    storage[key] = value;
-
-    // Add new translation(s)
-
+    saveLexeme();
+    saveTranslations();
+    saveInflections();
     resetForm();
 }
 
@@ -717,7 +778,6 @@ function adaptToLanguage(languageCode) {
 
     // Make AJAX call
     $.get(settings);
-
 }
 
 $(document).ready(function () {
