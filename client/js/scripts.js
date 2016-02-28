@@ -5,12 +5,10 @@ const SELECTION_MAX_LENGTH = 100;
 const CASE_SENSITIVE_MATCHING = false;
 
 // Global variables
-var _unsavedChanges = false;
-var _lastUnsavedHighlight = null;
-var _lastSelection = {
-    node: null,
-    start: 0,
-    end: 0
+window.unsavedChanges = false;
+window.lastHighlight = {
+    element: null,
+    saved: false
 }
 
 function isValidLetter(character) {
@@ -18,7 +16,78 @@ function isValidLetter(character) {
     return (character !== '');
 }
 
-function changeWord(word, options) {
+function removeLastHightlight(replaceWithSelection) {
+
+    // Make sure there is a last highlight
+    if (window.lastHighlight.element === null) {
+        return;
+    }
+
+    // If we are not replacing a highlight with a selection
+    if (!replaceWithSelection) {
+        // Make sure the highlight is not saved
+        if (!window.lastHighlight.saved) {
+            window.lastHighlight.element.contents().unwrap();
+            window.lastHighlight.element = null;
+        }
+    } else {
+
+        // Get properties of currently highlighted <span>
+        var span = window.lastHighlight.element[0];
+        var spanTextNode = span.firstChild;
+        var originalLength = spanTextNode.length;
+        var parentElement = span.parentElement;
+        var spanOffset = 0;
+
+        /**
+         * NOTE: Instead of normalizing the parent block element and losing bearings of
+         * where we are, we normalize the text nodes manually here, by concatenating any
+         * previous and next sibling text nodes into the <span> text node, and then
+         * removing the siblings.
+         */
+
+        // Get previous sibling text node (if any)
+        var previousSiblingTextNode = null;
+        if (span.previousSibling !== null && span.previousSibling.nodeType === 3) {
+            previousSiblingTextNode = span.previousSibling;
+            spanOffset = span.previousSibling.length;
+        }
+
+        // Get next sibling text node (if any)
+        var nextSiblingTextNode = null;
+        if (span.nextSibling !== null && span.nextSibling.nodeType === 3) {
+            nextSiblingTextNode = span.nextSibling;
+        }
+
+        // Remove the highlight
+        window.lastHighlight.element.contents().unwrap();
+        window.lastHighlight.element = null;
+
+        // Concatenate the previous text node into the <span>
+        if (previousSiblingTextNode !== null) {
+            var text = previousSiblingTextNode.nodeValue + spanTextNode.nodeValue;
+            parentElement.removeChild(previousSiblingTextNode);
+            spanTextNode.nodeValue = text;
+        }
+
+        // Concatenate the next text node into the <span>
+        if (nextSiblingTextNode !== null) {
+            var text = spanTextNode.nodeValue + nextSiblingTextNode.nodeValue;
+            parentElement.removeChild(nextSiblingTextNode);
+            spanTextNode.nodeValue = text;
+        }
+
+        // Restore selection
+        var textNode = spanTextNode;
+        var range = document.createRange();
+        range.setStart(textNode, spanOffset);
+        range.setEnd(textNode, spanOffset + originalLength);
+        var selection = window.getSelection();
+        selection.addRange(range);
+    }
+}
+
+function changeWord(word) {
 
     console.info('changeWord() called: %s', word);
 
@@ -39,72 +108,36 @@ function changeWord(word, options) {
         );
     }
 
-    // Display lexical categories buttons
-    if (options.singleWord === true) {
-        $('#lexical-category').slideDown();
+    var $fieldset = $('#lexical-category');
+    var selectedButtons = $fieldset.find('button[data-selected]');
+
+    // If a lexical category is already selected
+    if (selectedButtons.length > 0) {
+        var $cell = selectedButtons.first();
+        var lexicalCategoryId = $cell.attr('data-lc-id');
+        // Reset lexical category selection
+        singleSelectReset($fieldset);
+        // Remove last highlight (unless it's saved)
+        removeLastHightlight();
+        // Hide grammatical categories
+        $('div[data-lc-id="' + lexicalCategoryId + '"]').slideUp(400, function () {
+            // Hide save button
+            $('#save').disable();
+            $('#save').fadeOut(100);
+        });
     } else {
-        $('#lexical-category').slideUp();
+        $('#lexical-category').slideDown();
     }
 
     // Display 'Add translation' button
     $('#translation').slideDown();
 }
 
-function resetForm() {
-
-    console.info('resetForm() called.');
-
-    // Reset lexical category selection
-    $('#lexical-category button[data-selected]').trigger('click');
-    $('#lexical-category button[data-selected]').removeAttr('data-selected');
-    $('#lexical-category').hide();
-
-    // Hide 'Add translation' button
-    $('#translation').hide();
-
-    // Reset word
-    $('#word').fadeOut(100, function () {
-        $('#word').val('Select a word');
-        $('#word').fadeIn(100);
-    });
-
-    // Reset IPA
-    $('#ipa').hide();
-    var height = parseInt($('fieldset.header').css('height'));
-    if (height === 160) {
-        $('fieldset.header').animate(
-            { height: '97px' }, // TODO: Adapt to screen resolution
-            { duration: 250, queue: false }
-        );
-    }
-
-    // Remove grammatical categories
-    $('#fieldsets').slideUp();
-    $('#fieldsets').empty();
-
-    // Remove Save button
-    $('#save').fadeOut(100);
-
-    // If there's an unsaved highlight, remove it
-    if (_lastUnsavedHighlight) {
-        _lastUnsavedHighlight.contents().unwrap();
-        _lastUnsavedHighlight = null;
-    }
-
-    // Forget about unsaved changes
-    _unsavedChanges = false;
-}
-
 function selectionHandler() {
 
     console.info('selectionHandler() called.');
 
-    /**
-     * NOTE: This code assumes that whitespace has been normalized, so that
-     * there are no TAB, LF or CR characters and no consecutive spaces.
-     */
-
-     // Get selection object
+    // Get selection object
     var selection = window.getSelection();
 
     // Get anchor node object
@@ -142,12 +175,6 @@ function selectionHandler() {
         return;
     }
 
-    // If a new selection is made with unsaved changes
-    if (_unsavedChanges) {
-        // Reset form
-        resetForm();
-    }
-
     // Reverse start and end if user made a backwards selection
     if (start > end) {
         var temp = end;
@@ -166,14 +193,11 @@ function selectionHandler() {
     var selectedText = node.nodeValue.substring(start, end);
 
     // Make sure all characters in selection are valid letters or spaces
-    var selectionHasSpaces = false;
     var numberOfValidLetters = 0;
     for (var i = 0; i < selectedText.length; i++) {
         if (isValidLetter(selectedText[i]) || selectedText[i] === ' ') {
             if (selectedText[i] !== ' ') {
                 numberOfValidLetters++;
-            } else {
-                selectionHasSpaces = true;
             }
         } else {
             console.warn('The selection contains invalid characters.');
@@ -183,17 +207,17 @@ function selectionHandler() {
     }
 
     // Move selection start right until the first non-space character
-    while (start > 0 && node.nodeValue.substring(start, start + 1) === ' ') {
+    while (start >= 0 && node.nodeValue.substring(start, start + 1) === ' ') {
         start++;
     }
 
     // Move selection end left until the first non-space character
-    while (end <= node.nodeValue.length - 1 && node.nodeValue.substring(end - 1, end) === ' ') {
+    while (end <= node.nodeValue.length && node.nodeValue.substring(end - 1, end) === ' ') {
         end--;
     }
 
     // Move selection start left while there are valid letters
-    while (start > 0 && isValidLetter(node.nodeValue.substring(start - 1, start))) {
+    while (start >= 0 && isValidLetter(node.nodeValue.substring(start - 1, start))) {
         start--;
     }
 
@@ -218,16 +242,7 @@ function selectionHandler() {
     console.info('A selection was made: %s (%d:%d)', adjustedSelectedText, start, end);
 
     // Adjust form according to selection
-    if (!selectionHasSpaces) {
-        changeWord(adjustedSelectedText, { singleWord: true });
-    } else {
-        changeWord(adjustedSelectedText, { singleWord: false });
-    }
-
-    // Save last selection
-    _lastSelection.node = node;
-    _lastSelection.start = start;
-    _lastSelection.end = end;
+    changeWord(adjustedSelectedText);
 }
 
 function ipaFocusHandler() {
@@ -265,65 +280,90 @@ function singleSelectClickHandler(event) {
      var $cell = $(event.target);
      var $row = $cell.parent();
      var $fieldset = $row.parent();
-     var $siblingRows = $row.siblings();
-     var $siblingCells = $cell.siblings();
-     var duration = 200;
 
     // If the button clicked is located in a single-select fieldset
-    if ($fieldset.attr('data-type') === 'single-select') {
-        // If the clicked button has no 'data-selected' attribute
-        if ($cell.attr('data-selected') === undefined) {
-            // Set the 'data-selected' attribute
-            $cell.attr('data-selected', true);
-            if ($siblingCells.length === 0 && $siblingRows.length === 0) {
-                return;
-            }
-            $(function () {
-                $siblingRows.animate(
-                    { height: '0px' },
-                    { duration: duration, queue: false }
-                );
-                $cell.animate(
-                    { width: '100%' },
-                    { duration: duration, queue: false, complete: function () {
-                        if ($cell.parents('#lexical-category').length === 0) {
-                            var currentClass = $cell.attr('class');
-                            $cell.attr('class', currentClass.replace('-unselected', ''));
-                        }
-                    }}
-                );
-                $siblingCells.animate(
-                    { width: '0%' },
-                    { duration: duration, queue: false }
-                );
-            });
-        } else {
-            // Remove the 'data-selected' attribute
-            $cell.removeAttr('data-selected');
-            if ($siblingCells.length === 0 && $siblingRows.length === 0) {
-                return;
-            }
-            $(function () {
-                $siblingRows.animate(
-                    { height: '60px' },
-                    { duration: duration, queue: false }
-                );
-                $cell.animate(
-                    { width: (100 / ($siblingCells.length + 1)) + '%' },
-                    { duration: duration, queue: false, complete: function () {
-                        if ($cell.parents('#lexical-category').length === 0) {
-                            var currentClass = $cell.attr('class');
-                            $cell.attr('class', currentClass + '-unselected');
-                        }
-                    }}
-                );
-                $siblingCells.animate(
-                    { width: (100 / ($siblingCells.length + 1)) + '%' },
-                    { duration: duration, queue: false }
-                );
-            });
-        }
+    if ($fieldset.attr('data-type') !== 'single-select') {
+        return;
     }
+
+    // If the clicked button has no 'data-selected' attribute
+    if ($cell.attr('data-selected') === undefined) {
+        singleSelectSelect($cell);
+    } else {
+        singleSelectReset($fieldset);
+    }
+
+    // We now have unsaved changes
+    window.unsavedChanges = true;
+}
+
+function singleSelectSelect($cell) {
+
+    var $row = $cell.parent();
+    var $fieldset = $row.parent();
+    var $siblingRows = $row.siblings();
+    var $siblingCells = $cell.siblings();
+    var duration = 200;
+
+    // Set the 'data-selected' attribute
+    $cell.attr('data-selected', true);
+    if ($siblingCells.length === 0 && $siblingRows.length === 0) {
+        return;
+    }
+    $(function () {
+        $siblingRows.animate(
+            { height: '0px' },
+            { duration: duration, queue: false }
+        );
+        $cell.animate(
+            { width: '100%' },
+            { duration: duration, queue: false, complete: function () {
+                if ($cell.parents('#lexical-category').length === 0) {
+                    var currentClass = $cell.attr('class');
+                    $cell.attr('class', currentClass.replace('-unselected', ''));
+                }
+            }}
+        );
+        $siblingCells.animate(
+            { width: '0%' },
+            { duration: duration, queue: false }
+        );
+    });
+}
+
+function singleSelectReset($fieldset) {
+
+    // Get the currently selected button
+    var $cell = $fieldset.find('button[data-selected]').first();
+    var $row = $cell.parent();
+    var $siblingRows = $row.siblings();
+    var $siblingCells = $cell.siblings();
+    var duration = 200;
+
+    // Remove the 'data-selected' attribute
+    $cell.removeAttr('data-selected');
+    if ($siblingCells.length === 0 && $siblingRows.length === 0) {
+        return;
+    }
+    $(function () {
+        $siblingRows.animate(
+            { height: '60px' },
+            { duration: duration, queue: false }
+        );
+        $cell.animate(
+            { width: (100 / ($siblingCells.length + 1)) + '%' },
+            { duration: duration, queue: false, complete: function () {
+                if ($cell.parents('#lexical-category').length === 0) {
+                    var currentClass = $cell.attr('class');
+                    $cell.attr('class', currentClass + '-unselected');
+                }
+            }}
+        );
+        $siblingCells.animate(
+            { width: (100 / ($siblingCells.length + 1)) + '%' },
+            { duration: duration, queue: false }
+        );
+    });
 }
 
 function multiSelectClickHandler(event) {
@@ -339,10 +379,10 @@ function multiSelectClickHandler(event) {
      * </fieldset>
      */
 
-     // Get properties for this call
-     var $cell = $(event.target);
-     var $row = $cell.parent();
-     var $fieldset = $row.parent();
+    // Get properties for this call
+    var $cell = $(event.target);
+    var $row = $cell.parent();
+    var $fieldset = $row.parent();
 
     // If the button clicked is located in a single-select fieldset
     if ($fieldset.attr('data-type') === 'multi-select') {
@@ -362,6 +402,9 @@ function multiSelectClickHandler(event) {
             }
         }
     }
+
+    // We now have unsaved changes
+    window.unsavedChanges = true;
 }
 
 // Handle clicks on any button
@@ -403,22 +446,8 @@ function lexicalCategoryHandler(event) {
         });
 
         // If there's an unsaved highlight, remove it
-        if (_lastUnsavedHighlight) {
-            _lastUnsavedHighlight.contents().unwrap();
-            _lastUnsavedHighlight = null;
-        }
-
-        // Redo last selection
-        if (_lastSelection.node !== null) {
-            _lastSelection.node.parentElement.normalize();
-            var range = document.createRange();
-            range.setStart(_lastSelection.node, _lastSelection.start);
-            range.setEnd(_lastSelection.node, _lastSelection.end);
-            if (range.startOffset !== range.endOffset) {
-                var selection = window.getSelection();
-                selection.addRange(range);
-            }
-        }
+        var replaceWithSelection = true;
+        removeLastHightlight(replaceWithSelection);
 
     } else {
 
@@ -435,11 +464,11 @@ function lexicalCategoryHandler(event) {
 
         /**
          * NOTE: By selecting the lexical category, we now have unsaved data associated with
-         * this word. Therefore, we set the _unsavedChanges flag here. The lexical category
-         * is the least amount of data you can save with a single word.
+         * this word, so we set the window.unsavedChanges flag. The lexical category is the least
+         * amount of data you can save with a single word.
          */
 
-        _unsavedChanges = true;
+        window.unsavedChanges = true;
     }
 }
 
@@ -473,7 +502,8 @@ function highlightWord(lexicalCategory) {
         selection.removeAllRanges();
 
         // Save last highlight (in case we need to undo it)
-        _lastUnsavedHighlight = $(span);
+        window.lastHighlight.element = $(span);
+        window.lastHighlight.saved = false;
 
         /**
          * TODO: Look for other instances of the selection and highlight them too.
@@ -595,7 +625,9 @@ function saveForm() {
     saveLexeme();
     saveTranslations();
     saveInflections();
-    resetForm();
+
+    window.lastHighlight.saved = true;
+    window.unsavedChanges = false;
 }
 
 function addTranslationHandler(event) {
@@ -662,6 +694,9 @@ function addTranslationHandler(event) {
             });
         });
     }
+
+    // We now have unsaved changes
+    window.unsavedChanges = true;
 }
 
 function loadLanguageConfiguration(data) {
@@ -793,7 +828,6 @@ $(document).ready(function () {
 
     // Handle clicks on the application buttons
     $('#save').on('click', saveForm);
-    $('#close').on('click', resetForm);
 
     // Handle Add translation
     $('#translation').on('click', 'button', addTranslationHandler);
@@ -802,6 +836,10 @@ $(document).ready(function () {
     $('#ipa').on({
         focus: ipaFocusHandler,
         focusout: ipaFocusOutHandler
+    });
+
+    $('#word', '#ipa').on('change', function () {
+        window.unsavedChanges = true;
     });
 
     // Handle any button clicks in form
