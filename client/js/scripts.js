@@ -4,11 +4,36 @@
 const SELECTION_MAX_LENGTH = 100;
 const CASE_SENSITIVE_MATCHING = false;
 
-// Global variables
+/**
+ * Keeps track of whether there are currently unsaved changed in the application.
+ * @type {Boolean}
+ */
 window.unsavedChanges = false;
+
+/**
+ * Keeps track of where the last highlight were made, in case it needs to be
+ * changed or undone.
+ * @type {Object}
+ * @property {Node}    element - A <span> element (in a jQuery wrapper) containing the highlight.
+ * @property {boolean} saved   - A boolean indicating if the highligh was been previously saved.
+ */
 window.lastHighlight = {
     element: null,
     saved: false
+}
+
+/**
+ * Keeps track of where the user made the last selection, in case the selection
+ * loses focus.
+ * @type {Object}
+ * @property {Node}   node  - The node in which the selection was made.
+ * @property {number} start - The start offset of the selection.
+ * @property {number} end   - The end offset of the selection.
+ */
+window.lastSelection = {
+    node: null,
+    start: 0,
+    end: 0
 }
 
 function isValidLetter(character) {
@@ -240,6 +265,11 @@ function selectionHandler() {
     // Get adjusted selected text
     var adjustedSelectedText = node.nodeValue.substring(start, end);
     console.info('A selection was made: %s (%d:%d)', adjustedSelectedText, start, end);
+
+    // Remember this selection (in case we need to restore it)
+    window.lastSelection.node = node;
+    window.lastSelection.start = start;
+    window.lastSelection.end = end;
 
     // Adjust form according to selection
     changeWord(adjustedSelectedText);
@@ -479,36 +509,48 @@ function highlightWord(lexicalCategory) {
     // Get Selection object
     var selection = window.getSelection();
 
-    // Make sure we got a selection
-    if (selection.rangeCount > 0) {
-
-        // Get selected text
-        var node = selection.anchorNode;
-        var start = selection.anchorOffset;
-        var end = selection.focusOffset;
-        var searchText = node.nodeValue.substring(start, end);
-
-        // Wrap selection in a span with the right class
-        var range = selection.getRangeAt(0);
-        var selectedText = range.extractContents();
-        var span = document.createElement('span');
-        span.classList.add(lexicalCategory);
-
-        // Insert span in textnode
-        span.appendChild(selectedText);
-        range.insertNode(span);
-
-        // Remove selection to show highlight
-        selection.removeAllRanges();
-
-        // Save last highlight (in case we need to undo it)
-        window.lastHighlight.element = $(span);
-        window.lastHighlight.saved = false;
-
-        /**
-         * TODO: Look for other instances of the selection and highlight them too.
-         */
+    // If there is no selection
+    if (selection.rangeCount === 0) {
+        // If there is a saved selection
+        if (window.lastSelection.node !== null) {
+            // Restore selection
+            let node = window.lastSelection.node;
+            let start = window.lastSelection.start;
+            let end = window.lastSelection.end;
+            var range = document.createRange();
+            range.setStart(node, start);
+            range.setEnd(node, start + (end - start));
+            var selection = window.getSelection();
+            selection.addRange(range);
+        }
     }
+
+    // Get selected text
+    var node = selection.anchorNode;
+    var start = selection.anchorOffset;
+    var end = selection.focusOffset;
+    var searchText = node.nodeValue.substring(start, end);
+
+    // Wrap selection in a span with the right class
+    var range = selection.getRangeAt(0);
+    var selectedText = range.extractContents();
+    var span = document.createElement('span');
+    span.classList.add(lexicalCategory);
+
+    // Insert span in textnode
+    span.appendChild(selectedText);
+    range.insertNode(span);
+
+    // Remove selection to show highlight
+    selection.removeAllRanges();
+
+    // Save last highlight (in case we need to undo it)
+    window.lastHighlight.element = $(span);
+    window.lastHighlight.saved = false;
+
+    /**
+     * TODO: Look for other instances of the selection and highlight them too.
+     */
 }
 
 function saveLexeme() {
