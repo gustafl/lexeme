@@ -3,6 +3,7 @@
 // Constants
 const SELECTION_MAX_LENGTH = 100;
 const CASE_SENSITIVE_MATCHING = false;
+const LETTER = 'a-zA-Z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF';
 
 /**
  * Keeps track of whether there are currently unsaved changed in the application.
@@ -35,6 +36,30 @@ window.lastSelection = {
     start: 0,
     end: 0
 }
+
+function format(text) {
+
+    // Make sure we got a string
+    if (typeof text !== 'string') {
+        throw Error('This method only accepts strings.');
+    }
+
+    // Make sure we got at least one replacement argument
+    if (arguments.length < 2) {
+        // Otherwise return the string as we got it
+        return text;
+    }
+
+    // Define pattern to look for
+    var regex = /%s/g;
+
+    // Loop through the replacement arguments
+    for (var i = 1; i < arguments.length; i++) {
+        text = text.replace(regex, arguments[i]);
+    }
+
+    return text;
+};
 
 function isValidLetter(character) {
     character = character.replace(/[^a-zA-Z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF]/, '');
