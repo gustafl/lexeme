@@ -1,13 +1,15 @@
-.default {
+.default, .add, .cancel, .translation-language {
     $color: hsla(0, 0%, 16%, 1);
     background-color: $color;
     &:hover {
         background-color: lighten($color, 5%);
     }
 }
+
 .transparent {
     background-color: hsla(0, 0%, 0%, 0);
 }
+
 .noun {
     $color: hsla(240, 20%, 20%, 1);
     background-color: $color;
@@ -22,6 +24,7 @@
         background-color: lighten($color, 4%);
     }
 }
+
 .verb {
     $color: hsla(120, 20%, 20%, 1);
     background-color: $color;
@@ -36,6 +39,7 @@
         background-color: lighten($color, 4%);
     }
 }
+
 .adjective {
     $color: hsla(0, 20%, 20%, 1);
     background-color: $color;
@@ -50,6 +54,7 @@
         background-color: lighten($color, 4%);
     }
 }
+
 .pronoun {
     $color: hsla(180, 20%, 20%, 1);
     background-color: $color;
@@ -64,6 +69,7 @@
         background-color: lighten($color, 4%);
     }
 }
+
 .adverb {
     $color: hsla(60, 20%, 20%, 1);
     background-color: $color;
@@ -78,6 +84,7 @@
         background-color: lighten($color, 4%);
     }
 }
+
 .determiner {
     $color: hsla(300, 20%, 20%, 1);
     background-color: $color;
@@ -92,6 +99,7 @@
         background-color: lighten($color, 4%);
     }
 }
+
 .preposition {
     $color: hsla(0, 5%, 20%, 1);
     background-color: $color;
@@ -106,6 +114,7 @@
         background-color: lighten($color, 4%);
     }
 }
+
 .conjugation {
     $color: hsla(0, 5%, 20%, 1);
     background-color: $color;
@@ -120,6 +129,7 @@
         background-color: lighten($color, 4%);
     }
 }
+
 .interjection {
     $color: hsla(0, 5%, 20%, 1);
     background-color: $color;

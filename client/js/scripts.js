@@ -15,8 +15,8 @@ window.unsavedChanges = false;
  * Keeps track of where the last highlight were made, in case it needs to be
  * changed or undone.
  * @type {Object}
- * @property {Node}    element - A <span> element (in a jQuery wrapper) containing the highlight.
- * @property {boolean} saved   - A boolean indicating if the highligh was been previously saved.
+ * @property {Node}    element - A <span> element (jQuery) containing the highlight.
+ * @property {boolean} saved   - A boolean indicating if the highlight has been saved.
  */
 window.lastHighlight = {
     element: null,
@@ -36,6 +36,14 @@ window.lastSelection = {
     start: 0,
     end: 0
 }
+
+/**
+ * Keeps track of which translation languages he user have selected, and in what
+ * order. The variable stores the language codes in an array with the last selected
+ * language first.
+ * @type {Array}
+ */
+window.lastLanguage = ['en', 'fr', 'sv'];  // TODO: Make a user setting for this.
 
 function format(text) {
 
@@ -148,15 +156,7 @@ function changeWord(word) {
     });
 
     // Display the IPA field
-    var height = parseInt($('fieldset.header').css('height'));
-    if (height < 160) {
-        $('fieldset.header').animate(
-            { height: '160px' }, // TODO: Adapt to screen resolution
-            { duration: 250, queue: false, complete: function () {
-                $('#ipa').fadeIn(100);
-            }}
-        );
-    }
+    $('#ipa').fadeIn(100);
 
     var $fieldset = $('#lexical-category');
     var selectedButtons = $fieldset.find('button[data-selected]');
@@ -180,7 +180,7 @@ function changeWord(word) {
     }
 
     // Display 'Add translation' button
-    $('#translation').slideDown();
+    $('#add-translation').slideDown();
 }
 
 function selectionHandler() {
@@ -697,73 +697,226 @@ function saveForm() {
     window.unsavedChanges = false;
 }
 
+function resizeTranslationFieldset() {
+
+    // Controls
+    var $fieldset = $('#add-translation');
+    var $languageButton = $fieldset.find('button.translation-language').first();
+    var $input = $fieldset.find('input').first();
+    var $addButton = $fieldset.find('button.add').first();
+    var $cancelButton = $fieldset.find('button.cancel').first();
+
+    // Widths
+    var totalWidth = parseInt($fieldset.css('width'));
+    var languageButtonWidth = parseInt($languageButton.css('width'));
+    var addButtonWidth = parseInt($addButton.css('width'));
+    var cancelButtonWidth = parseInt($cancelButton.css('width'));
+
+    // Input with calculation
+    var inputWidth = totalWidth - languageButtonWidth - addButtonWidth - cancelButtonWidth - 20;
+    $input.css('width', inputWidth);
+}
+
+$(window).on('resize', function() {
+    var $translationFieldset = $('#add-translation');
+    if ($translationFieldset.attr('data-select', true)) {
+        resizeTranslationFieldset();
+    }
+});
+
 function addTranslationHandler(event) {
 
-    console.info('singleSelectClickHandler() called.');
+    // Get properties for this call
+    var $defaultButton = $(event.target);
+    var $row = $defaultButton.parent();
+    var $fieldset = $row.parent();
 
-    /**
-     * NOTE: This code assumes the following structure:
-     *
-     * <fieldset>
-     *   <div><button /> ... </div>
-     *   ...
-     * </fieldset>
-     */
-
-     // Get properties for this call
-     var $cell = $(event.target);
-     var $row = $cell.parent();
-     var $fieldset = $row.parent();
-     var duration = 400;
-
-     // Create an <input> element to type the translation in
-     var $input = $('<input type="text" autocomplete="off" maxlength="100" style="display: none" />');
-     $row.append($input);
-
-    // If the clicked button has no 'data-selected' attribute
-    if ($cell.attr('data-selected') === undefined) {
-        $cell.attr('data-selected', true);
-        $row.css('text-align', 'right');
-        $input.fadeIn(1000, function () {
-            $input.focus();
-        });
-        $(function () {
-            $cell.animate(
-                { width: '33%' },
-                { duration: duration, queue: false, complete: function () {
-
-
-                }}
-            );
-            $input.animate(
-                { width: '65%' },
-                { duration: duration, queue: false }
-            );
-        });
-    } else {
-        $cell.removeAttr('data-selected');
-        $input.fadeOut(1000, function () {
-
-        });
-        $input.fadeOut(1000, function() {
-            $('#translation input').remove();
-            $(function () {
-                $cell.animate(
-                    { width: '100%' },
-                    { duration: duration, queue: false, complete: function () {
-                        $row.css('text-align', '');
-                    }}
-                );
-                $input.animate(
-                    { width: '0%' },
-                    { duration: duration, queue: false }
-                );
+    // Replace the 'Add Translation' button with 'Add' and 'Cancel' buttons
+    $defaultButton.disable();
+    $defaultButton.removeAttr('data-select');
+    $defaultButton.animate(
+        { width: '33.3%' },
+        { duration: 400, complete: function () {
+            $defaultButton.fadeOut(200, function () {
+                var $languageButton = $fieldset.find('button.translation-language').first();
+                var lastLanguage = window.lastLanguage[0];
+                $languageButton.html(lastLanguage);
+                $languageButton.fadeIn(200, function () {
+                    $languageButton.enable();
+                }).css('display', 'table-cell');
+                var $addButton = $fieldset.find('button.add').first();
+                $addButton.fadeIn(200, function () {
+                    $addButton.enable();
+                }).css('display', 'table-cell');
+                var $cancelButton = $fieldset.find('button.cancel').first();
+                $cancelButton.fadeIn(200, function () {
+                    $cancelButton.enable();
+                }).css('display', 'table-cell');
+                var $input = $fieldset.find('input').first();
+                resizeTranslationFieldset();
+                $input.css('padding', '0px 5px');
+                $input.css('margin', '0px 10px');
+                $input.fadeIn(200, function () {
+                    $input.focus();
+                }).css('display', 'table-cell');
             });
-        });
+        }}
+    );
+}
+
+function defaultButtonClickHandler(event) {
+
+    // Get properties for this call
+    var $defaultButton = $(event.target);
+    var $fieldset = $defaultButton.parents('fieldset');
+
+    // Set 'data-select' attribute
+    if ($defaultButton.hasAttribute('data-select')) {
+        $defaultButton.removeAttr('data-select');
     }
 
-    // We now have unsaved changes
-    window.unsavedChanges = true;
+    // Replace the 'Add Translation' button with 'Add' and 'Cancel' buttons
+    $defaultButton.disable();
+    $defaultButton.animate(
+        { width: '33.3%' },
+        { duration: 400, complete: function () {
+            $defaultButton.fadeOut(200, function () {
+                var $addButton = $fieldset.find('button.add').first();
+                $addButton.fadeIn(200, function () {
+                    $addButton.enable();
+                });
+                var $cancelButton = $fieldset.find('button.cancel').first();
+                $cancelButton.fadeIn(200, function () {
+                    $cancelButton.enable();
+                });
+                var $input = $fieldset.find('input').first();
+                $input.css('width', 'calc(66% - 10px)');
+                $input.css('padding', '0px 10px');
+                $input.css('margin', '0px 10px');
+                $input.fadeIn(200, function () {
+                    $input.focus();
+                });
+            });
+        }}
+    );
+}
+
+function addOrCancelButtonClickHandler(event) {
+
+    // Get properties for this call
+    var $button = $(event.target);
+    var $addButton = null;
+    var $cancelButton = null;
+    var saveInput = false;
+    if ($button.text().toLowerCase() === 'add') {
+        $addButton = $(event.target);
+        $cancelButton = $addButton.next();
+        saveInput = true;
+    } else {
+        $cancelButton = $(event.target);
+        $addButton = $cancelButton.prev();
+    }
+    var $fieldset = $addButton.parents('fieldset');
+    var $languageButton = $fieldset.find('button.translation-language').first();
+
+    $addButton.disable();
+    $cancelButton.disable();
+    $languageButton.disable();
+    $addButton.fadeOut(200);
+    $cancelButton.fadeOut(200);
+    $languageButton.fadeOut(200);
+    var $input = $fieldset.find('input').first();
+    $input.fadeOut(200, function () {
+        $input.css('width', '0%');
+        $input.css('padding', '0px');
+        $input.css('margin-right', '0px');
+        var $defaultButton = $fieldset.find('button.default').first();
+        $defaultButton.removeAttr('data-select');
+        $defaultButton.fadeIn(200, function () {
+            $defaultButton.animate(
+                { width: '100%' },
+                { duration: 400, complete: function () {
+                    $defaultButton.enable();
+                    if (saveInput) {
+                        var language = $languageButton.text();
+                        var text = $input.val();
+                        var div = $('#translations');
+                        if (div.css('display') === 'none') {
+                            div.css('display', 'block');
+                        }
+                        addTranslation(language, text);
+                    }
+                    $input.val('');
+                }}
+            );
+        });
+    });
+}
+
+function addTranslation(language, text) {
+
+    // Update lastLanguage global
+    var index = window.lastLanguage.indexOf(language);
+    window.lastLanguage.splice(index, 1);
+    window.lastLanguage.unshift(language);
+
+    // Make sure we got some text
+    text = text.trim();
+    if (text.length === 0) {
+        return;
+    }
+
+    // Get the translation table
+    var div = $('#translations');
+    var $table = div.find('table').first();
+    var $matchingRow = null;
+    var $row = null;
+    var existingText = '';
+
+    // Try find an existing row with this language
+    $table.find('tr').each(function (index, element) {
+        $row = $(element);
+        if ($row.find('>:first-child').text() === language) {
+            $matchingRow = $row;
+            existingText = $matchingRow.find('>:last-child').text();
+            return;
+        }
+    });
+
+    // If no matching row was find, add a new one
+    if ($matchingRow === null) {
+        $row = $('<tr/>');
+        $table.append($row);
+        var $cell = $('<td>' + language + '</td>');
+        $row.append($cell);
+    } else {
+        $row = $matchingRow;
+    }
+
+    // Add the new translation
+    var $cell = $('<td/>');
+    if (existingText !== '') {
+        text = existingText + '; ' + text;
+    }
+    $cell.html('<span class="translation">' + text + '</span>');
+    $row.append($cell);
+}
+
+function translationLanguageButtonClickHandler(event) {
+
+    console.info('translationLanguageButtonClickHandler() called.');
+
+    var $fieldset = $('#add-translation');
+    var $button = $fieldset.find('button.translation-language').first();
+    var $input = $fieldset.find('input').first();
+    var buttonText = $button.text()
+    var currentIndex = window.lastLanguage.indexOf(buttonText);
+    if (currentIndex < window.lastLanguage.length - 1) {
+        $button.text(window.lastLanguage[++currentIndex]);
+    } else {
+        $button.text(window.lastLanguage[0]);
+    }
+    $input.focus();
 }
 
 function loadLanguageConfiguration(data) {
@@ -896,9 +1049,6 @@ $(document).ready(function () {
     // Handle clicks on the application buttons
     $('#save').on('click', saveForm);
 
-    // Handle Add translation
-    $('#translation').on('click', 'button', addTranslationHandler);
-
     // Handle focus/focusout on IPA
     $('#ipa').on({
         focus: ipaFocusHandler,
@@ -913,6 +1063,18 @@ $(document).ready(function () {
     $('#lexical-category').on('click', 'button', lexicalCategoryHandler);
     $('form').on('click', 'fieldset[data-type="single-select"] button', singleSelectClickHandler);
     $('form').on('click', 'fieldset[data-type="multi-select"] button', multiSelectClickHandler);
+
+    // Handle 'Add translation'
+    $('#add-translation').on('click', 'button.default', addTranslationHandler);
+
+    // Handle 'Add inflection'
+    $('#add-inflection').on('click', 'button.default', defaultButtonClickHandler);
+
+    // Handle 'Add' and 'Cancel' buttons
+    $('form').on('click', 'button.add', addOrCancelButtonClickHandler);
+    $('form').on('click', 'button.cancel', addOrCancelButtonClickHandler);
+
+    $('form').on('click', 'button.translation-language', translationLanguageButtonClickHandler);
 
     // jQuery extension to disable/enable buttons
     // Usage: $('button').disable(true);

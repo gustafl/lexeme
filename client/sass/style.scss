@@ -7,6 +7,19 @@ $color-dark-gray-1: hsla(0, 0%, 13%, 1);
 $color-dark-gray-2: hsla(0, 0%, 16%, 1);
 $color-gray: hsla(0, 0%, 30%, 1);
 $color-text-selection: hsla(0, 65%, 50%, 1);
+$color-transparent: hsla(0, 0%, 0%, 0);
+
+@mixin button-border {
+    border-width: 2px;
+    border-style: solid;
+    border-color: $color-dark-gray-1;
+    border-collapse: collapse;
+}
+
+@mixin button-text {
+    font-family: $font-monospace;
+    font-variant: small-caps;
+}
 
 article {
     @media screen and (max-width: 1279px) {
@@ -68,7 +81,7 @@ aside {
     }
     @media screen and (min-width: 1600px) and (max-width: 1919px) {
         /* 83.3% of 1920px */
-        padding: 15px 13px 21px 13px;
+        padding: 15px 14px 21px 14px;
         border-radius: 17px;
         #word {
             font-size: 40px;
@@ -81,7 +94,7 @@ aside {
         }
     }
     @media screen and (min-width: 1920px) {
-        padding: 18px 16px 25px 16px;
+        padding: 18px 17px 25px 17px;
         border-radius: 20px;
         #word {
             font-size: 48px;
@@ -126,13 +139,14 @@ aside {
     top: 0px;
     width: 38%;
     text-align: center;
+    font-family: 'Open Sans', sans-serif;
     background-color: $color-dark-gray-1;
-    border: 2px solid $color-dark-gray-1;
 }
 
 fieldset {
+    margin: 0px;
     position: relative;
-    border: 2px solid $color-dark-gray-1;
+    border: none;
     margin-bottom: 20px;
 }
 
@@ -141,6 +155,13 @@ fieldset.header {
     padding-top: 20px;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
+
+    input[type="text"] {
+        text-align: center;
+        border: none;
+        background-color: $color-transparent;
+        width: 75%;
+    }
 }
 
 fieldset:last-child {
@@ -150,17 +171,6 @@ fieldset:last-child {
     }
 }
 
-legend {
-    display: none;
-}
-
-input[type="text"] {
-    text-align: center;
-    border: none;
-    background-color: rgba(0, 0, 0, 0);
-    width: 75%;
-}
-
 #word {
     margin-bottom: 10px;
 }
@@ -168,13 +178,86 @@ input[type="text"] {
 #ipa {
     font-family: $font-monospace;
     display: none;
+    margin-bottom: 10px;
 }
 
-#lexical-category {
+#translations {
+    display: none;
+    margin-bottom: 20px;
+    table {
+        border: 2px solid $color-transparent;
+        border-collapse: collapse;
+        min-width: 0%;
+        max-width: 80%;
+        margin: 0px auto;
+        tr {
+            height: 40px;
+            td {
+                border: 2px solid $color-transparent;
+                border-collapse: collapse;
+                font-family: 'Open Sans', sans-serif;
+                font-size: 20px;
+                text-align: left;
+            }
+            td:first-child {
+                width: 40px;
+                background-color: $color-dark-gray-2;
+                text-align: center;
+                padding-bottom: 4px;
+                @include button-text;
+            }
+            td:last-child {
+                padding-left: 10px;
+            }
+        }
+    }
+}
+
+#add-inflection {
     display: none;
 }
 
-#translation {
+#add-translation {
+    display: none;
+    div {
+        text-align: right;
+        box-sizing: content-box;
+        button.default {
+            width: 100%;  // Modified by jQuery
+            border-right-width: 0px;
+        }
+        button.translation-language {
+            display: none;
+            width: 60px;
+            height: 100%;
+            border-left-width: 0px;
+        }
+        input[type='text'] {
+            display: none;  // Modified by jQuery
+            width: auto;  // Modified by jQuery
+            height: 100%;
+            border-left: none;
+            border-right: none;
+            border-top: none;
+            border-bottom-width: 2px;
+            border-bottom-style: dashed;
+            border-bottom-color: $color-gray;
+            background-color: $color-transparent;
+            color: $color-almost-white;
+            text-align: left;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 30px;
+            padding: 0px 0px;  // Modified by jQuery
+            margin-right: 0px;  // Modified by jQuery
+        }
+        button.add, button.cancel {
+            display: none;
+            width: calc((33% + 3px) / 2);
+        }
+    }
+}
+
+#lexical-category {
     display: none;
 }
 
@@ -192,6 +275,10 @@ input:focus, textarea:focus {
     color: $color-almost-white;
 }
 
+legend {
+    display: none;
+}
+
 ::selection {
     background-color: $color-text-selection;
     color: $color-almost-white;
@@ -200,20 +287,6 @@ input:focus, textarea:focus {
 
 *:focus {
     outline: none;
-}
-
-#translation input {
-    border-bottom: 2px dashed $color-gray;
-    color: $color-almost-white;
-    height: 58px;
-    background-color: $color-dark-gray-1;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    text-align: left;
-    font-size: 24px;
-    padding: 10px;
-    margin-right: 10px;
 }
 
 div[data-lc-id] {
@@ -230,35 +303,12 @@ article span {
     cursor: pointer;
 }
 
-button.none {
-    background-color: $color-dark-gray-1;
-    cursor: default;
-}
-
-button.action {
+button {
     background-color: $color-dark-gray-2;
-}
-
-@mixin button-text {
-    font-family: $font-monospace;
-    font-variant: small-caps;
-}
-
-@mixin button-border {
-    border-width: 2px;
-    border-style: solid;
-    border-color: $color-dark-gray-1;
-    border-collapse: collapse;
 }
 
 aside {
     form {
-        button:first-child {
-            border-left-width: 0px;
-        }
-        button:last-child {
-            border-right-width: 0px;
-        }
         /* NOTE: The style attribute content has to match precisely! */
         button[style*="width: 100%;"], button[style*="width: 0%;"] {
             border-left-width: 0px;
@@ -287,8 +337,14 @@ aside {
             padding: 0px;
             @include button-text;
             @include button-border;
-            padding-bottom: 5px;
+            padding-bottom: 7px;
             color: $color-almost-white;
+        }
+        button:first-of-type {
+            border-left-width: 0px;
+        }
+        button:last-of-type {
+            border-right-width: 0px;
         }
     }
 }

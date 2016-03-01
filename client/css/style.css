@@ -65,7 +65,7 @@ h4 {
 @media screen and (min-width: 1600px) and (max-width: 1919px) {
   aside {
     /* 83.3% of 1920px */
-    padding: 15px 13px 21px 13px;
+    padding: 15px 14px 21px 14px;
     border-radius: 17px; }
     aside #word {
       font-size: 40px; }
@@ -75,7 +75,7 @@ h4 {
       font-size: 25px; } }
 @media screen and (min-width: 1920px) {
   aside {
-    padding: 18px 16px 25px 16px;
+    padding: 18px 17px 25px 17px;
     border-radius: 20px; }
     aside #word {
       font-size: 48px; }
@@ -110,12 +110,13 @@ aside {
   top: 0px;
   width: 38%;
   text-align: center;
-  background-color: #212121;
-  border: 2px solid #212121; }
+  font-family: 'Open Sans', sans-serif;
+  background-color: #212121; }
 
 fieldset {
+  margin: 0px;
   position: relative;
-  border: 2px solid #212121;
+  border: none;
   margin-bottom: 20px; }
 
 fieldset.header {
@@ -123,32 +124,90 @@ fieldset.header {
   padding-top: 20px;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px; }
+  fieldset.header input[type="text"] {
+    text-align: center;
+    border: none;
+    background-color: transparent;
+    width: 75%; }
 
 fieldset:last-child {
   text-align: right; }
   fieldset:last-child #save {
     display: none; }
 
-legend {
-  display: none; }
-
-input[type="text"] {
-  text-align: center;
-  border: none;
-  background-color: transparent;
-  width: 75%; }
-
 #word {
   margin-bottom: 10px; }
 
 #ipa {
   font-family: "Roboto Mono", monospace;
+  display: none;
+  margin-bottom: 10px; }
+
+#translations {
+  display: none;
+  margin-bottom: 20px; }
+  #translations table {
+    border: 2px solid transparent;
+    border-collapse: collapse;
+    min-width: 0%;
+    max-width: 80%;
+    margin: 0px auto; }
+    #translations table tr {
+      height: 40px; }
+      #translations table tr td {
+        border: 2px solid transparent;
+        border-collapse: collapse;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 20px;
+        text-align: left; }
+      #translations table tr td:first-child {
+        width: 40px;
+        background-color: #292929;
+        text-align: center;
+        padding-bottom: 4px;
+        font-family: "Roboto Mono", monospace;
+        font-variant: small-caps; }
+      #translations table tr td:last-child {
+        padding-left: 10px; }
+
+#add-inflection {
   display: none; }
+
+#add-translation {
+  display: none; }
+  #add-translation div {
+    text-align: right;
+    box-sizing: content-box; }
+    #add-translation div button.default {
+      width: 100%;
+      border-right-width: 0px; }
+    #add-translation div button.translation-language {
+      display: none;
+      width: 60px;
+      height: 100%;
+      border-left-width: 0px; }
+    #add-translation div input[type='text'] {
+      display: none;
+      width: auto;
+      height: 100%;
+      border-left: none;
+      border-right: none;
+      border-top: none;
+      border-bottom-width: 2px;
+      border-bottom-style: dashed;
+      border-bottom-color: #4d4d4d;
+      background-color: transparent;
+      color: #eeeddd;
+      text-align: left;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 30px;
+      padding: 0px 0px;
+      margin-right: 0px; }
+    #add-translation div button.add, #add-translation div button.cancel {
+      display: none;
+      width: calc((33% + 3px) / 2); }
 
 #lexical-category {
-  display: none; }
-
-#translation {
   display: none; }
 
 input {
@@ -162,6 +221,9 @@ input:focus, textarea:focus {
   border-bottom: 2px dashed #4d4d4d;
   color: #eeeddd; }
 
+legend {
+  display: none; }
+
 ::selection {
   background-color: #d22d2d;
   color: #eeeddd;
@@ -169,19 +231,6 @@ input:focus, textarea:focus {
 
 *:focus {
   outline: none; }
-
-#translation input {
-  border-bottom: 2px dashed #4d4d4d;
-  color: #eeeddd;
-  height: 58px;
-  background-color: #212121;
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  text-align: left;
-  font-size: 24px;
-  padding: 10px;
-  margin-right: 10px; }
 
 div[data-lc-id] {
   display: none; }
@@ -193,19 +242,11 @@ article span {
   border-radius: 5px;
   cursor: pointer; }
 
-button.none {
-  background-color: #212121;
-  cursor: default; }
-
-button.action {
+button {
   background-color: #292929; }
 
 aside form {
   /* NOTE: The style attribute content has to match precisely! */ }
-  aside form button:first-child {
-    border-left-width: 0px; }
-  aside form button:last-child {
-    border-right-width: 0px; }
   aside form button[style*="width: 100%;"], aside form button[style*="width: 0%;"] {
     border-left-width: 0px;
     border-right-width: 0px; }
@@ -233,8 +274,12 @@ aside form {
       border-style: solid;
       border-color: #212121;
       border-collapse: collapse;
-      padding-bottom: 5px;
+      padding-bottom: 7px;
       color: #eeeddd; }
+    .col-1 div button:first-of-type {
+      border-left-width: 0px; }
+    .col-1 div button:last-of-type {
+      border-right-width: 0px; }
 
 .col-2 {
   padding: 0px;
@@ -256,8 +301,12 @@ aside form {
       border-style: solid;
       border-color: #212121;
       border-collapse: collapse;
-      padding-bottom: 5px;
+      padding-bottom: 7px;
       color: #eeeddd; }
+    .col-2 div button:first-of-type {
+      border-left-width: 0px; }
+    .col-2 div button:last-of-type {
+      border-right-width: 0px; }
 
 .col-3 {
   padding: 0px;
@@ -279,7 +328,11 @@ aside form {
       border-style: solid;
       border-color: #212121;
       border-collapse: collapse;
-      padding-bottom: 5px;
+      padding-bottom: 7px;
       color: #eeeddd; }
+    .col-3 div button:first-of-type {
+      border-left-width: 0px; }
+    .col-3 div button:last-of-type {
+      border-right-width: 0px; }
 
 /*# sourceMappingURL=style.css.map */

@@ -1,6 +1,6 @@
-.default {
+.default, .add, .cancel, .translation-language {
   background-color: #292929; }
-  .default:hover {
+  .default:hover, .add:hover, .cancel:hover, .translation-language:hover {
     background-color: #363636; }
 
 .transparent {

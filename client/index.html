@@ -56,8 +56,12 @@
             <input type="text" id="word" name="lexeme" value="Select a word" autocomplete="off" /><br/>
             <input type="text" id="ipa" name="ipa" value="[IPA]" autocomplete="off" />
           </fieldset>
-          <fieldset id="translation" class="col-1">
-            <div><button type="button" class="default">add translation</button></div>
+          <div id="translations"><table></table></div>
+          <fieldset id="add-translation" class="col-1">
+            <div><button type="button" class="default">add translation</button><button type="button" class="translation-language">en</button><input type="text" autocomplete="off" maxlength="50" /><button type="button" class="add">add</button><button type="button" class="cancel">cancel</button></div>
+          </fieldset>
+          <fieldset id="add-inflection" class="col-1">
+            <div><input type="text" autocomplete="off" maxlength="50" /><button type="button" class="default">add inflection</button><button type="button" class="add">add</button><button type="button" class="cancel">cancel</button></div>
           </fieldset>
           <fieldset id="lexical-category" class="col-3" data-type="single-select">
             <div><button type="button" class="noun" data-lc-id="1">noun</button><button type="button" class="verb" data-lc-id="2">verb</button><button type="button" class="adjective" data-lc-id="3">adjective</button></div>
@@ -82,6 +86,7 @@
     <footer></footer>
     <script src="https://code.jquery.com/jquery-2.2.0.js"></script>
     <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script src="./js/jquery.sticky.js"></script>
     <script src="./js/scripts.js"></script>
   </body>
 </html>
