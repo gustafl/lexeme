@@ -870,36 +870,31 @@ function addTranslation(language, text) {
     var div = $('#translations');
     var $table = div.find('table').first();
     var $matchingRow = null;
-    var $row = null;
-    var existingText = '';
 
     // Try find an existing row with this language
     $table.find('tr').each(function (index, element) {
-        $row = $(element);
+        var $row = $(element);
         if ($row.find('>:first-child').text() === language) {
             $matchingRow = $row;
-            existingText = $matchingRow.find('>:last-child').text();
             return;
         }
     });
 
-    // If no matching row was find, add a new one
+    // If no row with the given language was found, add a new row
+    var $row = null;
     if ($matchingRow === null) {
         $row = $('<tr/>');
         $table.append($row);
-        var $cell = $('<td>' + language + '</td>');
-        $row.append($cell);
+        var $firstCell = $('<td>' + language + '</td>');
+        $row.append($firstCell);
+        var $lastCell = $('<td><span class="translation">' + text + '</span></td>');
+        $row.append($lastCell);
     } else {
-        $row = $matchingRow;
+        // If a matching row was found, append text to the last cell
+        var $lastCell = $matchingRow.find('>:last-child');
+        var content = $lastCell.html() + '; <span class="translation">' + text + '</span>';
+        $lastCell.html(content);
     }
-
-    // Add the new translation
-    var $cell = $('<td/>');
-    if (existingText !== '') {
-        text = existingText + '; ' + text;
-    }
-    $cell.html('<span class="translation">' + text + '</span>');
-    $row.append($cell);
 }
 
 function translationLanguageButtonClickHandler(event) {

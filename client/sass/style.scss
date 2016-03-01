@@ -185,7 +185,7 @@ fieldset:last-child {
     display: none;
     margin-bottom: 20px;
     table {
-        border: 2px solid $color-transparent;
+        border: 4px solid $color-dark-gray-1;
         border-collapse: collapse;
         min-width: 0%;
         max-width: 80%;
@@ -193,11 +193,8 @@ fieldset:last-child {
         tr {
             height: 40px;
             td {
-                border: 2px solid $color-transparent;
+                border: 4px solid $color-dark-gray-1;
                 border-collapse: collapse;
-                font-family: 'Open Sans', sans-serif;
-                font-size: 20px;
-                text-align: left;
             }
             td:first-child {
                 width: 40px;
@@ -205,10 +202,20 @@ fieldset:last-child {
                 text-align: center;
                 padding-bottom: 4px;
                 @include button-text;
+                font-size: 18pt;
             }
             td:last-child {
                 padding-left: 10px;
+                text-align: left;
+                font-family: 'Open Sans', sans-serif;
+                font-size: 18pt;
             }
+        }
+        tr:first-child td {
+            border-top: none;
+        }
+        tr:last-child td {
+            border-bottom: none;
         }
     }
 }

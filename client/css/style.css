@@ -147,7 +147,7 @@ fieldset:last-child {
   display: none;
   margin-bottom: 20px; }
   #translations table {
-    border: 2px solid transparent;
+    border: 4px solid #212121;
     border-collapse: collapse;
     min-width: 0%;
     max-width: 80%;
@@ -155,20 +155,25 @@ fieldset:last-child {
     #translations table tr {
       height: 40px; }
       #translations table tr td {
-        border: 2px solid transparent;
-        border-collapse: collapse;
-        font-family: 'Open Sans', sans-serif;
-        font-size: 20px;
-        text-align: left; }
+        border: 4px solid #212121;
+        border-collapse: collapse; }
       #translations table tr td:first-child {
         width: 40px;
         background-color: #292929;
         text-align: center;
         padding-bottom: 4px;
         font-family: "Roboto Mono", monospace;
-        font-variant: small-caps; }
+        font-variant: small-caps;
+        font-size: 18pt; }
       #translations table tr td:last-child {
-        padding-left: 10px; }
+        padding-left: 10px;
+        text-align: left;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 18pt; }
+    #translations table tr:first-child td {
+      border-top: none; }
+    #translations table tr:last-child td {
+      border-bottom: none; }
 
 #add-inflection {
   display: none; }

@@ -4,6 +4,7 @@ node_modules/
 temp/
 test/
 old/
+client/css/
 
 # Files
 errors.txt
