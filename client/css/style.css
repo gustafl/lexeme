@@ -96,6 +96,46 @@ body {
 #container {
   position: relative; }
 
+#word-bubble {
+  display: none;
+  position: fixed;
+  width: 300px;
+  top: 400px;
+  left: 500px;
+  background-color: #212121;
+  padding: 4px;
+  opacity: 0.98; }
+  #word-bubble .definition {
+    width: 100%;
+    border: none;
+    color: #eeeddd;
+    padding: 10px;
+    cursor: pointer; }
+    #word-bubble .definition:not(:last-child) {
+      margin-bottom: 4px; }
+  #word-bubble h2 {
+    margin: 0px;
+    font-size: 20pt;
+    font-weight: normal;
+    font-family: 'Open Sans', sans-serif; }
+  #word-bubble table {
+    width: 100%; }
+  #word-bubble td {
+    font-size: 14pt;
+    font-weight: normal;
+    font-family: 'Open Sans', sans-serif;
+    text-align: left; }
+  #word-bubble td:first-child {
+    width: 30px;
+    font-style: italic; }
+    #word-bubble td:first-child:after {
+      content: ':'; }
+  #word-bubble td:last-child {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 100px; }
+
 article {
   position: absolute;
   left: 0px;
@@ -120,7 +160,6 @@ fieldset {
   margin-bottom: 20px; }
 
 fieldset.header {
-  background-color: #292929;
   padding-top: 20px;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px; }
@@ -175,9 +214,6 @@ fieldset:last-child {
     #translations table tr:last-child td {
       border-bottom: none; }
 
-#add-inflection {
-  display: none; }
-
 #add-translation {
   display: none; }
   #add-translation div {
@@ -217,6 +253,9 @@ fieldset:last-child {
 
 #is-root {
   display: none; }
+
+fieldset.footer {
+  margin-top: 30px; }
 
 input {
   color: #eeeddd; }

@@ -78,6 +78,8 @@ function isValidLetter(character) {
 
 function removeLastHightlight(replaceWithSelection) {
 
+    console.info('removeLastHightlight() called: %s', word);
+
     // Make sure there is a last highlight
     if (window.lastHighlight.element === null) {
         return;
@@ -157,8 +159,12 @@ function changeWord(word) {
         $('#word').fadeIn(DURATION_FADE);
     });
 
+    /**
+     * NOTE: The IPA feature is postponed to at least version 0.3.0.
+     */
+
     // Display the IPA field
-    $('#ipa').fadeIn(DURATION_FADE);
+    //$('#ipa').fadeIn(DURATION_FADE);
 
     var $fieldset = $('#lexical-category');
     var selectedButtons = $fieldset.find('button[data-selected]');
@@ -183,6 +189,9 @@ function changeWord(word) {
 
     // Display 'Add translation' button
     $('#add-translation').slideDown(DURATION_SLIDE);
+
+    // Set header background color
+    $('fieldset.header').addClass('default');
 }
 
 function selectionHandler() {
@@ -192,9 +201,6 @@ function selectionHandler() {
     // Get selection object
     var selection = window.getSelection();
 
-    // Get anchor node object
-    var node = selection.anchorNode;
-
     // Make sure anchor and focus nodes are the same
     if (selection.anchorNode !== selection.focusNode) {
         console.warn('The anchor and focus nodes are different.');
@@ -202,10 +208,17 @@ function selectionHandler() {
         return;
     }
 
+    // Get anchor node object
+    var node = selection.anchorNode;
+
     // Make sure the parent of this textnode is not a <span>
     if (node.parentNode.nodeName === 'SPAN') {
-        console.warn('There is already a highlight here.');
+        //console.warn('There is already a highlight here.');
         selection.removeAllRanges();
+        //loadLexeme(node.textContent);
+        var wordBubble = $('#word-bubble');
+        var position = wordBubble.position();
+        $('#word-bubble-position').text('top: ' + position.top + ', left: ' + position.left);
         return;
     }
 
@@ -356,6 +369,8 @@ function singleSelectClickHandler(event) {
 
 function singleSelectSelect($cell) {
 
+    console.info('singleSelectSelect() called.');
+
     var $row = $cell.parent();
     var $fieldset = $row.parent();
     var $siblingRows = $row.siblings();
@@ -388,6 +403,8 @@ function singleSelectSelect($cell) {
 }
 
 function singleSelectReset($fieldset) {
+
+    console.info('singleSelectReset() called.');
 
     // Get the currently selected button
     var $cell = $fieldset.find('button[data-selected]').first();
@@ -462,7 +479,6 @@ function multiSelectClickHandler(event) {
     window.unsavedChanges = true;
 }
 
-// Handle clicks on any button
 function lexicalCategoryHandler(event) {
 
     console.info('lexicalCategoryHandler() called.');
@@ -471,6 +487,7 @@ function lexicalCategoryHandler(event) {
     var $cell = $(event.target);
     var $fieldset = $cell.parents('fieldset');
     var id = $cell.attr('data-lc-id');
+    var className = $cell.attr('class');
 
     // If a lexical category is already selected
     if ($cell.attr('data-selected') !== undefined) {
@@ -492,6 +509,12 @@ function lexicalCategoryHandler(event) {
          * 6. the 'data-selected' attribute on the clicked button disappears
          */
 
+        // TODO: Reset Root/Inflection choice and hide the <fieldset>
+
+        // Reset background color in header
+        $('fieldset.header').removeClass(className);
+        $('fieldset.header').addClass('default');
+
         // Hide the associated <div>
         $('div[data-lc-id="' + id + '"]').slideUp(DURATION_SLIDE, function () {
             // Remove Save button
@@ -504,6 +527,10 @@ function lexicalCategoryHandler(event) {
         removeLastHightlight(replaceWithSelection);
 
     } else {
+
+        // Set background color in header
+        $('fieldset.header').removeClass('default');
+        $('fieldset.header').addClass(className);
 
         // Show the root/inflection question
         $('#is-root').slideDown(DURATION_SLIDE, function () {
@@ -671,24 +698,45 @@ function saveLexeme() {
     storage[key] = value;
 }
 
+function loadLexeme(text) {
+
+    console.info('loadLexeme() called.');
+
+    // Load lexeme object
+    var storage = window.localStorage;
+    var lexeme = {};
+    var key = 'lexeme.' + text;
+    if (storage.keys(key) !== undefined) {
+        lexeme = JSON.parse(storage[key]);
+        console.info('Lexeme found in local storage: ' + text);
+    } else {
+        console.error('Lexeme not found in local storage: ' + text);
+    }
+
+    // Prepare a lexeme object
+
+
+
+}
+
 function saveTranslations() {
 
-}
-
-function saveInflections() {
-
-}
-
-function loadLexeme() {
-
+    console.info('saveTranslations() called.');
 }
 
 function loadTranslations() {
 
+    console.info('loadTranslations() called.');
 }
 
-function loadInflections() {
+function saveInflections() {
 
+    console.info('saveInflection() called.');
+}
+
+function loadInflection() {
+
+    console.info('loadInflection() called.');
 }
 
 function saveForm() {
@@ -704,6 +752,8 @@ function saveForm() {
 }
 
 function resizeTranslationFieldset() {
+
+    console.info('resizeTranslationFieldset() called.');
 
     // Controls
     var $fieldset = $('#add-translation');
@@ -731,6 +781,8 @@ $(window).on('resize', function() {
 });
 
 function addTranslationHandler(event) {
+
+    console.info('addTranslationHandler() called.');
 
     // Get properties for this call
     var $defaultButton = $(event.target);
@@ -772,6 +824,8 @@ function addTranslationHandler(event) {
 
 function defaultButtonClickHandler(event) {
 
+    console.info('defaultButtonClickHandler() called.');
+
     // Get properties for this call
     var $defaultButton = $(event.target);
     var $fieldset = $defaultButton.parents('fieldset');
@@ -808,6 +862,8 @@ function defaultButtonClickHandler(event) {
 }
 
 function addOrCancelButtonClickHandler(event) {
+
+    console.info('addOrCancelButtonClickHandler() called.');
 
     // Get properties for this call
     var $button = $(event.target);
@@ -861,6 +917,8 @@ function addOrCancelButtonClickHandler(event) {
 
 function addTranslation(language, text) {
 
+    console.info('addTranslation() called.');
+
     // Update lastLanguage global
     var index = window.lastLanguage.indexOf(language);
     window.lastLanguage.splice(index, 1);
@@ -898,7 +956,7 @@ function addTranslation(language, text) {
     } else {
         // If a matching row was found, append text to the last cell
         var $lastCell = $matchingRow.find('>:last-child');
-        var content = $lastCell.html() + '; <span class="translation">' + text + '</span>';
+        var content = $lastCell.html() + ', <span class="translation">' + text + '</span>';
         $lastCell.html(content);
     }
 }
@@ -1011,6 +1069,8 @@ function loadLanguageConfiguration(data) {
 
 function adaptToLanguage(languageCode) {
 
+    console.info('adaptToLanguage() called.');
+
     // Make sure we didn't already load this
     var storage = window.localStorage;
     var key = 'config.' + languageCode;
@@ -1036,6 +1096,36 @@ function adaptToLanguage(languageCode) {
     $.get(settings);
 }
 
+function rootButtonClickHandler(event) {
+
+    console.info('rootButtonClickHandler() called.');
+
+    // Get current lexical category
+    var lexicalCategoryId = getLexicalCategoryId();
+
+    // Show grammatical categories
+    $('div[data-lc-id="' + lexicalCategoryId + '"]').slideDown(DURATION_SLIDE);
+}
+
+function getLexicalCategoryId() {
+
+    console.info('inflectionButtonClickHandler() called.');
+
+    var $fieldset = $('#lexical-category');
+    var $collection = $fieldset.find('button[data-selected]');
+    if ($collection.length === 0) {
+        return null;
+    }
+    var $button = $collection.first();
+    var id = $button.attr('data-lc-id');
+    return id;
+}
+
+function inflectionButtonClickHandler(event) {
+
+    console.info('inflectionButtonClickHandler() called.');
+}
+
 $(document).ready(function () {
 
     console.info("$(document).ready() called!");
@@ -1047,9 +1137,6 @@ $(document).ready(function () {
     // Handle selections in the <article> element
     $('article').on('mouseup', selectionHandler);
 
-    // Handle clicks on the application buttons
-    $('#save').on('click', saveForm);
-
     // Handle focus/focusout on IPA
     $('#ipa').on({
         focus: ipaFocusHandler,
@@ -1060,22 +1147,17 @@ $(document).ready(function () {
         window.unsavedChanges = true;
     });
 
-    // Handle any button clicks in form
+    // Button handlers
     $('#lexical-category').on('click', 'button', lexicalCategoryHandler);
     $('form').on('click', 'fieldset[data-type="single-select"] button', singleSelectClickHandler);
     $('form').on('click', 'fieldset[data-type="multi-select"] button', multiSelectClickHandler);
-
-    // Handle 'Add translation'
     $('#add-translation').on('click', 'button.default', addTranslationHandler);
-
-    // Handle 'Add inflection'
-    $('#add-inflection').on('click', 'button.default', defaultButtonClickHandler);
-
-    // Handle 'Add' and 'Cancel' buttons
+    $('#is-root').on('click', 'button[data-root="true"]', rootButtonClickHandler);
+    $('#is-root').on('click', 'button[data-root="false"]', inflectionButtonClickHandler);
     $('form').on('click', 'button.add', addOrCancelButtonClickHandler);
     $('form').on('click', 'button.cancel', addOrCancelButtonClickHandler);
-
     $('form').on('click', 'button.translation-language', translationLanguageButtonClickHandler);
+    $('#save').on('click', saveForm);
 
     // jQuery extension to disable/enable buttons
     // Usage: $('button').disable(true);
@@ -1091,5 +1173,4 @@ $(document).ready(function () {
             });
         }
     });
-
 });

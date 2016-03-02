@@ -21,7 +21,7 @@
         </header>
         <section>
           <h2>1. Un écueil fuyant</h2>
-          <p>L'année 1866 fut marquée par un événement bizarre, un phénomène inexpliqué et inexplicable que personne n'a sans doute oublié. Sans parler des rumeurs qui agitaient les populations des ports et surexcitaient l'esprit public à l'intérieur des continents les gens de mer furent particulièrement émus. Les négociants, armateurs, capitaines de navires, skippers et masters de l'Europe et de l'Amérique, officiers des marines militaires de tous pays, et, après eux, les gouvernements des divers États des deux continents, se préoccupèrent de ce fait au plus haut point.</p>
+          <p>L'année 1866 fut marquée par un événement <span class="adjective">bizarre</span>, un phénomène inexpliqué et inexplicable que personne n'a sans doute oublié. Sans parler des rumeurs qui agitaient les populations des ports et surexcitaient l'esprit public à l'intérieur des continents les gens de mer furent particulièrement émus. Les négociants, armateurs, capitaines de navires, skippers et masters de l'Europe et de l'Amérique, officiers des marines militaires de tous pays, et, après eux, les gouvernements des divers États des deux continents, se préoccupèrent de ce fait au plus haut point.</p>
           <p>En effet, depuis quelque temps, plusieurs navires s'étaient rencontrés sur mer avec « une chose énorme » un objet long, fusiforme, parfois phosphorescent, infiniment plus vaste et plus rapide qu'une baleine.</p>
           <p>Les faits relatifs à cette apparition, consignés aux divers livres de bord, s'accordaient assez exactement sur la structure de l'objet ou de l'être en question, la vitesse inouïe de ses mouvements, la puissance surprenante de sa locomotion, la vie particulière dont il semblait doué. Si c'était un cétacé, il surpassait en volume tous ceux que la science avait classés jusqu'alors. Ni Cuvier, ni Lacépède, ni M. Dumeril, ni M. de Quatrefages n'eussent admis l'existence d'un tel monstre &ndash; à moins de l'avoir vu, ce qui s'appelle vu de leurs propres yeux de savants.</p>
           <p>A prendre la moyenne des observations faites à diverses reprises &ndash; en rejetant les évaluations timides qui assignaient à cet objet une longueur de deux cents pieds et en repoussant les opinions exagérées qui le disaient large d'un mille et long de trois &ndash; on pouvait affirmer, cependant, que cet être phénoménal dépassait de beaucoup toutes les dimensions admises jusqu'à ce jour par les ichtyologistes &ndash; s'il existait toutefois.</p>
@@ -60,16 +60,13 @@
           <fieldset id="add-translation" class="col-1">
             <div><button type="button" class="default">add translation</button><button type="button" class="translation-language">en</button><input type="text" autocomplete="off" maxlength="50" /><button type="button" class="add">add</button><button type="button" class="cancel">cancel</button></div>
           </fieldset>
-          <fieldset id="add-inflection" class="col-1">
-            <div><input type="text" autocomplete="off" maxlength="50" /><button type="button" class="default">add inflection</button><button type="button" class="add">add</button><button type="button" class="cancel">cancel</button></div>
-          </fieldset>
           <fieldset id="lexical-category" class="col-3" data-type="single-select">
             <div><button type="button" class="noun" data-lc-id="1">noun</button><button type="button" class="verb" data-lc-id="2">verb</button><button type="button" class="adjective" data-lc-id="3">adjective</button></div>
             <div><button type="button" class="pronoun" data-lc-id="4">pronoun</button><button type="button" class="adverb" data-lc-id="5">adverb</button><button type="button" class="determiner" data-lc-id="6">determiner</button></div>
             <div><button type="button" class="preposition" data-lc-id="7">preposition</button><button type="button" class="conjugation" data-lc-id="8">conjugation</button><button type="button" class="interjection" data-lc-id="9">interjection</button></div>
           </fieldset>
           <fieldset id="is-root" class="col-2" data-type="single-select">
-            <div><button type="button" class="default">root</button><button type="button" class="default">inflection</button></div>
+            <div><button type="button" data-root="true" class="default">root</button><button type="button" data-root="false" class="default">inflection</button></div>
           </fieldset>
           <div data-lc-id="1"></div>
           <div data-lc-id="2"></div>
@@ -80,13 +77,47 @@
           <div data-lc-id="7"></div>
           <div data-lc-id="8"></div>
           <div data-lc-id="9"></div>
-          <fieldset class="col-3">
+          <fieldset class="col-3 footer">
             <div><button type="button" class="default" id="save">save</button><button type="button" class="default" id="close">close</button></div>
           </fieldset>
         </form>
       </aside>
     </div>
     <footer></footer>
+    <div id="word-bubble">
+      <div id="word-bubble-position">position</div>
+      <button type="button" class="definition adjective">
+        <h2>bizarre</h2>
+        <table>
+          <tr>
+            <td>en</td>
+            <td><span class="translation">bizarre</span></td>
+          </tr>
+          <tr>
+            <td>sv</td>
+            <td><span class="translation">bisarr</span>, <span class="translation">konstig</span></td>
+          </tr>
+        </table>
+      </button>
+      <button type="button" class="definition noun">
+        <h2>bizarre</h2>
+        <table>
+          <tr>
+            <td>en</td>
+            <td><span class="translation">bizarre</span></td>
+          </tr>
+        </table>
+      </button>
+      <button type="button" class="definition verb">
+        <h2>bizarre</h2>
+        <table>
+          <tr>
+            <td>sv</td>
+            <td><span class="translation">bisarr</span>, <span class="translation">konstig</span>, <span class="translation">mjölmask</span>, <span class="translation">daggmask</span></td>
+          </tr>
+        </table>
+      </button>
+    </div>
     <script src="https://code.jquery.com/jquery-2.2.0.js"></script>
     <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script src="./js/scripts.js"></script>

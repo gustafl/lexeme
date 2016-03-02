@@ -1,6 +1,9 @@
-.default, .add, .cancel, .translation-language {
+.default {
   background-color: #292929; }
-  .default:hover, .add:hover, .cancel:hover, .translation-language:hover {
+
+button.default, button.add, button.cancel, button.translation-language {
+  background-color: #292929; }
+  button.default:hover, button.add:hover, button.cancel:hover, button.translation-language:hover {
     background-color: #363636; }
 
 .transparent {
@@ -8,92 +11,119 @@
 
 .noun {
   background-color: #29293d; }
-  .noun:hover {
+
+button.noun {
+  background-color: #29293d; }
+  button.noun:hover {
     background-color: #33334d; }
 
-.noun-unselected {
+button.noun-unselected {
   background-color: #292932; }
-  .noun-unselected:hover {
+  button.noun-unselected:hover {
     background-color: #32323e; }
 
 .verb {
   background-color: #293d29; }
-  .verb:hover {
+
+button.verb {
+  background-color: #293d29; }
+  button.verb:hover {
     background-color: #334d33; }
 
-.verb-unselected {
+button.verb-unselected {
   background-color: #293229; }
-  .verb-unselected:hover {
+  button.verb-unselected:hover {
     background-color: #323e32; }
 
 .adjective {
   background-color: #3d2929; }
-  .adjective:hover {
+
+button.adjective {
+  background-color: #3d2929; }
+  button.adjective:hover {
     background-color: #4d3333; }
 
-.adjective-unselected {
+button.adjective-unselected {
   background-color: #322929; }
-  .adjective-unselected:hover {
+  button.adjective-unselected:hover {
     background-color: #3e3232; }
 
 .pronoun {
   background-color: #293d3d; }
-  .pronoun:hover {
+
+button.pronoun {
+  background-color: #293d3d; }
+  button.pronoun:hover {
     background-color: #334d4d; }
 
-.pronoun-unselected {
+button.pronoun-unselected {
   background-color: #293232; }
-  .pronoun-unselected:hover {
+  button.pronoun-unselected:hover {
     background-color: #323e3e; }
 
 .adverb {
   background-color: #3d3d29; }
-  .adverb:hover {
+
+button.adverb {
+  background-color: #3d3d29; }
+  button.adverb:hover {
     background-color: #4d4d33; }
 
-.adverb-unselected {
+button.adverb-unselected {
   background-color: #323229; }
-  .adverb-unselected:hover {
+  button.adverb-unselected:hover {
     background-color: #3e3e32; }
 
 .determiner {
   background-color: #3d293d; }
-  .determiner:hover {
+
+button.determiner {
+  background-color: #3d293d; }
+  button.determiner:hover {
     background-color: #4d334d; }
 
-.determiner-unselected {
+button.determiner-unselected {
   background-color: #322932; }
-  .determiner-unselected:hover {
+  button.determiner-unselected:hover {
     background-color: #3e323e; }
 
 .preposition {
   background-color: #363030; }
-  .preposition:hover {
+
+button.preposition {
+  background-color: #363030; }
+  button.preposition:hover {
     background-color: #433d3d; }
 
-.preposition-unselected {
+button.preposition-unselected {
   background-color: #302c2c; }
-  .preposition-unselected:hover {
+  button.preposition-unselected:hover {
     background-color: #3b3535; }
 
 .conjugation {
   background-color: #363030; }
-  .conjugation:hover {
+
+button.conjugation {
+  background-color: #363030; }
+  button.conjugation:hover {
     background-color: #433d3d; }
 
-.conjugation-unselected {
+button.conjugation-unselected {
   background-color: #302c2c; }
-  .conjugation-unselected:hover {
+  button.conjugation-unselected:hover {
     background-color: #3b3535; }
 
 .interjection {
   background-color: #363030; }
-  .interjection:hover {
+
+button.interjection {
+  background-color: #363030; }
+  button.interjection:hover {
     background-color: #433d3d; }
 
-.interjection-unselected {
+button.interjection-unselected {
   background-color: #302c2c; }
-  .interjection-unselected:hover {
+  button.interjection-unselected:hover {
     background-color: #3b3535; }
 
 /*# sourceMappingURL=colors.css.map */

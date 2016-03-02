@@ -1,4 +1,8 @@
-.default, .add, .cancel, .translation-language {
+.default {
+    $color: hsla(0, 0%, 16%, 1);
+    background-color: $color;
+}
+button.default, button.add, button.cancel, button.translation-language {
     $color: hsla(0, 0%, 16%, 1);
     background-color: $color;
     &:hover {
@@ -13,11 +17,15 @@
 .noun {
     $color: hsla(240, 20%, 20%, 1);
     background-color: $color;
+}
+button.noun {
+    $color: hsla(240, 20%, 20%, 1);
+    background-color: $color;
     &:hover {
         background-color: lighten($color, 5%);
     }
 }
-.noun-unselected {
+button.noun-unselected {
     $color: hsla(240, 10%, 18%, 1);
     background-color: $color;
     &:hover {
@@ -28,11 +36,15 @@
 .verb {
     $color: hsla(120, 20%, 20%, 1);
     background-color: $color;
+}
+button.verb {
+    $color: hsla(120, 20%, 20%, 1);
+    background-color: $color;
     &:hover {
         background-color: lighten($color, 5%);
     }
 }
-.verb-unselected {
+button.verb-unselected {
     $color: hsla(120, 10%, 18%, 1);
     background-color: $color;
     &:hover {
@@ -43,11 +55,15 @@
 .adjective {
     $color: hsla(0, 20%, 20%, 1);
     background-color: $color;
+}
+button.adjective {
+    $color: hsla(0, 20%, 20%, 1);
+    background-color: $color;
     &:hover {
         background-color: lighten($color, 5%);
     }
 }
-.adjective-unselected {
+button.adjective-unselected {
     $color: hsla(0, 10%, 18%, 1);
     background-color: $color;
     &:hover {
@@ -58,11 +74,15 @@
 .pronoun {
     $color: hsla(180, 20%, 20%, 1);
     background-color: $color;
+}
+button.pronoun {
+    $color: hsla(180, 20%, 20%, 1);
+    background-color: $color;
     &:hover {
         background-color: lighten($color, 5%);
     }
 }
-.pronoun-unselected {
+button.pronoun-unselected {
     $color: hsla(180, 10%, 18%, 1);
     background-color: $color;
     &:hover {
@@ -73,11 +93,15 @@
 .adverb {
     $color: hsla(60, 20%, 20%, 1);
     background-color: $color;
+}
+button.adverb {
+    $color: hsla(60, 20%, 20%, 1);
+    background-color: $color;
     &:hover {
         background-color: lighten($color, 5%);
     }
 }
-.adverb-unselected {
+button.adverb-unselected {
     $color: hsla(60, 10%, 18%, 1);
     background-color: $color;
     &:hover {
@@ -88,11 +112,15 @@
 .determiner {
     $color: hsla(300, 20%, 20%, 1);
     background-color: $color;
+}
+button.determiner {
+    $color: hsla(300, 20%, 20%, 1);
+    background-color: $color;
     &:hover {
         background-color: lighten($color, 5%);
     }
 }
-.determiner-unselected {
+button.determiner-unselected {
     $color: hsla(300, 10%, 18%, 1);
     background-color: $color;
     &:hover {
@@ -103,11 +131,15 @@
 .preposition {
     $color: hsla(0, 5%, 20%, 1);
     background-color: $color;
+}
+button.preposition {
+    $color: hsla(0, 5%, 20%, 1);
+    background-color: $color;
     &:hover {
         background-color: lighten($color, 5%);
     }
 }
-.preposition-unselected {
+button.preposition-unselected {
     $color: hsla(0, 5%, 18%, 1);
     background-color: $color;
     &:hover {
@@ -118,11 +150,15 @@
 .conjugation {
     $color: hsla(0, 5%, 20%, 1);
     background-color: $color;
+}
+button.conjugation {
+    $color: hsla(0, 5%, 20%, 1);
+    background-color: $color;
     &:hover {
         background-color: lighten($color, 5%);
     }
 }
-.conjugation-unselected {
+button.conjugation-unselected {
     $color: hsla(0, 5%, 18%, 1);
     background-color: $color;
     &:hover {
@@ -133,11 +169,15 @@
 .interjection {
     $color: hsla(0, 5%, 20%, 1);
     background-color: $color;
+}
+button.interjection {
+    $color: hsla(0, 5%, 20%, 1);
+    background-color: $color;
     &:hover {
         background-color: lighten($color, 5%);
     }
 }
-.interjection-unselected {
+button.interjection-unselected {
     $color: hsla(0, 5%, 18%, 1);
     background-color: $color;
     &:hover {
