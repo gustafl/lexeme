@@ -215,6 +215,9 @@ fieldset:last-child {
 #lexical-category {
   display: none; }
 
+#is-root {
+  display: none; }
+
 input {
   color: #eeeddd; }
 

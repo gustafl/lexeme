@@ -3,17 +3,20 @@
 // Constants
 const SELECTION_MAX_LENGTH = 100;
 const CASE_SENSITIVE_MATCHING = false;
+const DURATION_FADE = 100;
+const DURATION_SLIDE = 400;
+const DURATION_WIDTH = 200;
 const LETTER = 'a-zA-Z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF';
 
 /**
- * Keeps track of whether there are currently unsaved changed in the application.
+ * Keeps track of whether there are currently unsaved changes in the application.
  * @type {Boolean}
  */
 window.unsavedChanges = false;
 
 /**
- * Keeps track of where the last highlight were made, in case it needs to be
- * changed or undone.
+ * Keeps track of where the last highlight was made (in case it needs to be
+ * changed or undone).
  * @type {Object}
  * @property {Node}    element - A <span> element (jQuery) containing the highlight.
  * @property {boolean} saved   - A boolean indicating if the highlight has been saved.
@@ -24,8 +27,7 @@ window.lastHighlight = {
 }
 
 /**
- * Keeps track of where the user made the last selection, in case the selection
- * loses focus.
+ * Keeps track of where the last selection was made (in case it loses focus).
  * @type {Object}
  * @property {Node}   node  - The node in which the selection was made.
  * @property {number} start - The start offset of the selection.
@@ -150,13 +152,13 @@ function changeWord(word) {
     console.info('changeWord() called: %s', word);
 
     // Display word in header
-    $('#word').fadeOut(100, function () {
+    $('#word').fadeOut(DURATION_FADE, function () {
         $('#word').val(word);
-        $('#word').fadeIn(100);
+        $('#word').fadeIn(DURATION_FADE);
     });
 
     // Display the IPA field
-    $('#ipa').fadeIn(100);
+    $('#ipa').fadeIn(DURATION_FADE);
 
     var $fieldset = $('#lexical-category');
     var selectedButtons = $fieldset.find('button[data-selected]');
@@ -170,17 +172,17 @@ function changeWord(word) {
         // Remove last highlight (unless it's saved)
         removeLastHightlight();
         // Hide grammatical categories
-        $('div[data-lc-id="' + lexicalCategoryId + '"]').slideUp(400, function () {
+        $('div[data-lc-id="' + lexicalCategoryId + '"]').slideUp(DURATION_SLIDE, function () {
             // Hide save button
             $('#save').disable();
-            $('#save').fadeOut(100);
+            $('#save').fadeOut(DURATION_FADE);
         });
     } else {
-        $('#lexical-category').slideDown();
+        $('#lexical-category').slideDown(DURATION_SLIDE);
     }
 
     // Display 'Add translation' button
-    $('#add-translation').slideDown();
+    $('#add-translation').slideDown(DURATION_SLIDE);
 }
 
 function selectionHandler() {
@@ -358,7 +360,6 @@ function singleSelectSelect($cell) {
     var $fieldset = $row.parent();
     var $siblingRows = $row.siblings();
     var $siblingCells = $cell.siblings();
-    var duration = 200;
 
     // Set the 'data-selected' attribute
     $cell.attr('data-selected', true);
@@ -368,11 +369,11 @@ function singleSelectSelect($cell) {
     $(function () {
         $siblingRows.animate(
             { height: '0px' },
-            { duration: duration, queue: false }
+            { duration: DURATION_WIDTH, queue: false }
         );
         $cell.animate(
             { width: '100%' },
-            { duration: duration, queue: false, complete: function () {
+            { duration: DURATION_WIDTH, queue: false, complete: function () {
                 if ($cell.parents('#lexical-category').length === 0) {
                     var currentClass = $cell.attr('class');
                     $cell.attr('class', currentClass.replace('-unselected', ''));
@@ -381,7 +382,7 @@ function singleSelectSelect($cell) {
         );
         $siblingCells.animate(
             { width: '0%' },
-            { duration: duration, queue: false }
+            { duration: DURATION_WIDTH, queue: false }
         );
     });
 }
@@ -393,7 +394,6 @@ function singleSelectReset($fieldset) {
     var $row = $cell.parent();
     var $siblingRows = $row.siblings();
     var $siblingCells = $cell.siblings();
-    var duration = 200;
 
     // Remove the 'data-selected' attribute
     $cell.removeAttr('data-selected');
@@ -403,11 +403,11 @@ function singleSelectReset($fieldset) {
     $(function () {
         $siblingRows.animate(
             { height: '60px' },
-            { duration: duration, queue: false }
+            { duration: DURATION_WIDTH, queue: false }
         );
         $cell.animate(
             { width: (100 / ($siblingCells.length + 1)) + '%' },
-            { duration: duration, queue: false, complete: function () {
+            { duration: DURATION_WIDTH, queue: false, complete: function () {
                 if ($cell.parents('#lexical-category').length === 0) {
                     var currentClass = $cell.attr('class');
                     $cell.attr('class', currentClass + '-unselected');
@@ -416,7 +416,7 @@ function singleSelectReset($fieldset) {
         );
         $siblingCells.animate(
             { width: (100 / ($siblingCells.length + 1)) + '%' },
-            { duration: duration, queue: false }
+            { duration: DURATION_WIDTH, queue: false }
         );
     });
 }
@@ -471,7 +471,6 @@ function lexicalCategoryHandler(event) {
     var $cell = $(event.target);
     var $fieldset = $cell.parents('fieldset');
     var id = $cell.attr('data-lc-id');
-    var duration = 400;
 
     // If a lexical category is already selected
     if ($cell.attr('data-selected') !== undefined) {
@@ -494,10 +493,10 @@ function lexicalCategoryHandler(event) {
          */
 
         // Hide the associated <div>
-        $('div[data-lc-id="' + id + '"]').slideUp(duration, function () {
+        $('div[data-lc-id="' + id + '"]').slideUp(DURATION_SLIDE, function () {
             // Remove Save button
             $('#save').disable();
-            $('#save').fadeOut(100);
+            $('#save').fadeOut(DURATION_FADE);
         });
 
         // If there's an unsaved highlight, remove it
@@ -506,12 +505,19 @@ function lexicalCategoryHandler(event) {
 
     } else {
 
+        // Show the root/inflection question
+        $('#is-root').slideDown(DURATION_SLIDE, function () {
+            // Show Save button
+            $('#save').enable();
+            $('#save').fadeIn(DURATION_FADE);
+        });
+
         // Show the associated <div>
-        $('div[data-lc-id="' + id + '"]').slideDown(duration, function () {
+        /*$('div[data-lc-id="' + id + '"]').slideDown(duration, function () {
             // Show Save button
             $('#save').enable();
             $('#save').fadeIn(100);
-        });
+        });*/
 
         // Highlight the word in the text
         var lexicalCategory = $cell.attr('class');
@@ -736,27 +742,27 @@ function addTranslationHandler(event) {
     $defaultButton.removeAttr('data-select');
     $defaultButton.animate(
         { width: '33.3%' },
-        { duration: 400, complete: function () {
-            $defaultButton.fadeOut(200, function () {
+        { duration: DURATION_WIDTH, complete: function () {
+            $defaultButton.fadeOut(DURATION_FADE, function () {
                 var $languageButton = $fieldset.find('button.translation-language').first();
                 var lastLanguage = window.lastLanguage[0];
                 $languageButton.html(lastLanguage);
-                $languageButton.fadeIn(200, function () {
+                $languageButton.fadeIn(DURATION_FADE, function () {
                     $languageButton.enable();
                 }).css('display', 'table-cell');
                 var $addButton = $fieldset.find('button.add').first();
-                $addButton.fadeIn(200, function () {
+                $addButton.fadeIn(DURATION_FADE, function () {
                     $addButton.enable();
                 }).css('display', 'table-cell');
                 var $cancelButton = $fieldset.find('button.cancel').first();
-                $cancelButton.fadeIn(200, function () {
+                $cancelButton.fadeIn(DURATION_FADE, function () {
                     $cancelButton.enable();
                 }).css('display', 'table-cell');
                 var $input = $fieldset.find('input').first();
                 resizeTranslationFieldset();
                 $input.css('padding', '0px 5px');
                 $input.css('margin', '0px 10px');
-                $input.fadeIn(200, function () {
+                $input.fadeIn(DURATION_FADE, function () {
                     $input.focus();
                 }).css('display', 'table-cell');
             });
@@ -779,21 +785,21 @@ function defaultButtonClickHandler(event) {
     $defaultButton.disable();
     $defaultButton.animate(
         { width: '33.3%' },
-        { duration: 400, complete: function () {
-            $defaultButton.fadeOut(200, function () {
+        { duration: DURATION_WIDTH, complete: function () {
+            $defaultButton.fadeOut(DURATION_FADE, function () {
                 var $addButton = $fieldset.find('button.add').first();
-                $addButton.fadeIn(200, function () {
+                $addButton.fadeIn(DURATION_FADE, function () {
                     $addButton.enable();
                 });
                 var $cancelButton = $fieldset.find('button.cancel').first();
-                $cancelButton.fadeIn(200, function () {
+                $cancelButton.fadeIn(DURATION_FADE, function () {
                     $cancelButton.enable();
                 });
                 var $input = $fieldset.find('input').first();
                 $input.css('width', 'calc(66% - 10px)');
                 $input.css('padding', '0px 10px');
                 $input.css('margin', '0px 10px');
-                $input.fadeIn(200, function () {
+                $input.fadeIn(DURATION_FADE, function () {
                     $input.focus();
                 });
             });
@@ -822,20 +828,20 @@ function addOrCancelButtonClickHandler(event) {
     $addButton.disable();
     $cancelButton.disable();
     $languageButton.disable();
-    $addButton.fadeOut(200);
-    $cancelButton.fadeOut(200);
-    $languageButton.fadeOut(200);
+    $addButton.fadeOut(DURATION_FADE);
+    $cancelButton.fadeOut(DURATION_FADE);
+    $languageButton.fadeOut(DURATION_FADE);
     var $input = $fieldset.find('input').first();
-    $input.fadeOut(200, function () {
+    $input.fadeOut(DURATION_FADE, function () {
         $input.css('width', '0%');
         $input.css('padding', '0px');
         $input.css('margin-right', '0px');
         var $defaultButton = $fieldset.find('button.default').first();
         $defaultButton.removeAttr('data-select');
-        $defaultButton.fadeIn(200, function () {
+        $defaultButton.fadeIn(DURATION_FADE, function () {
             $defaultButton.animate(
                 { width: '100%' },
-                { duration: 400, complete: function () {
+                { duration: DURATION_WIDTH, complete: function () {
                     $defaultButton.enable();
                     if (saveInput) {
                         var language = $languageButton.text();
