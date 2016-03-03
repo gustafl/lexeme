@@ -213,12 +213,8 @@ function selectionHandler() {
 
     // Make sure the parent of this textnode is not a <span>
     if (node.parentNode.nodeName === 'SPAN') {
-        //console.warn('There is already a highlight here.');
+        console.warn('There is already a highlight here.');
         selection.removeAllRanges();
-        //loadLexeme(node.textContent);
-        var wordBubble = $('#word-bubble');
-        var position = wordBubble.position();
-        $('#word-bubble-position').text('top: ' + position.top + ', left: ' + position.left);
         return;
     }
 
@@ -1159,6 +1155,103 @@ $(document).ready(function () {
     $('form').on('click', 'button.translation-language', translationLanguageButtonClickHandler);
     $('#save').on('click', saveForm);
 
+    $('#word-bubble').on('click', 'button', wordBubbleButtonClickHandler);
+
+    // Handle hover in and out on highlighted words
+    $('article span').hoverIntent(wordBubbleHoverIn, wordBubbleHoverOut);
+    $(window).on('scroll', wordBubbleHoverOut);
+
+    // Sort word objects on the 'word' property
+    function wordComparator(a, b) {
+        if (a.word < b.word) return -1;
+        if (a.word > b.word) return 1;
+        return 0;
+    }
+
+    function freqComparator(a, b) {
+        if (a.freq < b.freq) return 1;
+        if (a.freq > b.freq) return -1;
+        return 0;
+    }
+
+    // Get all the text in the article
+    var someText = $('article')[0].innerText;
+
+    // Get array of words containing valid letters only
+    var separator = new RegExp('[^' + LETTER + ']');
+    var words = someText.split(separator);
+    words = words.filter(function (value) {
+        return (value !== '');
+    });
+
+    // Get object array with word frequencies
+    var wordCount = words.length;
+    var uniqueWordCount = 0;
+    var objects = [];
+    for (var i = 0; i < words.length; i++) {
+        var isDuplicate = false;
+        for (var j = 0; j < objects.length; j++) {
+            if (objects[j].word === words[i]) {
+                objects[j].freq += 1;
+                isDuplicate = true;
+                break;
+            }
+        }
+        if (!isDuplicate) {
+            var object = {};
+            object.word = words[i];
+            object.freq = 1;
+            objects.push(object);
+            uniqueWordCount++;
+        }
+    }
+
+    // Sort the object array on the 'word' property
+    objects = objects.sort(freqComparator);
+
+    // Show the results in a table in the footer
+    var $footer = $('footer');
+    var $p = $('<p>Word count: ' + wordCount + '</p>');
+    $footer.append($p);
+    var $p = $('<p>Unique word count: ' + uniqueWordCount + '</p>');
+    $footer.append($p);
+    var $ul = $('<table/>');
+    $footer.append($ul);
+    for (var i = 0; i < objects.length; i++) {
+        var percentage = (parseInt(objects[i].freq) / wordCount) * 100;
+        percentage = Math.round(percentage * 100) / 100;
+        var li = $('<tr><td>' + objects[i].word + '</td><td style="width: 100px">' + objects[i].freq + '</td><td style="width: 100px">' + percentage + '%</td></tr>');
+        $ul.append(li);
+    }
+
+    var mostFrequentWord = objects[0].word;
+    var regex = new RegExp('[^' + LETTER + ']' + mostFrequentWord + '[^' + LETTER + ']');
+    var startingNode = $('article')[0];
+    /*hereWeGoAgain(startingNode);
+
+    function hereWeGoAgain(node) {
+        switch (node.nodeType) {
+            case 1:
+                node = node.firstChild;
+                while (node) {
+                    hereWeGoAgain(node);
+                    node = node.nextSibling;
+                }
+                break;
+            case 3:
+                var index = node.nodeValue.indexOf(mostFrequentWord);
+                if (index > -1) {
+                    var afterSpan = node.splitText(index + mostFrequentWord.length);
+                    var beforeSpan = node;
+                    var span = document.createElement('span');
+                    span.appendChild(document.createTextNode(mostFrequentWord));
+
+                    node.nodeValue.replace(mostFrequentWord, '<span class="preposition">' + mostFrequentWord + '</span>');
+                }
+                break;
+        }
+    }*/
+
     // jQuery extension to disable/enable buttons
     // Usage: $('button').disable(true);
     jQuery.fn.extend({
@@ -1173,4 +1266,48 @@ $(document).ready(function () {
             });
         }
     });
+
+
+
 });
+
+function wordBubbleButtonClickHandler(event) {
+    var $button = $(event.target).parents('button');
+    console.log($button);
+}
+
+function wordBubbleHoverIn(event) {
+    var $span = $(event.target);
+    var position = event.target.getBoundingClientRect();
+    if ((window.innerHeight / 2) >= position.top) {
+        console.log('arrow on bottom');
+        $('#word-bubble:before').css('display', 'none');
+    } else {
+        console.log('arrow on top');
+        $('#word-bubble:after').css('display', 'none');
+    }
+    var timer;
+    if (timer) {
+        clearTimeout(timer);
+        timer = null;
+    }
+    timer = setTimeout(function() {
+        // Get the <span> offset from the document top
+        var spanTop = $span.offset().top;
+        // Get the distance
+        var scrollTop = frames.top.scrollY;
+        var spanLeft = $span.offset().left;
+        var spanHeight = parseInt($span.css('height'));
+        var spanWidth = parseInt($span.css('width'));
+        var arrowHeight = 10;
+        var bubbleWidth = parseInt($('#word-bubble').css('width'));
+        $('#word-bubble-position').text();
+        $('#word-bubble').css('top', spanTop - scrollTop + spanHeight + arrowHeight + 'px');
+        $('#word-bubble').css('left', spanLeft + (spanWidth / 2) - (bubbleWidth / 2) + 'px');
+        $('#word-bubble').fadeIn(DURATION_FADE);
+    }, 500);
+}
+
+function wordBubbleHoverOut(event) {
+    $('#word-bubble').fadeOut(DURATION_FADE);
+}

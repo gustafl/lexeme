@@ -127,11 +127,29 @@ body {
     display: none;
     position: fixed;
     width: 300px;
-    top: 400px;
-    left: 500px;
-    background-color: $color-dark-gray-1;
+    top: 0px;
+    left: 0px;
+    background-color: $color-gray;
     padding: 4px;
     opacity: 0.98;
+    span.arrow-top {
+        position: absolute;
+        width: 0;
+        height: 0;
+        left: (300px / 2) - 20px;
+        top: -36px;
+        border: 20px solid;
+        border-color: transparent transparent $color-gray transparent;
+    }
+    span.arrow-bottom {
+        position: absolute;
+        width: 0;
+        height: 0;
+        left: (300px / 2) - 20px;
+        bottom: -36px;
+        border: 20px solid;
+        border-color: $color-gray transparent transparent transparent;
+    }
     .definition {
         width: 100%;
         border: none;
@@ -173,7 +191,7 @@ body {
 }
 
 article {
-    position: absolute;
+    position: relative;
     left: 0px;
     top: 0px;
     padding-bottom: 5em;
@@ -318,6 +336,14 @@ fieldset:last-child {
 
 fieldset.footer {
     margin-top: 30px;
+}
+
+footer {
+    position: relative;
+    background-color: $color-gray;
+    margin: 50px;
+    padding: 50px;
+    font-size: 20pt;
 }
 
 input {
