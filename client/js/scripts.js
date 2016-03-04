@@ -47,6 +47,18 @@ window.lastSelection = {
  */
 window.lastLanguage = ['en', 'fr', 'sv'];  // TODO: Make a user setting for this.
 
+var configFr = '[{"id":1,"name":"noun","grammaticalCategories":[{"id":1,"name":"gender","subgroup":3,"grammemes":[{"id":1,"name":"masculine"},{"id":2,"name":"feminine"}]},{"id":2,"name":"number","subgroup":2,"grammemes":[{"id":6,"name":"singular"},{"id":7,"name":"plural"}]},{"id":4,"name":null,"subgroup":1,"grammemes":[{"id":16,"name":"proper"},{"id":17,"name":"common"}]},{"id":5,"name":null,"subgroup":1,"grammemes":[{"id":18,"name":"abstract"},{"id":19,"name":"concrete"}]},{"id":6,"name":null,"subgroup":1,"grammemes":[{"id":20,"name":"countable"},{"id":21,"name":"uncountable"}]},{"id":7,"name":"collective noun","subgroup":1,"grammemes":[]},{"id":8,"name":"mass noun","subgroup":1,"grammemes":[]}]},{"id":2,"name":"verb","grammaticalCategories":[{"id":9,"name":"tense","subgroup":2,"grammemes":[{"id":22,"name":"present"}]},{"id":10,"name":"mood","subgroup":2,"grammemes":[]},{"id":11,"name":"voice","subgroup":2,"grammemes":[]}]}]';
+
+function getQueryStringParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+    var results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
 function format(text) {
 
     // Make sure we got a string
@@ -1224,33 +1236,61 @@ $(document).ready(function () {
         $ul.append(li);
     }
 
-    var mostFrequentWord = objects[0].word;
-    var regex = new RegExp('[^' + LETTER + ']' + mostFrequentWord + '[^' + LETTER + ']');
-    var startingNode = $('article')[0];
-    /*hereWeGoAgain(startingNode);
+    var pattern = objects[0].word;
+    var startNode = $('article p')[0];
+    var className = 'pronoun';
+    traverseArticle(startNode, pattern, 0);
 
-    function hereWeGoAgain(node) {
-        switch (node.nodeType) {
-            case 1:
-                node = node.firstChild;
-                while (node) {
-                    hereWeGoAgain(node);
-                    node = node.nextSibling;
-                }
-                break;
-            case 3:
-                var index = node.nodeValue.indexOf(mostFrequentWord);
-                if (index > -1) {
-                    var afterSpan = node.splitText(index + mostFrequentWord.length);
-                    var beforeSpan = node;
-                    var span = document.createElement('span');
-                    span.appendChild(document.createTextNode(mostFrequentWord));
+    function traverseArticle(node, pattern, depth) {
 
-                    node.nodeValue.replace(mostFrequentWord, '<span class="preposition">' + mostFrequentWord + '</span>');
-                }
-                break;
+        // If traveral goes bananas
+        if (++depth >= 10) {
+            return;
         }
-    }*/
+
+        // If it's an element node with child nodes
+        if (node.nodeType === 1 && node.childNodes) {
+            // loop through the element's child nodes
+            for (var i = 0; i < node.childNodes.length; i++) {
+                i -= traverseArticle(node.childNodes[i], pattern, depth);
+            }
+        }
+
+        // If it's a text node
+        if (node.nodeType === 3) {
+            // Look for pattern in text node
+            var position = node.nodeValue.indexOf(pattern);
+            // If we got a match
+            if (position >= 0) {
+                // Make sure we don't have valid letters on either side of the match
+                var regex = new RegExp('[' + LETTER + ']', 'i');
+                if (position > 0) {
+                    var before = node.nodeValue.substr(position - 1, 1);
+                    if (regex.test(before)) {
+                        return;
+                    }
+                }
+                if (position < node.nodeValue.length - 1) {
+                    var after = node.nodeValue.substr(position + pattern.length, 1);
+                    if (regex.test(after)) {
+                        return;
+                    }
+                }
+                // Create a <span> element
+                var span = document.createElement('span');
+                span.className = className;
+                // Split text node before match and return the part going into the span
+                var spanTextNode = node.splitText(position);
+                // Split text node after match
+                spanTextNode.splitText(pattern.length);
+                var middleClone = spanTextNode.cloneNode(true);
+                span.appendChild(middleClone);
+                spanTextNode.parentNode.replaceChild(span, spanTextNode);
+                span.parentNode.normalize();
+            }
+        }
+        return 1;
+    }
 
     // jQuery extension to disable/enable buttons
     // Usage: $('button').disable(true);
