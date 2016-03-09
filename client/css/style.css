@@ -87,6 +87,9 @@ h4 {
 * {
   box-sizing: border-box; }
 
+section {
+  margin-bottom: 100px; }
+
 body {
   background-color: #141414;
   color: #eeeddd;

@@ -1134,6 +1134,16 @@ function inflectionButtonClickHandler(event) {
     console.info('inflectionButtonClickHandler() called.');
 }
 
+// Show statistics in the footer
+function showStatistics() {
+    var sortOrder = 'frequency';
+    var counter = new WordCounter(sortOrder);
+    counter.count();
+    counter.showWords();
+    counter.showStatistics();
+}
+
+// Start of jQuery processing
 $(document).ready(function () {
 
     console.info("$(document).ready() called!");
@@ -1173,125 +1183,6 @@ $(document).ready(function () {
     $('article span').hoverIntent(wordBubbleHoverIn, wordBubbleHoverOut);
     $(window).on('scroll', wordBubbleHoverOut);
 
-    // Sort word objects on the 'word' property
-    function wordComparator(a, b) {
-        if (a.word < b.word) return -1;
-        if (a.word > b.word) return 1;
-        return 0;
-    }
-
-    function freqComparator(a, b) {
-        if (a.freq < b.freq) return 1;
-        if (a.freq > b.freq) return -1;
-        return 0;
-    }
-
-    // Get all the text in the article
-    var someText = $('article')[0].innerText;
-
-    // Get array of words containing valid letters only
-    var separator = new RegExp('[^' + LETTER + ']');
-    var words = someText.split(separator);
-    words = words.filter(function (value) {
-        return (value !== '');
-    });
-
-    // Get object array with word frequencies
-    var wordCount = words.length;
-    var uniqueWordCount = 0;
-    var objects = [];
-    for (var i = 0; i < words.length; i++) {
-        var isDuplicate = false;
-        for (var j = 0; j < objects.length; j++) {
-            if (objects[j].word === words[i]) {
-                objects[j].freq += 1;
-                isDuplicate = true;
-                break;
-            }
-        }
-        if (!isDuplicate) {
-            var object = {};
-            object.word = words[i];
-            object.freq = 1;
-            objects.push(object);
-            uniqueWordCount++;
-        }
-    }
-
-    // Sort the object array on the 'word' property
-    objects = objects.sort(freqComparator);
-
-    // Show the results in a table in the footer
-    var $footer = $('footer');
-    var $p = $('<p>Word count: ' + wordCount + '</p>');
-    $footer.append($p);
-    var $p = $('<p>Unique word count: ' + uniqueWordCount + '</p>');
-    $footer.append($p);
-    var $ul = $('<table/>');
-    $footer.append($ul);
-    for (var i = 0; i < objects.length; i++) {
-        var percentage = (parseInt(objects[i].freq) / wordCount) * 100;
-        percentage = Math.round(percentage * 100) / 100;
-        var li = $('<tr><td>' + objects[i].word + '</td><td style="width: 100px">' + objects[i].freq + '</td><td style="width: 100px">' + percentage + '%</td></tr>');
-        $ul.append(li);
-    }
-
-    var pattern = objects[0].word;
-    var startNode = $('article p')[0];
-    var className = 'pronoun';
-    traverseArticle(startNode, pattern, 0);
-
-    function traverseArticle(node, pattern, depth) {
-
-        // If traveral goes bananas
-        if (++depth >= 10) {
-            return;
-        }
-
-        // If it's an element node with child nodes
-        if (node.nodeType === 1 && node.childNodes) {
-            // loop through the element's child nodes
-            for (var i = 0; i < node.childNodes.length; i++) {
-                i -= traverseArticle(node.childNodes[i], pattern, depth);
-            }
-        }
-
-        // If it's a text node
-        if (node.nodeType === 3) {
-            // Look for pattern in text node
-            var position = node.nodeValue.indexOf(pattern);
-            // If we got a match
-            if (position >= 0) {
-                // Make sure we don't have valid letters on either side of the match
-                var regex = new RegExp('[' + LETTER + ']', 'i');
-                if (position > 0) {
-                    var before = node.nodeValue.substr(position - 1, 1);
-                    if (regex.test(before)) {
-                        return;
-                    }
-                }
-                if (position < node.nodeValue.length - 1) {
-                    var after = node.nodeValue.substr(position + pattern.length, 1);
-                    if (regex.test(after)) {
-                        return;
-                    }
-                }
-                // Create a <span> element
-                var span = document.createElement('span');
-                span.className = className;
-                // Split text node before match and return the part going into the span
-                var spanTextNode = node.splitText(position);
-                // Split text node after match
-                spanTextNode.splitText(pattern.length);
-                var middleClone = spanTextNode.cloneNode(true);
-                span.appendChild(middleClone);
-                spanTextNode.parentNode.replaceChild(span, spanTextNode);
-                span.parentNode.normalize();
-            }
-        }
-        return 1;
-    }
-
     // jQuery extension to disable/enable buttons
     // Usage: $('button').disable(true);
     jQuery.fn.extend({
@@ -1306,9 +1197,6 @@ $(document).ready(function () {
             });
         }
     });
-
-
-
 });
 
 function wordBubbleButtonClickHandler(event) {
