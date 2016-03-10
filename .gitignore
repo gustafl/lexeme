@@ -1,13 +1,8 @@
-# Folders
-.*/
-node_modules/
-temp/
-test/
-old/
-client/css/
-
-# Files
-errors.txt
-bs-config.js
-mysqldump_commands.txt
 *.sublime-*
+.*/
+errors.txt
+mysqldump_commands.txt
+node_modules/
+old/
+temp/
+test/*.*

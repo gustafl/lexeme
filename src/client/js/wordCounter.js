@@ -57,12 +57,18 @@ var WordCounter = function (sortOrder) {
     };
 
     /**
-     * Counts instances of words and populates the statistics object.
+     *
      */
-    var count = function () {
 
-        // Get all the text in the article
-        var someText = $('article')[0].innerText;
+    /**
+     * Counts instances of words and populates the statistics object.
+     * @param  {String} selector A jQuery selector pointing to the part of the
+     *                           document where words will be counted.
+     */
+    var count = function (selector) {
+
+        // Get all text in selected part of document
+        var someText = $(selector).text();
 
         // Get array of words containing valid letters only
         var separator = new RegExp('[^' + LETTER + ']');
@@ -113,6 +119,10 @@ var WordCounter = function (sortOrder) {
             }
         }
     };
+
+    var getWords = function () {
+        return objects;
+    }
 
     /**
      * Appends a new table cell to a given row.
@@ -171,6 +181,7 @@ var WordCounter = function (sortOrder) {
 
     return {
         count: count,
+        getWords: getWords,
         showWords: showWords,
         showStatistics: showStatistics
     };

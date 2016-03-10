@@ -706,6 +706,48 @@ function saveLexeme() {
     storage[key] = value;
 }
 
+/**
+ * An enumeration of local storage record types.
+ * @type {Object}
+ */
+var LocalStorageRecordType = {
+    config: 0,
+    lexeme: 1,
+    inflection: 2,
+    translation: 3,
+    resolution: 4
+}
+
+/**
+ * Constructs a key for local storage.
+ * @param  {String} recordType One of the strings contained in the
+ *                             LocalStorageRecordType enumeration.
+ * @param  {String} language   A two-letter language code.
+ * @param  {String} spelling   A word or compound.
+ * @return {String}            A complete key.
+ */
+function getLocalStorageKey(recordType, language, spelling) {
+
+    // Make key
+    var key = recordType + '.' + language + '.' + spelling + '.01';
+
+    // Get serial number
+    var storage = window.localStorage;  // Q: Should this be a parameter instead?
+    while (storage[key] !== undefined) {
+        // Get current serial number
+        var serial = parseInt(key.split()[3]);
+        // Increase serial number
+        serial++;
+        // Convert to a two-digit zero-filled number
+        serial = (1e2 + serial + '').substr(1);
+        // Create a new key
+        key = recordType + '.' + language + '.' + spelling + '.' + serial;
+    }
+
+    // Return key
+    return key;
+}
+
 function loadLexeme(text) {
 
     console.info('loadLexeme() called.');
@@ -1134,13 +1176,43 @@ function inflectionButtonClickHandler(event) {
     console.info('inflectionButtonClickHandler() called.');
 }
 
-// Show statistics in the footer
+/**
+ * Show word statistics in the footer. Use word frequency sorting.
+ */
 function showStatistics() {
     var sortOrder = 'frequency';
     var counter = new WordCounter(sortOrder);
     counter.count();
     counter.showWords();
     counter.showStatistics();
+}
+
+/**
+ * Get a lexical category name from the numerical ID used in the database.
+ * @param  {Number} id An integer.
+ * @return {String}    A lower-case lexical category name.
+ */
+function getLexicalCategoryNameById(id) {
+    switch (id) {
+        case 1:
+            return 'noun';
+        case 2:
+            return 'verb';
+        case 3:
+            return 'adjective';
+        case 4:
+            return 'pronoun';
+        case 5:
+            return 'adverb';
+        case 6:
+            return 'determiner';
+        case 7:
+            return 'preposition';
+        case 8:
+            return 'conjugation';
+        case 9:
+            return 'interjection';
+    }
 }
 
 // Start of jQuery processing
@@ -1182,6 +1254,20 @@ $(document).ready(function () {
     // Handle hover in and out on highlighted words
     $('article span').hoverIntent(wordBubbleHoverIn, wordBubbleHoverOut);
     $(window).on('scroll', wordBubbleHoverOut);
+
+    // Get all unique words
+    var sortOrder = 'frequency';
+    var counter = new WordCounter(sortOrder);
+    counter.count();
+    var array = counter.getWords();
+
+    // Loop through all unique words
+    for (var i = 0; i < array.length; i++) {
+        // Get random lexical category
+        var id = Math.floor(Math.random() * 9) + 1;
+        var className = getLexicalCategoryNameById(id);
+    }
+
 
     // jQuery extension to disable/enable buttons
     // Usage: $('button').disable(true);
