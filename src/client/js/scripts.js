@@ -619,6 +619,48 @@ function highlightWord(lexicalCategory) {
      */
 }
 
+/**
+ * An enumeration of local storage record types.
+ * @type {Object}
+ */
+var LocalStorageRecordType = {
+    config: 0,
+    lexeme: 1,
+    inflection: 2,
+    translation: 3,
+    resolution: 4
+}
+
+/**
+ * Constructs a key for local storage.
+ * @param  {String} recordType One of the strings contained in the
+ *                             LocalStorageRecordType enumeration.
+ * @param  {String} language   A two-letter language code.
+ * @param  {String} spelling   A word or compound.
+ * @return {String}            A complete key.
+ */
+function getLocalStorageKey(recordType, language, spelling) {
+
+    // Make key
+    var key = recordType + '.' + language + '.' + spelling + '.01';
+
+    // Get serial number
+    var storage = window.localStorage;  // Q: Should this be a parameter instead?
+    while (storage[key] !== undefined) {
+        // Get current serial number
+        var serial = parseInt(key.split()[3]);
+        // Increase serial number
+        serial++;
+        // Convert to a two-digit zero-filled number
+        serial = (1e2 + serial + '').substr(1);
+        // Create a new key
+        key = recordType + '.' + language + '.' + spelling + '.' + serial;
+    }
+
+    // Return key
+    return key;
+}
+
 function saveLexeme() {
 
     console.info('saveLexeme() called.');
@@ -696,7 +738,7 @@ function saveLexeme() {
 
     // Store lexeme object
     var storage = window.localStorage;
-    var key = 'lexeme.' + lexeme.sp;
+    var key = getLocalStorageKey('lexeme', lexeme.la, lexeme.sp);
     if (storage[key] !== undefined) {
         console.warn('An existing lexeme was overwritten.');
     } else {
@@ -704,48 +746,6 @@ function saveLexeme() {
     }
     var value = JSON.stringify(lexeme);
     storage[key] = value;
-}
-
-/**
- * An enumeration of local storage record types.
- * @type {Object}
- */
-var LocalStorageRecordType = {
-    config: 0,
-    lexeme: 1,
-    inflection: 2,
-    translation: 3,
-    resolution: 4
-}
-
-/**
- * Constructs a key for local storage.
- * @param  {String} recordType One of the strings contained in the
- *                             LocalStorageRecordType enumeration.
- * @param  {String} language   A two-letter language code.
- * @param  {String} spelling   A word or compound.
- * @return {String}            A complete key.
- */
-function getLocalStorageKey(recordType, language, spelling) {
-
-    // Make key
-    var key = recordType + '.' + language + '.' + spelling + '.01';
-
-    // Get serial number
-    var storage = window.localStorage;  // Q: Should this be a parameter instead?
-    while (storage[key] !== undefined) {
-        // Get current serial number
-        var serial = parseInt(key.split()[3]);
-        // Increase serial number
-        serial++;
-        // Convert to a two-digit zero-filled number
-        serial = (1e2 + serial + '').substr(1);
-        // Create a new key
-        key = recordType + '.' + language + '.' + spelling + '.' + serial;
-    }
-
-    // Return key
-    return key;
 }
 
 function loadLexeme(text) {
