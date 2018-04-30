@@ -1,6 +1,6 @@
 USE [master]
 GO
-/****** Object:  Database [Lexeme]    Script Date: 2018-04-30 03:08:10 ******/
+/****** Object:  Database [Lexeme]    Script Date: 2018-04-30 16:20:46 ******/
 CREATE DATABASE [Lexeme]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -99,7 +99,7 @@ ALTER DATABASE SCOPED CONFIGURATION FOR SECONDARY SET QUERY_OPTIMIZER_HOTFIXES =
 GO
 USE [Lexeme]
 GO
-/****** Object:  Table [dbo].[grammatical_category]    Script Date: 2018-04-30 03:08:10 ******/
+/****** Object:  Table [dbo].[grammatical_category]    Script Date: 2018-04-30 16:20:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -107,7 +107,7 @@ GO
 CREATE TABLE [dbo].[grammatical_category](
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[name] [varchar](50) NULL,
-	[lexical_category] [int] NOT NULL,
+	[lexical_category_id] [int] NOT NULL,
 	[subgroup] [bit] NOT NULL,
  CONSTRAINT [PK_grammatical_category] PRIMARY KEY CLUSTERED 
 (
@@ -115,14 +115,14 @@ CREATE TABLE [dbo].[grammatical_category](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[grammeme]    Script Date: 2018-04-30 03:08:10 ******/
+/****** Object:  Table [dbo].[grammeme]    Script Date: 2018-04-30 16:20:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[grammeme](
 	[id] [int] IDENTITY(1,1) NOT NULL,
-	[grammatical_category] [int] NOT NULL,
+	[grammatical_category_id] [int] NOT NULL,
 	[name] [varchar](50) NOT NULL,
  CONSTRAINT [PK_grammeme] PRIMARY KEY CLUSTERED 
 (
@@ -130,14 +130,15 @@ CREATE TABLE [dbo].[grammeme](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[inflection]    Script Date: 2018-04-30 03:08:10 ******/
+/****** Object:  Table [dbo].[inflection]    Script Date: 2018-04-30 16:20:47 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[inflection](
 	[id] [int] IDENTITY(1,1) NOT NULL,
-	[lexeme] [int] NOT NULL,
+	[user_id] [int] NOT NULL,
+	[lexeme_id] [int] NOT NULL,
 	[spelling] [nvarchar](100) NOT NULL,
 	[pronounciation] [nvarchar](100) NULL,
  CONSTRAINT [PK_inflection] PRIMARY KEY CLUSTERED 
@@ -146,22 +147,22 @@ CREATE TABLE [dbo].[inflection](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[inflection_grammatical_category]    Script Date: 2018-04-30 03:08:10 ******/
+/****** Object:  Table [dbo].[inflection_grammatical_category]    Script Date: 2018-04-30 16:20:47 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[inflection_grammatical_category](
-	[inflection] [int] NOT NULL,
-	[grammatical_category] [int] NOT NULL,
+	[inflection_id] [int] NOT NULL,
+	[grammatical_category_id] [int] NOT NULL,
  CONSTRAINT [PK_inflection_grammatical_category] PRIMARY KEY CLUSTERED 
 (
-	[inflection] ASC,
-	[grammatical_category] ASC
+	[inflection_id] ASC,
+	[grammatical_category_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[language]    Script Date: 2018-04-30 03:08:10 ******/
+/****** Object:  Table [dbo].[language]    Script Date: 2018-04-30 16:20:47 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -180,45 +181,46 @@ CREATE TABLE [dbo].[language](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[language_grammatical_category]    Script Date: 2018-04-30 03:08:10 ******/
+/****** Object:  Table [dbo].[language_grammatical_category]    Script Date: 2018-04-30 16:20:47 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[language_grammatical_category](
-	[language] [int] NOT NULL,
-	[grammatical_category] [int] NOT NULL,
+	[language_id] [int] NOT NULL,
+	[grammatical_category_id] [int] NOT NULL,
  CONSTRAINT [PK_language_grammatical_category] PRIMARY KEY CLUSTERED 
 (
-	[language] ASC,
-	[grammatical_category] ASC
+	[language_id] ASC,
+	[grammatical_category_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[language_grammeme]    Script Date: 2018-04-30 03:08:10 ******/
+/****** Object:  Table [dbo].[language_grammeme]    Script Date: 2018-04-30 16:20:47 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[language_grammeme](
-	[language] [int] NOT NULL,
-	[grammeme] [int] NOT NULL,
+	[language_id] [int] NOT NULL,
+	[grammeme_id] [int] NOT NULL,
  CONSTRAINT [PK_language_grammeme] PRIMARY KEY CLUSTERED 
 (
-	[language] ASC,
-	[grammeme] ASC
+	[language_id] ASC,
+	[grammeme_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[lexeme]    Script Date: 2018-04-30 03:08:10 ******/
+/****** Object:  Table [dbo].[lexeme]    Script Date: 2018-04-30 16:20:47 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[lexeme](
 	[id] [int] IDENTITY(1,1) NOT NULL,
-	[language] [int] NOT NULL,
-	[lexical_category] [int] NOT NULL,
+	[user_id] [int] NOT NULL,
+	[language_id] [int] NOT NULL,
+	[lexical_category_id] [int] NOT NULL,
 	[spelling] [varchar](100) NOT NULL,
 	[pronounciation] [varchar](100) NOT NULL,
  CONSTRAINT [PK_lexeme] PRIMARY KEY CLUSTERED 
@@ -227,22 +229,22 @@ CREATE TABLE [dbo].[lexeme](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[lexeme_grammatical_category]    Script Date: 2018-04-30 03:08:10 ******/
+/****** Object:  Table [dbo].[lexeme_grammatical_category]    Script Date: 2018-04-30 16:20:47 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[lexeme_grammatical_category](
-	[lexeme] [int] NOT NULL,
-	[grammatical_category] [int] NOT NULL,
+	[lexeme_id] [int] NOT NULL,
+	[grammatical_category_id] [int] NOT NULL,
  CONSTRAINT [PK_lexeme_grammatical_category] PRIMARY KEY CLUSTERED 
 (
-	[lexeme] ASC,
-	[grammatical_category] ASC
+	[lexeme_id] ASC,
+	[grammatical_category_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[lexical_category]    Script Date: 2018-04-30 03:08:10 ******/
+/****** Object:  Table [dbo].[lexical_category]    Script Date: 2018-04-30 16:20:47 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -256,15 +258,16 @@ CREATE TABLE [dbo].[lexical_category](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[translation]    Script Date: 2018-04-30 03:08:10 ******/
+/****** Object:  Table [dbo].[translation]    Script Date: 2018-04-30 16:20:47 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[translation](
 	[id] [int] IDENTITY(1,1) NOT NULL,
-	[lexeme] [int] NOT NULL,
-	[language] [int] NOT NULL,
+	[user_id] [int] NOT NULL,
+	[lexeme_id] [int] NOT NULL,
+	[language_id] [int] NOT NULL,
 	[translation] [varchar](100) NOT NULL,
  CONSTRAINT [PK_translation] PRIMARY KEY CLUSTERED 
 (
@@ -272,13 +275,13 @@ CREATE TABLE [dbo].[translation](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],
  CONSTRAINT [IX_translation] UNIQUE NONCLUSTERED 
 (
-	[lexeme] ASC,
-	[language] ASC,
+	[lexeme_id] ASC,
+	[language_id] ASC,
 	[translation] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[user]    Script Date: 2018-04-30 03:08:10 ******/
+/****** Object:  Table [dbo].[user]    Script Date: 2018-04-30 16:20:47 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -295,14 +298,14 @@ CREATE TABLE [dbo].[user](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[user_log]    Script Date: 2018-04-30 03:08:10 ******/
+/****** Object:  Table [dbo].[user_log]    Script Date: 2018-04-30 16:20:47 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[user_log](
 	[id] [int] IDENTITY(1,1) NOT NULL,
-	[user] [int] NOT NULL,
+	[user_id] [int] NOT NULL,
 	[event] [nvarchar](50) NOT NULL,
 	[timestamp] [datetime2](7) NOT NULL,
  CONSTRAINT [PK_user_log] PRIMARY KEY CLUSTERED 
@@ -313,77 +316,92 @@ CREATE TABLE [dbo].[user_log](
 GO
 ALTER TABLE [dbo].[user_log] ADD  CONSTRAINT [DF_user_log_timestamp]  DEFAULT (getdate()) FOR [timestamp]
 GO
-ALTER TABLE [dbo].[grammeme]  WITH CHECK ADD  CONSTRAINT [FK_grammeme_grammatical_category] FOREIGN KEY([grammatical_category])
+ALTER TABLE [dbo].[grammeme]  WITH CHECK ADD  CONSTRAINT [FK_grammeme_grammatical_category] FOREIGN KEY([grammatical_category_id])
 REFERENCES [dbo].[grammatical_category] ([id])
 GO
 ALTER TABLE [dbo].[grammeme] CHECK CONSTRAINT [FK_grammeme_grammatical_category]
 GO
-ALTER TABLE [dbo].[inflection]  WITH CHECK ADD  CONSTRAINT [FK_inflection_lexeme] FOREIGN KEY([lexeme])
+ALTER TABLE [dbo].[inflection]  WITH CHECK ADD  CONSTRAINT [FK_inflection_lexeme] FOREIGN KEY([lexeme_id])
 REFERENCES [dbo].[lexeme] ([id])
 GO
 ALTER TABLE [dbo].[inflection] CHECK CONSTRAINT [FK_inflection_lexeme]
 GO
-ALTER TABLE [dbo].[inflection_grammatical_category]  WITH CHECK ADD  CONSTRAINT [FK_inflection_grammatical_category_grammatical_category] FOREIGN KEY([grammatical_category])
+ALTER TABLE [dbo].[inflection]  WITH CHECK ADD  CONSTRAINT [FK_inflection_user] FOREIGN KEY([user_id])
+REFERENCES [dbo].[user] ([id])
+GO
+ALTER TABLE [dbo].[inflection] CHECK CONSTRAINT [FK_inflection_user]
+GO
+ALTER TABLE [dbo].[inflection_grammatical_category]  WITH CHECK ADD  CONSTRAINT [FK_inflection_grammatical_category_grammatical_category] FOREIGN KEY([grammatical_category_id])
 REFERENCES [dbo].[grammatical_category] ([id])
 GO
 ALTER TABLE [dbo].[inflection_grammatical_category] CHECK CONSTRAINT [FK_inflection_grammatical_category_grammatical_category]
 GO
-ALTER TABLE [dbo].[inflection_grammatical_category]  WITH CHECK ADD  CONSTRAINT [FK_inflection_grammatical_category_inflection] FOREIGN KEY([inflection])
+ALTER TABLE [dbo].[inflection_grammatical_category]  WITH CHECK ADD  CONSTRAINT [FK_inflection_grammatical_category_inflection] FOREIGN KEY([inflection_id])
 REFERENCES [dbo].[inflection] ([id])
 GO
 ALTER TABLE [dbo].[inflection_grammatical_category] CHECK CONSTRAINT [FK_inflection_grammatical_category_inflection]
 GO
-ALTER TABLE [dbo].[language_grammatical_category]  WITH CHECK ADD  CONSTRAINT [FK_language_grammatical_category_grammatical_category] FOREIGN KEY([grammatical_category])
+ALTER TABLE [dbo].[language_grammatical_category]  WITH CHECK ADD  CONSTRAINT [FK_language_grammatical_category_grammatical_category] FOREIGN KEY([grammatical_category_id])
 REFERENCES [dbo].[grammatical_category] ([id])
 GO
 ALTER TABLE [dbo].[language_grammatical_category] CHECK CONSTRAINT [FK_language_grammatical_category_grammatical_category]
 GO
-ALTER TABLE [dbo].[language_grammatical_category]  WITH CHECK ADD  CONSTRAINT [FK_language_grammatical_category_language] FOREIGN KEY([language])
+ALTER TABLE [dbo].[language_grammatical_category]  WITH CHECK ADD  CONSTRAINT [FK_language_grammatical_category_language] FOREIGN KEY([language_id])
 REFERENCES [dbo].[language] ([id])
 GO
 ALTER TABLE [dbo].[language_grammatical_category] CHECK CONSTRAINT [FK_language_grammatical_category_language]
 GO
-ALTER TABLE [dbo].[language_grammeme]  WITH CHECK ADD  CONSTRAINT [FK_language_grammeme_grammeme] FOREIGN KEY([grammeme])
+ALTER TABLE [dbo].[language_grammeme]  WITH CHECK ADD  CONSTRAINT [FK_language_grammeme_grammeme] FOREIGN KEY([grammeme_id])
 REFERENCES [dbo].[grammeme] ([id])
 GO
 ALTER TABLE [dbo].[language_grammeme] CHECK CONSTRAINT [FK_language_grammeme_grammeme]
 GO
-ALTER TABLE [dbo].[language_grammeme]  WITH CHECK ADD  CONSTRAINT [FK_language_grammeme_language] FOREIGN KEY([language])
+ALTER TABLE [dbo].[language_grammeme]  WITH CHECK ADD  CONSTRAINT [FK_language_grammeme_language] FOREIGN KEY([language_id])
 REFERENCES [dbo].[language] ([id])
 GO
 ALTER TABLE [dbo].[language_grammeme] CHECK CONSTRAINT [FK_language_grammeme_language]
 GO
-ALTER TABLE [dbo].[lexeme]  WITH CHECK ADD  CONSTRAINT [FK_lexeme_language] FOREIGN KEY([language])
+ALTER TABLE [dbo].[lexeme]  WITH CHECK ADD  CONSTRAINT [FK_lexeme_language] FOREIGN KEY([language_id])
 REFERENCES [dbo].[language] ([id])
 GO
 ALTER TABLE [dbo].[lexeme] CHECK CONSTRAINT [FK_lexeme_language]
 GO
-ALTER TABLE [dbo].[lexeme]  WITH CHECK ADD  CONSTRAINT [FK_lexeme_lexical_category] FOREIGN KEY([lexical_category])
+ALTER TABLE [dbo].[lexeme]  WITH CHECK ADD  CONSTRAINT [FK_lexeme_lexical_category] FOREIGN KEY([lexical_category_id])
 REFERENCES [dbo].[lexical_category] ([id])
 GO
 ALTER TABLE [dbo].[lexeme] CHECK CONSTRAINT [FK_lexeme_lexical_category]
 GO
-ALTER TABLE [dbo].[lexeme_grammatical_category]  WITH CHECK ADD  CONSTRAINT [FK_lexeme_grammatical_category_grammatical_category] FOREIGN KEY([grammatical_category])
+ALTER TABLE [dbo].[lexeme]  WITH CHECK ADD  CONSTRAINT [FK_lexeme_user] FOREIGN KEY([user_id])
+REFERENCES [dbo].[user] ([id])
+GO
+ALTER TABLE [dbo].[lexeme] CHECK CONSTRAINT [FK_lexeme_user]
+GO
+ALTER TABLE [dbo].[lexeme_grammatical_category]  WITH CHECK ADD  CONSTRAINT [FK_lexeme_grammatical_category_grammatical_category] FOREIGN KEY([grammatical_category_id])
 REFERENCES [dbo].[grammatical_category] ([id])
 GO
 ALTER TABLE [dbo].[lexeme_grammatical_category] CHECK CONSTRAINT [FK_lexeme_grammatical_category_grammatical_category]
 GO
-ALTER TABLE [dbo].[lexeme_grammatical_category]  WITH CHECK ADD  CONSTRAINT [FK_lexeme_grammatical_category_lexeme] FOREIGN KEY([lexeme])
+ALTER TABLE [dbo].[lexeme_grammatical_category]  WITH CHECK ADD  CONSTRAINT [FK_lexeme_grammatical_category_lexeme] FOREIGN KEY([lexeme_id])
 REFERENCES [dbo].[lexeme] ([id])
 GO
 ALTER TABLE [dbo].[lexeme_grammatical_category] CHECK CONSTRAINT [FK_lexeme_grammatical_category_lexeme]
 GO
-ALTER TABLE [dbo].[translation]  WITH CHECK ADD  CONSTRAINT [FK_translation_language] FOREIGN KEY([language])
+ALTER TABLE [dbo].[translation]  WITH CHECK ADD  CONSTRAINT [FK_translation_language] FOREIGN KEY([language_id])
 REFERENCES [dbo].[language] ([id])
 GO
 ALTER TABLE [dbo].[translation] CHECK CONSTRAINT [FK_translation_language]
 GO
-ALTER TABLE [dbo].[translation]  WITH CHECK ADD  CONSTRAINT [FK_translation_lexeme] FOREIGN KEY([lexeme])
+ALTER TABLE [dbo].[translation]  WITH CHECK ADD  CONSTRAINT [FK_translation_lexeme] FOREIGN KEY([lexeme_id])
 REFERENCES [dbo].[lexeme] ([id])
 GO
 ALTER TABLE [dbo].[translation] CHECK CONSTRAINT [FK_translation_lexeme]
 GO
-ALTER TABLE [dbo].[user_log]  WITH CHECK ADD  CONSTRAINT [FK_user_log_user] FOREIGN KEY([user])
+ALTER TABLE [dbo].[translation]  WITH CHECK ADD  CONSTRAINT [FK_translation_user] FOREIGN KEY([user_id])
+REFERENCES [dbo].[user] ([id])
+GO
+ALTER TABLE [dbo].[translation] CHECK CONSTRAINT [FK_translation_user]
+GO
+ALTER TABLE [dbo].[user_log]  WITH CHECK ADD  CONSTRAINT [FK_user_log_user] FOREIGN KEY([user_id])
 REFERENCES [dbo].[user] ([id])
 GO
 ALTER TABLE [dbo].[user_log] CHECK CONSTRAINT [FK_user_log_user]
